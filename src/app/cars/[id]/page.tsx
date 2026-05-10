@@ -7,19 +7,18 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
-import { 
-  Car, 
-  Calendar, 
-  Fuel, 
-  Settings, 
-  Gauge, 
+import {
+  Car,
+  Calendar,
+  Fuel,
+  Settings,
+  Gauge,
   Palette,
   Phone,
   Mail,
-  MapPin
 } from "lucide-react"
 
-interface Car {
+interface CarDoc {
   _id: string
   brand: string
   model: string
@@ -39,47 +38,32 @@ interface Car {
 export default function CarDetailPage() {
   const params = useParams()
   const router = useRouter()
-  const [car, setCar] = useState<Car | null>(null)
+  const [car, setCar] = useState<CarDoc | null>(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [selectedImage, setSelectedImage] = useState(0)
 
-  // Mock data for demonstration
-  const mockCar: Car = {
-    _id: "1",
-    brand: "تويوتا",
-    model: "كامري",
-    year: 2023,
-    price: 120000,
-    fuelType: "بنزين",
-    transmission: "أوتوماتيك",
-    mileage: 15000,
-    color: "أبيض",
-    description: "سيارة تويوتا كامري 2023 بحالة ممتازة، موتور قوي واستهلاك وقود منخفض. السيارة مجهزة بأحدث تقنيات الأمان والراحة، وتتميز بتصميم داخلي فاخر ومساحة واسعة للركاب.",
-    images: [
-      "https://images.unsplash.com/photo-1550355291-bbee04a92027?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1494976388539-d1058494cdd8?w=800&h=600&fit=crop"
-    ],
-    features: [
-      "نظام تثبيت السرعة",
-      "كاميرا خلفية",
-      "مستشعر ركن سيارة",
-      "شاشة لمس 8 بوصة",
-      "بلوتوث",
-      "مكيف أوتوماتيك",
-      "نوافذ كهربائية",
-      "مرايا كهربائية"
-    ],
-    status: "متاح",
-    createdAt: new Date().toISOString()
-  }
-
   useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      setCar(mockCar)
-      setLoading(false)
-    }, 1000)
+    const fetchCar = async () => {
+      setLoading(true)
+      setError(null)
+      try {
+        const res = await fetch(`/api/cars/${params.id}`)
+        const data = await res.json()
+
+        if (data.success) {
+          setCar(data.data)
+        } else {
+          setError(data.error || "السيارة غير موجودة")
+        }
+      } catch {
+        setError("حدث خطأ في الاتصال")
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    if (params.id) fetchCar()
   }, [params.id])
 
   const getStatusColor = (status: string) => {
@@ -116,7 +100,7 @@ export default function CarDetailPage() {
     )
   }
 
-  if (!car) {
+  if (error || !car) {
     return (
       <div className="min-h-screen">
         <Navbar />
@@ -125,7 +109,7 @@ export default function CarDetailPage() {
             <Car className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
             <h3 className="text-lg font-semibold mb-2">السيارة غير موجودة</h3>
             <p className="text-muted-foreground mb-4">
-              لم يتم العثور على السيارة المطلوبة
+              {error || "لم يتم العثور على السيارة المطلوبة"}
             </p>
             <Button onClick={() => router.push("/cars")}>
               العودة إلى قائمة السيارات
@@ -139,37 +123,41 @@ export default function CarDetailPage() {
   return (
     <div className="min-h-screen">
       <Navbar />
-      
+
       <main className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Images Section */}
           <div>
             <div className="mb-4">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={car.images[selectedImage]}
+                src={car.images[selectedImage] || "/placeholder-car.jpg"}
                 alt={`${car.brand} ${car.model}`}
                 className="w-full h-96 object-cover rounded-lg"
               />
             </div>
-            <div className="grid grid-cols-4 gap-2">
-              {car.images.map((image, index) => (
-                <button
-                  key={index}
-                  onClick={() => setSelectedImage(index)}
-                  className={`border-2 rounded overflow-hidden transition-all ${
-                    selectedImage === index
-                      ? "border-primary"
-                      : "border-transparent hover:border-muted-foreground"
-                  }`}
-                >
-                  <img
-                    src={image}
-                    alt={`${car.brand} ${car.model} ${index + 1}`}
-                    className="w-full h-20 object-cover"
-                  />
-                </button>
-              ))}
-            </div>
+            {car.images.length > 1 && (
+              <div className="grid grid-cols-4 gap-2">
+                {car.images.map((image, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setSelectedImage(index)}
+                    className={`border-2 rounded overflow-hidden transition-all ${
+                      selectedImage === index
+                        ? "border-primary"
+                        : "border-transparent hover:border-muted-foreground"
+                    }`}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={image}
+                      alt={`${car.brand} ${car.model} ${index + 1}`}
+                      className="w-full h-20 object-cover"
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Car Details Section */}
@@ -184,7 +172,7 @@ export default function CarDetailPage() {
                 </Badge>
               </div>
               <p className="text-2xl font-bold text-primary mb-4">
-                {car.price.toLocaleString()} ريال
+                {car.price.toLocaleString()} ج.م
               </p>
             </div>
 
@@ -221,10 +209,32 @@ export default function CarDetailPage() {
                 <CardTitle>الوصف</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground leading-relaxed">
-                  {car.description}
-                </p>
+                <div 
+                  className="text-muted-foreground leading-relaxed rich-text-content"
+                  dangerouslySetInnerHTML={{ __html: car.description }}
+                />
               </CardContent>
+              <style jsx global>{`
+                .rich-text-content ul {
+                  list-style-type: disc;
+                  margin-right: 1.5rem;
+                  margin-bottom: 1rem;
+                }
+                .rich-text-content ol {
+                  list-style-type: decimal;
+                  margin-right: 1.5rem;
+                  margin-bottom: 1rem;
+                }
+                .rich-text-content p {
+                  margin-bottom: 0.5rem;
+                }
+                .rich-text-content h1, .rich-text-content h2, .rich-text-content h3 {
+                  font-weight: bold;
+                  margin-top: 1rem;
+                  margin-bottom: 0.5rem;
+                  color: hsl(var(--foreground));
+                }
+              `}</style>
             </Card>
 
             {car.features && car.features.length > 0 && (

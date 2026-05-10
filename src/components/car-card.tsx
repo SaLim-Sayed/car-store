@@ -62,7 +62,7 @@ export function CarCard({ car }: CarCardProps) {
             {car.brand} {car.model}
           </h3>
           <span className="text-xl font-bold text-primary">
-            {car.price.toLocaleString()} ريال
+            {car.price.toLocaleString()} ج.م
           </span>
         </div>
         

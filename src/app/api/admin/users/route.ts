@@ -2,17 +2,27 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongoose';
 import User from '@/lib/models/User';
 import { handleApiError } from '@/lib/api-helpers';
-import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET!;
-const JWT_EXPIRES_IN = '7d';
+// GET all users (admin only)
+export async function GET() {
+  try {
+    await connectDB();
 
+    const users = await User.find({}, '-password').sort({ createdAt: -1 });
+
+    return NextResponse.json({ success: true, data: users });
+  } catch (error) {
+    return handleApiError(error, 'فشل في جلب المستخدمين');
+  }
+}
+
+// POST create a new user (admin only)
 export async function POST(request: NextRequest) {
   try {
     await connectDB();
 
     const body = await request.json();
-    const { name, email, password } = body;
+    const { name, email, password, role = 'user' } = body;
 
     if (!name || !email || !password) {
       return NextResponse.json(
@@ -28,9 +38,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const existingUser = await User.findOne({ email: email.toLowerCase() });
-
-    if (existingUser) {
+    const existing = await User.findOne({ email: email.toLowerCase() });
+    if (existing) {
       return NextResponse.json(
         { success: false, error: 'هذا البريد الإلكتروني مستخدم بالفعل' },
         { status: 409 }
@@ -41,34 +50,28 @@ export async function POST(request: NextRequest) {
       name: name.trim(),
       email: email.toLowerCase().trim(),
       password,
-      role: 'user',
+      role,
+      isActive: true,
     });
 
     await user.save();
-
-    const token = jwt.sign(
-      { userId: user._id.toString(), email: user.email, role: user.role },
-      JWT_SECRET,
-      { expiresIn: JWT_EXPIRES_IN }
-    );
 
     return NextResponse.json(
       {
         success: true,
         data: {
-          token,
-          user: {
-            id: user._id.toString(),
-            name: user.name,
-            email: user.email,
-            role: user.role,
-          },
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          isActive: user.isActive,
+          createdAt: user.createdAt,
         },
-        message: 'تم إنشاء الحساب بنجاح',
+        message: 'تم إنشاء المستخدم بنجاح',
       },
       { status: 201 }
     );
   } catch (error) {
-    return handleApiError(error, 'فشل في إنشاء الحساب');
+    return handleApiError(error, 'فشل في إنشاء المستخدم');
   }
 }

@@ -70,9 +70,8 @@ const CarSchema = new mongoose.Schema({
   },
 });
 
-CarSchema.pre('save', function(next) {
+CarSchema.pre('save', async function() {
   this.updatedAt = new Date();
-  return next();
 });
 
 export default mongoose.models.Car || mongoose.model('Car', CarSchema);

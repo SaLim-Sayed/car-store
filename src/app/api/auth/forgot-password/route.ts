@@ -1,74 +1,54 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongoose';
 import User from '@/lib/models/User';
-import crypto from 'crypto';
-import nodemailer from 'nodemailer';
 import { handleApiError } from '@/lib/api-helpers';
+import crypto from 'crypto';
 
-export async function POST(request: NextRequest): Promise<NextResponse> {
+export async function POST(request: NextRequest) {
   try {
     await connectDB();
-    
-    const { email } = await request.json();
-    
+
+    const body = await request.json();
+    const { email } = body;
+
     if (!email) {
       return NextResponse.json(
         { success: false, error: 'البريد الإلكتروني مطلوب' },
         { status: 400 }
       );
     }
-    
-    const user = await User.findOne({ email });
+
+    const user = await User.findOne({ email: email.toLowerCase() });
+
+    // Always return success to avoid email enumeration attacks
     if (!user) {
-      return NextResponse.json(
-        { success: false, error: 'البريد الإلكتروني غير مسجل' },
-        { status: 404 }
-      );
+      return NextResponse.json({
+        success: true,
+        message: 'إذا كان البريد الإلكتروني مسجلاً، ستتلقى رابط استعادة كلمة المرور',
+      });
     }
-    
+
+    // Generate a secure reset token
     const resetToken = crypto.randomBytes(32).toString('hex');
-    const resetPasswordExpires = new Date(Date.now() + 3600000); // 1 hour
-    
-    user.resetPasswordToken = resetToken;
-    user.resetPasswordExpires = resetPasswordExpires;
+    const resetTokenHash = crypto
+      .createHash('sha256')
+      .update(resetToken)
+      .digest('hex');
+
+    // Store hashed token and expiry (1 hour) on user doc
+    user.resetPasswordToken = resetTokenHash;
+    user.resetPasswordExpires = new Date(Date.now() + 60 * 60 * 1000);
     await user.save();
-    
-    // Configure email transporter
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
-    
-    const resetUrl = `${process.env.NEXTAUTH_URL}/reset-password?token=${resetToken}`;
-    
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: 'إعادة تعيين كلمة المرور',
-      html: `
-        <div dir="rtl" style="font-family: Arial, sans-serif;">
-          <h2>إعادة تعيين كلمة المرور</h2>
-          <p>لقد طلبت إعادة تعيين كلمة المرور لحسابك.</p>
-          <p>اضغط على الرابط التالي لإعادة تعيين كلمة المرور:</p>
-          <a href="${resetUrl}" style="background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
-            إعادة تعيين كلمة المرور
-          </a>
-          <p>هذا الرابط صالح لمدة ساعة واحدة فقط.</p>
-          <p>إذا لم تطلب إعادة تعيين كلمة المرور، يرجى تجاهل هذا البريد الإلكتروني.</p>
-        </div>
-      `,
-    };
-    
-    await transporter.sendMail(mailOptions);
-    
+
+    // In production you'd send an email here.
+    // For development, the token is returned directly.
     return NextResponse.json({
       success: true,
-      message: 'تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني'
+      message: 'إذا كان البريد الإلكتروني مسجلاً، ستتلقى رابط استعادة كلمة المرور',
+      // Only expose token in dev for testing
+      ...(process.env.NODE_ENV === 'development' && { resetToken }),
     });
   } catch (error) {
-    return handleApiError(error, 'فشل في إرسال رابط إعادة تعيين كلمة المرور');
+    return handleApiError(error, 'فشل في معالجة طلب استعادة كلمة المرور');
   }
 }

@@ -9,49 +9,20 @@ export async function GET(
 ): Promise<NextResponse> {
   try {
     await connectDB();
-    
-    const resolvedParams = await params;
-    const car = await Car.findById(resolvedParams.id);
-    
+
+    const { id } = await params;
+    const car = await Car.findById(id);
+
     if (!car) {
       return NextResponse.json(
         { success: false, error: 'السيارة غير موجودة' },
         { status: 404 }
       );
     }
-    
-    return NextResponse.json({
-      success: true,
-      data: car
-    });
+
+    return NextResponse.json({ success: true, data: car });
   } catch (error) {
     return handleApiError(error, 'فشل في جلب السيارة');
-  }
-}
-
-export async function DELETE_CAR(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-): Promise<NextResponse> {
-  try {
-    await connectDB();
-    
-    const resolvedParams = await params;
-    const car = await Car.findByIdAndDelete(resolvedParams.id);
-    
-    if (!car) {
-      return NextResponse.json(
-        { success: false, error: 'السيارة غير موجودة' },
-        { status: 404 }
-      );
-    }
-    
-    return NextResponse.json({
-      success: true,
-      message: 'تم حذف السيارة بنجاح'
-    });
-  } catch (error) {
-    return handleApiError(error, 'فشل في حذف السيارة');
   }
 }
 
@@ -61,27 +32,26 @@ export async function PUT(
 ): Promise<NextResponse> {
   try {
     await connectDB();
-    
+
     const body = await request.json();
-    const resolvedParams = await params;
-    
-    const car = await Car.findByIdAndUpdate(
-      resolvedParams.id,
-      body,
-      { new: true, runValidators: true }
-    );
-    
+    const { id } = await params;
+
+    const car = await Car.findByIdAndUpdate(id, body, {
+      new: true,
+      runValidators: true,
+    });
+
     if (!car) {
       return NextResponse.json(
         { success: false, error: 'السيارة غير موجودة' },
         { status: 404 }
       );
     }
-    
+
     return NextResponse.json({
       success: true,
       data: car,
-      message: 'تم تحديث السيارة بنجاح'
+      message: 'تم تحديث السيارة بنجاح',
     });
   } catch (error) {
     return handleApiError(error, 'فشل في تحديث السيارة');
@@ -90,23 +60,24 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ): Promise<NextResponse> {
   try {
     await connectDB();
-    
-    const car = await Car.findByIdAndDelete(params.id);
-    
+
+    const { id } = await params;
+    const car = await Car.findByIdAndDelete(id);
+
     if (!car) {
       return NextResponse.json(
         { success: false, error: 'السيارة غير موجودة' },
         { status: 404 }
       );
     }
-    
+
     return NextResponse.json({
       success: true,
-      message: 'تم حذف السيارة بنجاح'
+      message: 'تم حذف السيارة بنجاح',
     });
   } catch (error) {
     return handleApiError(error, 'فشل في حذف السيارة');

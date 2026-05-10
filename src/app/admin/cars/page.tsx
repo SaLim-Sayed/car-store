@@ -1,16 +1,17 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Navbar } from "@/components/navbar"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
+import { toast } from "sonner"
 import { Car, Edit, Trash2, Plus, Search } from "lucide-react"
 import Link from "next/link"
 
-interface Car {
+interface CarDoc {
   _id: string
   brand: string
   model: string
@@ -27,69 +28,54 @@ interface Car {
 }
 
 export default function AdminCarsPage() {
-  const [cars, setCars] = useState<Car[]>([])
+  const [cars, setCars] = useState<CarDoc[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState("")
   const [deleteLoading, setDeleteLoading] = useState<string | null>(null)
 
-  // Mock data for demonstration
-  const mockCars: Car[] = [
-    {
-      _id: "1",
-      brand: "تويوتا",
-      model: "كامري",
-      year: 2023,
-      price: 120000,
-      fuelType: "بنزين",
-      transmission: "أوتوماتيك",
-      mileage: 15000,
-      color: "أبيض",
-      description: "سيارة تويوتا كامري 2023 بحالة ممتازة",
-      images: ["https://images.unsplash.com/photo-1550355291-bbee04a92027?w=400&h=300&fit=crop"],
-      status: "متاح",
-      createdAt: new Date().toISOString()
-    },
-    {
-      _id: "2",
-      brand: "هونداي",
-      model: "سوناتا",
-      year: 2022,
-      price: 95000,
-      fuelType: "بنزين",
-      transmission: "أوتوماتيك",
-      mileage: 25000,
-      color: "أسود",
-      description: "هونداي سوناتا 2022 بميزات متقدمة",
-      images: ["https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=400&h=300&fit=crop"],
-      status: "مباع",
-      createdAt: new Date().toISOString()
-    }
-  ]
-
-  useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      setCars(mockCars)
+  const fetchCars = useCallback(async () => {
+    setLoading(true)
+    try {
+      const res = await fetch("/api/cars?limit=100")
+      const data = await res.json()
+      if (data.success) {
+        setCars(data.data)
+      } else {
+        toast.error("فشل في جلب السيارات")
+      }
+    } catch {
+      toast.error("حدث خطأ في الاتصال")
+    } finally {
       setLoading(false)
-    }, 1000)
+    }
   }, [])
 
-  const filteredCars = cars.filter(car =>
-    car.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    car.model.toLowerCase().includes(searchTerm.toLowerCase())
+  useEffect(() => {
+    fetchCars()
+  }, [fetchCars])
+
+  const filteredCars = cars.filter(
+    (car) =>
+      car.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      car.model.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
   const handleDelete = async (carId: string) => {
     if (!confirm("هل أنت متأكد من حذف هذه السيارة؟")) return
-    
+
     setDeleteLoading(carId)
     try {
-      // Mock delete operation
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      setCars(cars.filter(car => car._id !== carId))
-      alert("تم حذف السيارة بنجاح")
-    } catch (error) {
-      alert("فشل في حذف السيارة")
+      const res = await fetch(`/api/cars/${carId}`, { method: "DELETE" })
+      const data = await res.json()
+
+      if (data.success) {
+        setCars((prev) => prev.filter((car) => car._id !== carId))
+        toast.success("تم حذف السيارة بنجاح")
+      } else {
+        toast.error(data.error || "فشل في حذف السيارة")
+      }
+    } catch {
+      toast.error("حدث خطأ في الاتصال")
     } finally {
       setDeleteLoading(null)
     }
@@ -130,7 +116,7 @@ export default function AdminCarsPage() {
   return (
     <div className="min-h-screen">
       <Navbar />
-      
+
       <main className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
           <div>
@@ -183,6 +169,7 @@ export default function AdminCarsPage() {
                   {filteredCars.map((car) => (
                     <tr key={car._id} className="border-b hover:bg-muted/50">
                       <td className="py-3">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={car.images[0] || "/placeholder-car.jpg"}
                           alt={`${car.brand} ${car.model}`}
@@ -193,7 +180,7 @@ export default function AdminCarsPage() {
                       <td className="py-3">{car.model}</td>
                       <td className="py-3">{car.year}</td>
                       <td className="py-3 font-semibold">
-                        {car.price.toLocaleString()} ريال
+                        {car.price.toLocaleString()} ج.م
                       </td>
                       <td className="py-3">
                         <Badge className={getStatusColor(car.status)}>
@@ -202,11 +189,7 @@ export default function AdminCarsPage() {
                       </td>
                       <td className="py-3">
                         <div className="flex gap-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            asChild
-                          >
+                          <Button variant="outline" size="sm" asChild>
                             <Link href={`/admin/cars/${car._id}/edit`}>
                               <Edit className="h-4 w-4" />
                             </Link>
@@ -216,6 +199,7 @@ export default function AdminCarsPage() {
                             size="sm"
                             onClick={() => handleDelete(car._id)}
                             disabled={deleteLoading === car._id}
+                            className="text-red-600 hover:text-red-700 hover:border-red-600"
                           >
                             <Trash2 className="h-4 w-4" />
                           </Button>
@@ -225,13 +209,15 @@ export default function AdminCarsPage() {
                   ))}
                 </tbody>
               </table>
-              
+
               {filteredCars.length === 0 && (
                 <div className="text-center py-8">
                   <Car className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                   <h3 className="text-lg font-semibold mb-2">لا توجد سيارات</h3>
                   <p className="text-muted-foreground">
-                    لم يتم العثور على سيارات تطابق معايير البحث
+                    {searchTerm
+                      ? "لم يتم العثور على سيارات تطابق معايير البحث"
+                      : "لم يتم إضافة أي سيارات بعد"}
                   </p>
                 </div>
               )}

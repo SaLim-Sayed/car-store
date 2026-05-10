@@ -40,26 +40,18 @@ const UserSchema = new mongoose.Schema({
   },
 });
 
-UserSchema.pre('save', async function(this: any, next: any) {
-  if (!this.isModified('password')) return next();
-  
-  try {
+// Mongoose 9: pre-save hooks are async, no next() callback
+UserSchema.pre('save', async function() {
+  if (this.isModified('password')) {
     const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
-    return next();
-  } catch (error: any) {
-    return next(error);
+    this.password = await bcrypt.hash(this.password as string, salt);
   }
+  this.updatedAt = new Date();
 });
 
 UserSchema.methods.comparePassword = async function(this: any, candidatePassword: string): Promise<boolean> {
   if (!this.password) return false;
   return bcrypt.compare(candidatePassword, this.password);
 };
-
-UserSchema.pre('save', function(this: any, next: any) {
-  this.updatedAt = new Date();
-  return next();
-});
 
 export default mongoose.models.User || mongoose.model('User', UserSchema);

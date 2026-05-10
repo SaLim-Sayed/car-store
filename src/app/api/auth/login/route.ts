@@ -1,63 +1,69 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongoose';
 import User from '@/lib/models/User';
-import jwt from 'jsonwebtoken';
 import { handleApiError } from '@/lib/api-helpers';
+import jwt from 'jsonwebtoken';
 
-export async function POST(request: NextRequest): Promise<NextResponse> {
+const JWT_SECRET = process.env.JWT_SECRET!;
+const JWT_EXPIRES_IN = '7d';
+
+export async function POST(request: NextRequest) {
   try {
     await connectDB();
-    
-    const { email, password } = await request.json();
-    
+
+    const body = await request.json();
+    const { email, password } = body;
+
     if (!email || !password) {
       return NextResponse.json(
         { success: false, error: 'البريد الإلكتروني وكلمة المرور مطلوبان' },
         { status: 400 }
       );
     }
-    
-    const user = await User.findOne({ email });
+
+    const user = await User.findOne({ email: email.toLowerCase() });
+
     if (!user) {
       return NextResponse.json(
-        { success: false, error: 'بيانات الاعتماد غير صحيحة' },
+        { success: false, error: 'البريد الإلكتروني أو كلمة المرور غير صحيحة' },
         { status: 401 }
       );
     }
-    
-    const isPasswordValid = await user.comparePassword(password);
-    if (!isPasswordValid) {
-      return NextResponse.json(
-        { success: false, error: 'بيانات الاعتماد غير صحيحة' },
-        { status: 401 }
-      );
-    }
-    
+
     if (!user.isActive) {
       return NextResponse.json(
-        { success: false, error: 'الحساب غير نشط' },
+        { success: false, error: 'هذا الحساب معطل. يرجى التواصل مع الإدارة' },
+        { status: 403 }
+      );
+    }
+
+    const isPasswordValid = await user.comparePassword(password);
+
+    if (!isPasswordValid) {
+      return NextResponse.json(
+        { success: false, error: 'البريد الإلكتروني أو كلمة المرور غير صحيحة' },
         { status: 401 }
       );
     }
-    
+
     const token = jwt.sign(
-      { userId: user._id, email: user.email, role: user.role },
-      process.env.JWT_SECRET!,
-      { expiresIn: '7d' }
+      { userId: user._id.toString(), email: user.email, role: user.role },
+      JWT_SECRET,
+      { expiresIn: JWT_EXPIRES_IN }
     );
-    
+
     return NextResponse.json({
       success: true,
       data: {
+        token,
         user: {
-          id: user._id,
+          id: user._id.toString(),
           name: user.name,
           email: user.email,
-          role: user.role
+          role: user.role,
         },
-        token
       },
-      message: 'تم تسجيل الدخول بنجاح'
+      message: 'تم تسجيل الدخول بنجاح',
     });
   } catch (error) {
     return handleApiError(error, 'فشل في تسجيل الدخول');
