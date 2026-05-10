@@ -1,9 +1,20 @@
 import axios from 'axios';
 
-// Create axios instance with base configuration
+// Base URL logic: prioritize env var, fallback to current origin or localhost
+const getBaseUrl = () => {
+  if (typeof window === 'undefined') {
+    return process.env.NEXT_PUBLIC_API_URL || 'https://car-store-sepia.vercel.app/api';
+  }
+  
+  const envUrl = process.env.NEXT_PUBLIC_API_URL;
+  if (envUrl) return envUrl.endsWith('/api') ? envUrl : `${envUrl.replace(/\/$/, '')}/api`;
+  
+  return `${window.location.origin}/api`;
+};
+
 export const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'https://car-store-sepia.vercel.app/api',
-  timeout: 10000,
+  baseURL: getBaseUrl(),
+  timeout: 15000,
   headers: {
     'Content-Type': 'application/json',
   },

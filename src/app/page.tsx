@@ -44,13 +44,14 @@ export default function HomePage() {
     <div className="min-h-screen">
       <Navbar />
 
-      <main className="container mx-auto px-4 py-8">
+      <main>
         <section className="mb-12">
           <HeroSlider />
         </section>
-
-        <section className="mb-12">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <div className="container mx-auto px-4 py-8">
+          <section className="mb-12">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Card>
               <CardContent className="p-6 text-center">
                 <Car className="h-12 w-12 mx-auto mb-4 text-primary" />
@@ -157,6 +158,7 @@ export default function HomePage() {
             ))}
           </div>
         </section>
+      </div>
       </main>
     </div>
   )

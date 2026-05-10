@@ -22,8 +22,6 @@ export default function AdminDashboard() {
   const { data: statsData, isLoading, error } = useAdminStats()
   const { mutate: seedDatabase, isPending: seeding } = useSeedDatabase()
   
-  // Debug: log the actual data received
-  console.log('Stats data:', statsData)
   const stats = statsData?.data || statsData
 
   const handleSeed = () => {
@@ -34,35 +32,35 @@ export default function AdminDashboard() {
     ? [
         {
           title: "إجمالي السيارات",
-          value: stats.totalCars,
+          value: (stats.totalCars || 0).toLocaleString(),
           icon: Car,
           color: "text-blue-600",
           bgColor: "bg-blue-100 dark:bg-blue-900",
         },
         {
           title: "إجمالي المستخدمين",
-          value: stats.totalUsers,
+          value: (stats.totalUsers || 0).toLocaleString(),
           icon: Users,
           color: "text-green-600",
           bgColor: "bg-green-100 dark:bg-green-900",
         },
         {
           title: "السيارات المتاحة",
-          value: stats.availableCars,
+          value: (stats.availableCars || 0).toLocaleString(),
           icon: TrendingUp,
           color: "text-orange-600",
           bgColor: "bg-orange-100 dark:bg-orange-900",
         },
         {
           title: "السيارات المباعة",
-          value: stats.soldCars,
+          value: (stats.soldCars || 0).toLocaleString(),
           icon: ShoppingBag,
           color: "text-red-600",
           bgColor: "bg-red-100 dark:bg-red-900",
         },
         {
           title: "إجمالي الإيرادات",
-          value: (stats.totalRevenue || 0) + " ج.م",
+          value: (stats.totalRevenue || 0).toLocaleString() + " ج.م",
           icon: DollarSign,
           color: "text-purple-600",
           bgColor: "bg-purple-100 dark:bg-purple-900",
