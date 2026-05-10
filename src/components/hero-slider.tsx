@@ -26,7 +26,7 @@ const heroSlides = [
     title: "أسعار تنافسية",
     subtitle: "أفضل الأسعار في السوق مع ضمان الجودة",
     image:
-      "https://images.unsplash.com/photo-1494976388539-d1058494cdd8?w=1200&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?w=900&h=500&fit=crop",
     cta: "اطلب الآن",
     link: "/cars",
   },
@@ -35,7 +35,7 @@ const heroSlides = [
     title: "خدمة عملاء ممتازة",
     subtitle: "فريق متخصص لمساعدتك في اختيار السيارة المناسبة",
     image:
-      "https://images.unsplash.com/photo-1563720224045-81751d25408b?w=1200&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1511994477422-b69e44bd4ea9?w=900&h=500&fit=crop",
     cta: "تواصل معنا",
     link: "/contact",
   },
