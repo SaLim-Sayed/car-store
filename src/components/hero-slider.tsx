@@ -127,7 +127,6 @@ export function HeroSlider() {
       </Swiper>
 
       {/* Circular Pagination (Centered) */}
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 flex justify-center items-center px-4 py-2 bg-black/20 backdrop-blur-md rounded-full border border-white/10 custom-pagination shadow-2xl" />
 
       {/* Navigation Buttons (Left Corner) */}
       <div className="absolute bottom-10 left-10 z-20 flex gap-4">
