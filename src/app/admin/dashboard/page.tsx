@@ -19,8 +19,12 @@ import Link from "next/link"
 import { useAdminStats, useSeedDatabase } from "@/hooks/useAdmin"
 
 export default function AdminDashboard() {
-  const { data: stats, isLoading, error } = useAdminStats()
+  const { data: statsData, isLoading, error } = useAdminStats()
   const { mutate: seedDatabase, isPending: seeding } = useSeedDatabase()
+  
+  // Debug: log the actual data received
+  console.log('Stats data:', statsData)
+  const stats = statsData?.data || statsData
 
   const handleSeed = () => {
     seedDatabase()
@@ -58,7 +62,7 @@ export default function AdminDashboard() {
         },
         {
           title: "إجمالي الإيرادات",
-          value: `${(stats.totalRevenue || 0).toLocaleString()} ج.م`,
+          value: (stats.totalRevenue || 0) + " ج.م",
           icon: DollarSign,
           color: "text-purple-600",
           bgColor: "bg-purple-100 dark:bg-purple-900",
