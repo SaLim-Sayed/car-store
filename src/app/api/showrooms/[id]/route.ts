@@ -5,11 +5,12 @@ import { handleApiError, getServerSession } from '@/lib/api-helpers';
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     await connectDB();
-    const showroom = await Showroom.findById(params.id);
+    const showroom = await Showroom.findById(id);
     if (!showroom) {
       return NextResponse.json({ success: false, error: 'المعرض غير موجود' }, { status: 404 });
     }
@@ -21,9 +22,10 @@ export async function GET(
 
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const session = await getServerSession();
     if (!session || session.user.role !== 'admin') {
       return NextResponse.json({ success: false, error: 'غير مصرح لك بالقيام بهذا الإجراء' }, { status: 403 });
@@ -31,7 +33,7 @@ export async function PUT(
 
     await connectDB();
     const body = await request.json();
-    const showroom = await Showroom.findByIdAndUpdate(params.id, body, { new: true, runValidators: true });
+    const showroom = await Showroom.findByIdAndUpdate(id, body, { new: true, runValidators: true });
     
     if (!showroom) {
       return NextResponse.json({ success: false, error: 'المعرض غير موجود' }, { status: 404 });
@@ -45,16 +47,17 @@ export async function PUT(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const session = await getServerSession();
     if (!session || session.user.role !== 'admin') {
       return NextResponse.json({ success: false, error: 'غير مصرح لك بالقيام بهذا الإجراء' }, { status: 403 });
     }
 
     await connectDB();
-    const showroom = await Showroom.findByIdAndDelete(params.id);
+    const showroom = await Showroom.findByIdAndDelete(id);
     
     if (!showroom) {
       return NextResponse.json({ success: false, error: 'المعرض غير موجود' }, { status: 404 });
