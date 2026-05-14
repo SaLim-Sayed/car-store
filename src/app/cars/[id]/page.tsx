@@ -121,38 +121,44 @@ export default function CarDetailPage() {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-background">
       <Navbar />
 
-      <main className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <main className="container mx-auto px-4 py-24">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
           {/* Images Section */}
-          <div>
-            <div className="mb-4">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={car.images[selectedImage] || "/placeholder-car.jpg"}
-                alt={`${car.brand} ${car.model}`}
-                className="w-full h-96 object-cover rounded-lg"
-              />
-            </div>
+          <div className="space-y-6">
+            <Card className="border-0 shadow-2xl rounded-[3rem] overflow-hidden bg-white">
+              <div className="relative aspect-[4/3] overflow-hidden">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={car.images[selectedImage] || "/placeholder-car.jpg"}
+                  alt={`${car.brand} ${car.model}`}
+                  className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                />
+                <Badge className={`absolute top-6 right-6 px-6 py-2 rounded-full text-sm font-bold border-0 shadow-lg ${getStatusColor(car.status)}`}>
+                  {car.status}
+                </Badge>
+              </div>
+            </Card>
+            
             {car.images.length > 1 && (
-              <div className="grid grid-cols-4 gap-2">
+              <div className="grid grid-cols-4 gap-4">
                 {car.images.map((image, index) => (
                   <button
                     key={index}
                     onClick={() => setSelectedImage(index)}
-                    className={`border-2 rounded overflow-hidden transition-all ${
+                    className={`relative aspect-square rounded-2xl overflow-hidden transition-all border-4 ${
                       selectedImage === index
-                        ? "border-primary"
-                        : "border-transparent hover:border-muted-foreground"
+                        ? "border-primary shadow-lg scale-105"
+                        : "border-transparent hover:border-gray-200"
                     }`}
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={image}
                       alt={`${car.brand} ${car.model} ${index + 1}`}
-                      className="w-full h-20 object-cover"
+                      className="w-full h-full object-cover"
                     />
                   </button>
                 ))}
@@ -161,111 +167,87 @@ export default function CarDetailPage() {
           </div>
 
           {/* Car Details Section */}
-          <div className="space-y-6">
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <h1 className="text-3xl font-bold">
-                  {car.brand} {car.model}
-                </h1>
-                <Badge className={getStatusColor(car.status)}>
-                  {car.status}
+          <div className="space-y-10">
+            <div className="space-y-4">
+              <div className="flex flex-wrap items-center gap-4 text-sm font-bold text-primary">
+                <Badge variant="outline" className="px-4 py-1 border-primary/20 bg-primary/5 text-primary rounded-full">
+                  {car.brand}
                 </Badge>
+                <span>•</span>
+                <span className="text-muted-foreground">{car.year} موديل</span>
               </div>
-              <p className="text-2xl font-bold text-primary mb-4">
-                {car.price.toLocaleString()} ج.م
+              <h1 className="text-5xl md:text-6xl font-[1000] tracking-tighter leading-tight">
+                {car.brand} {car.model}
+              </h1>
+              <p className="text-4xl font-black text-primary">
+                {car.price.toLocaleString()} <span className="text-2xl">ج.م</span>
               </p>
             </div>
 
-            <Card>
-              <CardHeader>
-                <CardTitle>المواصفات الأساسية</CardTitle>
+            <Card className="border-0 shadow-xl rounded-[2.5rem] bg-white overflow-hidden">
+              <CardHeader className="p-8 pb-0">
+                <CardTitle className="text-2xl font-black">المواصفات الأساسية</CardTitle>
               </CardHeader>
-              <CardContent className="grid grid-cols-2 gap-4">
-                <div className="flex items-center gap-2">
-                  <Calendar className="h-4 w-4 text-muted-foreground" />
-                  <span>سنة الصنع: {car.year}</span>
+              <CardContent className="p-8 grid grid-cols-2 gap-8">
+                <div className="flex items-center gap-4 group">
+                  <div className="p-3 bg-gray-50 rounded-2xl group-hover:bg-primary/10 transition-colors">
+                    <Calendar className="h-6 w-6 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground font-bold">سنة الصنع</p>
+                    <p className="text-lg font-black">{car.year}</p>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Fuel className="h-4 w-4 text-muted-foreground" />
-                  <span>نوع الوقود: {car.fuelType}</span>
+                <div className="flex items-center gap-4 group">
+                  <div className="p-3 bg-gray-50 rounded-2xl group-hover:bg-primary/10 transition-colors">
+                    <Fuel className="h-6 w-6 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground font-bold">نوع الوقود</p>
+                    <p className="text-lg font-black">{car.fuelType}</p>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Settings className="h-4 w-4 text-muted-foreground" />
-                  <span>ناقل الحركة: {car.transmission}</span>
+                <div className="flex items-center gap-4 group">
+                  <div className="p-3 bg-gray-50 rounded-2xl group-hover:bg-primary/10 transition-colors">
+                    <Settings className="h-6 w-6 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground font-bold">ناقل الحركة</p>
+                    <p className="text-lg font-black">{car.transmission}</p>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Gauge className="h-4 w-4 text-muted-foreground" />
-                  <span>المسافة: {car.mileage.toLocaleString()} كم</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Palette className="h-4 w-4 text-muted-foreground" />
-                  <span>اللون: {car.color}</span>
+                <div className="flex items-center gap-4 group">
+                  <div className="p-3 bg-gray-50 rounded-2xl group-hover:bg-primary/10 transition-colors">
+                    <Gauge className="h-6 w-6 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground font-bold">المسافة</p>
+                    <p className="text-lg font-black">{car.mileage.toLocaleString()} كم</p>
+                  </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader>
-                <CardTitle>الوصف</CardTitle>
+            <Card className="border-0 shadow-xl rounded-[2.5rem] bg-white overflow-hidden">
+              <CardHeader className="p-8 pb-0">
+                <CardTitle className="text-2xl font-black">الوصف</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-8">
                 <div 
-                  className="text-muted-foreground leading-relaxed rich-text-content"
+                  className="text-muted-foreground text-lg leading-relaxed font-medium rich-text-content"
                   dangerouslySetInnerHTML={{ __html: car.description }}
                 />
               </CardContent>
-              <style jsx global>{`
-                .rich-text-content ul {
-                  list-style-type: disc;
-                  margin-right: 1.5rem;
-                  margin-bottom: 1rem;
-                }
-                .rich-text-content ol {
-                  list-style-type: decimal;
-                  margin-right: 1.5rem;
-                  margin-bottom: 1rem;
-                }
-                .rich-text-content p {
-                  margin-bottom: 0.5rem;
-                }
-                .rich-text-content h1, .rich-text-content h2, .rich-text-content h3 {
-                  font-weight: bold;
-                  margin-top: 1rem;
-                  margin-bottom: 0.5rem;
-                  color: hsl(var(--foreground));
-                }
-              `}</style>
             </Card>
 
-            {car.features && car.features.length > 0 && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>المميزات</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-2 gap-2">
-                    {car.features.map((feature, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center gap-2 p-2 bg-muted rounded"
-                      >
-                        <div className="w-2 h-2 bg-primary rounded-full" />
-                        <span className="text-sm">{feature}</span>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-
-            <div className="flex gap-4">
-              <Button size="lg" className="flex-1">
-                <Phone className="h-4 w-4 ml-2" />
-                اتصل بنا
+            <div className="flex flex-col sm:flex-row gap-4 pt-4">
+              <Button size="lg" className="flex-1 h-16 rounded-[1.5rem] text-xl font-black bg-[#1A1A1A] hover:bg-black text-white shadow-xl">
+                <Phone className="h-6 w-6 ml-3" />
+                اتصل بالبائع
               </Button>
-              <Button variant="outline" size="lg" className="flex-1">
-                <Mail className="h-4 w-4 ml-2" />
-                إرسال رسالة
+              <Button variant="outline" size="lg" className="flex-1 h-16 rounded-[1.5rem] text-xl font-black border-2 border-gray-100 hover:bg-gray-50 shadow-lg">
+                <Mail className="h-6 w-6 ml-3" />
+                إرسال استفسار
               </Button>
             </div>
           </div>

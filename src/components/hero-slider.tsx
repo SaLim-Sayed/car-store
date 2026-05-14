@@ -1,195 +1,100 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Swiper, SwiperSlide } from "swiper/react";
-import type { SwiperProps } from "swiper/react";
-import { Autoplay, Navigation, Pagination } from "swiper/modules";
+import { Input } from "@/components/ui/input";
 import Link from "next/link";
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
-
-const heroSlides = [
-  {
-    id: 1,
-    title: "مجموعة سيارات فاخرة",
-    subtitle: "اكتشف أحدث الموديلات والعروض الحصرية",
-    image:
-      "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=1200&h=600&fit=crop",
-    cta: "استعرض السيارات",
-    link: "/cars",
-  },
-  {
-    id: 2,
-    title: "أسعار تنافسية",
-    subtitle: "أفضل الأسعار في السوق مع ضمان الجودة",
-    image:
-      "https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?w=900&h=500&fit=crop",
-    cta: "اطلب الآن",
-    link: "/cars",
-  },
-  {
-    id: 3,
-    title: "خدمة عملاء ممتازة",
-    subtitle: "فريق متخصص لمساعدتك في اختيار السيارة المناسبة",
-    image:
-      "https://images.unsplash.com/photo-1511994477422-b69e44bd4ea9?w=900&h=500&fit=crop",
-    cta: "تواصل معنا",
-    link: "/contact",
-  },
-];
 
 export function HeroSlider() {
-  const [swiper, setSwiper] = useState<any>(null);
-
-  const swiperConfig = {
-    modules: [Autoplay, Navigation, Pagination],
-    spaceBetween: 0,
-    slidesPerView: 1,
-    loop: true,
-    grabCursor: true,
-    simulateTouch: true,
-    autoplay: {
-      delay: 6000,
-      disableOnInteraction: false,
-    },
-    pagination: {
-      clickable: true,
-      el: ".custom-pagination",
-      renderBullet: (index: number, className: string) => {
-        const slide = heroSlides[index];
-        return `<span class="${className}" style="background-image: url(${slide.image})"></span>`;
-      },
-    },
-    onSwiper: setSwiper,
-  };
+  const [searchQuery, setSearchQuery] = useState("");
 
   return (
-    <div className="relative w-full h-[500px] md:h-[650px] overflow-hidden rounded-3xl shadow-2xl">
-      <Swiper {...swiperConfig} className="h-full w-full">
-        {heroSlides.map((slide) => (
-          <SwiperSlide key={slide.id}>
-            <div className="relative w-full h-full">
-              {/* Background Image */}
-              <div
-                className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-10000 hover:scale-110"
-                style={{ backgroundImage: `url(${slide.image})` }}
-              >
-                {/* Advanced Gradient Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
-              </div>
-
-              {/* Content */}
-              <div className="relative z-10 flex h-full items-center px-8 md:px-20">
-                <div className="max-w-3xl text-white space-y-6">
-                  <div className="inline-block px-4 py-1.5 bg-primary/20 backdrop-blur-md border border-primary/30 rounded-full text-primary-foreground text-sm font-semibold tracking-wider uppercase animate-in fade-in slide-in-from-right-4 duration-700">
-                    عروض حصرية
-                  </div>
-
-                  <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight leading-[1.1] animate-in fade-in slide-in-from-bottom-8 duration-700 delay-100">
-                    {slide.title}
-                  </h1>
-
-                  <p className="text-xl md:text-2xl text-gray-200 font-medium animate-in fade-in slide-in-from-bottom-6 duration-700 delay-200">
-                    {slide.subtitle}
-                  </p>
-
-                  <p className="text-lg text-gray-400 max-w-xl leading-relaxed animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
-                    اكتشف مجموعتنا الواسعة من السيارات الجديدة والمستعملة بأفضل
-                    الأسعار في السوق مع خيارات تمويل مرنة وضمان شامل.
-                  </p>
-
-                  <div className="flex flex-wrap gap-4 pt-4 animate-in fade-in slide-in-from-bottom-2 duration-700 delay-500">
-                    <Button
-                      size="lg"
-                      className="bg-primary text-primary-foreground hover:bg-primary/90 text-lg px-10 py-7 rounded-full shadow-lg shadow-primary/20 transition-all hover:scale-105 active:scale-95"
-                      asChild
-                    >
-                      <Link href={slide.link}>{slide.cta}</Link>
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="lg"
-                      className="bg-white/10 backdrop-blur-md border-white/20 text-white hover:bg-white/20 text-lg px-10 py-7 rounded-full transition-all hover:scale-105 active:scale-95"
-                      asChild
-                    >
-                      <Link href="/about">لمعرفة المزيد</Link>
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </SwiperSlide>
-        ))}
-      </Swiper>
-
-      {/* Circular Pagination (Centered) */}
-
-      {/* Navigation Buttons (Left Corner) */}
-      <div className="absolute bottom-10 left-10 z-20 flex gap-4">
-        <Button
-          variant="outline"
-          size="icon"
-          className="bg-black/20 backdrop-blur-xl border-white/10 text-white rounded-full w-14 h-14 hover:bg-primary hover:border-primary transition-all duration-300 group shadow-xl"
-          onClick={() => swiper?.slidePrev()}
-        >
-          <ChevronRight className="h-6 w-6 group-hover:-translate-x-1 transition-transform" />
-        </Button>
-
-        <Button
-          variant="outline"
-          size="icon"
-          className="bg-black/20 backdrop-blur-xl border-white/10 text-white rounded-full w-14 h-14 hover:bg-primary hover:border-primary transition-all duration-300 group shadow-xl"
-          onClick={() => swiper?.slideNext()}
-        >
-          <ChevronLeft className="h-6 w-6 group-hover:translate-x-1 transition-transform" />
-        </Button>
+    <section className="relative w-full h-[600px] md:h-[750px] overflow-hidden">
+      {/* Background Image */}
+      <div
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-1000"
+        style={{
+          backgroundImage:
+            "url('https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=1200&h=600&fit=crop')",
+        }}
+      >
+        {/* Dark Overlay with Gradient */}
+        <div className="absolute inset-0 bg-gradient-to-l from-black/80 via-black/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
       </div>
 
-      {/* Styled Pagination Wrapper */}
-      <style jsx global>{`
-        .swiper {
-          user-select: none;
-        }
-        .custom-pagination {
-          gap: 12px;
-          display: flex;
-          align-items: center;
-          padding: 8px 20px !important;
-        }
-        .custom-pagination .swiper-pagination-bullet {
-          margin: 0 !important;
-          background: white;
-          opacity: 0.6;
-          width: 30px;
-          height: 30px;
-          border-radius: 50%;
-          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-          cursor: pointer;
-          background-size: cover;
-          background-position: center;
-          border: 2px solid white;
-          box-shadow:
-            0 4px 6px -1px rgb(0 0 0 / 0.1),
-            0 2px 4px -2px rgb(0 0 0 / 0.1);
-        }
-        .custom-pagination .swiper-pagination-bullet-active {
-          opacity: 1;
-          width: 50px;
-          height: 50px;
-          border-color: hsl(var(--primary));
-          transform: translateY(-4px) scale(1.1);
-          box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.2);
-          z-index: 10;
-        }
-        .custom-pagination .swiper-pagination-bullet:hover {
-          opacity: 0.9;
-          transform: translateY(-2px);
-        }
-      `}</style>
-    </div>
+      {/* Content Container */}
+      <div className="relative z-10 container mx-auto h-full flex flex-col justify-center px-4 md:px-8">
+        <div className="max-w-4xl text-white space-y-8 animate-in fade-in slide-in-from-right-12 duration-1000">
+          {/* Exclusive Offer Badge */}
+          {/* <div className="inline-flex items-center gap-3 px-6 py-2.5 bg-primary/10 backdrop-blur-xl border-2 border-primary/20 rounded-full text-white text-base font-black tracking-wider animate-in fade-in zoom-in duration-1000 shadow-2xl shadow-primary/20">
+            <span className="relative flex h-3 w-3">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-primary" />
+            </span>
+            عروض حصرية لفترة محدودة
+          </div> */}
+
+          {/* Main Heading */}
+          <h1 className="text-6xl  md:text-5xl font-[1000]   text-right">
+            مجموعة سيارات
+            <span className="text-primary "> فاخرة </span>
+          </h1>
+
+          {/* Subheading */}
+          <div className="space-y-6 max-w-2xl ml-auto text-right">
+            <p className="text-2xl md:text-3xl text-white font-bold drop-shadow-lg">
+              اكتشف أحدث الموديلات العالمية بأسعار تنافسية
+            </p>
+            <p className="text-lg md:text-xl text-white/70 leading-relaxed font-medium">
+              نحن نقدم لك تجربة فريدة في اختيار سيارتك القادمة مع باقة متنوعة من
+              الخيارات التي تلبي كافة تطلعاتك.
+            </p>
+          </div>
+
+          {/* Search Bar Integrated */}
+          <div className="relative max-w-3xl group w-full ml-auto pt-4">
+            <div className="relative flex items-center bg-white rounded-[2rem] p-1.5 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] transition-transform group-focus-within:scale-[1.02] duration-500">
+              <Button className="rounded-[1.7rem] px-14 h-16 text-2xl font-black bg-[#1A1A1A] hover:bg-black text-white transition-all shadow-xl">
+                بحث
+              </Button>
+              <div className="flex-1 flex items-center px-8">
+                <Input
+                  type="text"
+                  placeholder="ابحث عن سيارتك المثالية..."
+                  className="border-0 focus-visible:ring-0 text-gray-900 placeholder:text-gray-400 text-xl md:text-2xl h-16 w-full bg-transparent text-right font-black"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                <Search className="h-8 w-8 text-gray-400 mr-4" />
+              </div>
+            </div>
+          </div>
+
+          {/* CTA Buttons */}
+          <div className="flex flex-wrap gap-6 pt-8 justify-end">
+            <Button
+              size="lg"
+              asChild
+              className="rounded-3xl px-12 h-16 text-xl font-black bg-white text-black hover:bg-gray-100 border-0 shadow-2xl transition-all hover:scale-105 active:scale-95"
+            >
+              <Link href="/cars">استعرض السيارات</Link>
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              asChild
+              className="rounded-3xl px-12 h-16 text-xl font-black border-white/20 text-white bg-white/5 backdrop-blur-md hover:bg-white/10 transition-all hover:scale-105 active:scale-95"
+            >
+              <Link href="/about">لمعرفة المزيد</Link>
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {/* Decorative Elements */}
+      <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-background to-transparent z-20" />
+    </section>
   );
 }
