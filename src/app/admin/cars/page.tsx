@@ -27,6 +27,17 @@ interface CarDoc {
   createdAt: string
 }
 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose,
+} from "@/components/ui/dialog"
+
 export default function AdminCarsPage() {
   const [cars, setCars] = useState<CarDoc[]>([])
   const [loading, setLoading] = useState(true)
@@ -61,8 +72,6 @@ export default function AdminCarsPage() {
   )
 
   const handleDelete = async (carId: string) => {
-    if (!confirm("هل أنت متأكد من حذف هذه السيارة؟")) return
-
     setDeleteLoading(carId)
     try {
       const res = await fetch(`/api/cars/${carId}`, { method: "DELETE" })
@@ -84,28 +93,25 @@ export default function AdminCarsPage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "متاح":
-        return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
+        return "bg-emerald-100 text-emerald-700 border-emerald-200"
       case "مباع":
-        return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300"
+        return "bg-rose-100 text-rose-700 border-rose-200"
       case "محجوز":
-        return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300"
+        return "bg-amber-100 text-amber-700 border-amber-200"
       default:
-        return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300"
+        return "bg-gray-100 text-gray-700 border-gray-200"
     }
   }
 
   if (loading) {
     return (
-      <div className="min-h-screen">
+      <div className="min-h-screen bg-[#F9F6F1]">
         <Navbar />
-        <main className="container mx-auto px-4 py-8">
+        <main className="container mx-auto px-4 py-24 max-w-7xl space-y-8">
+          <Skeleton className="h-16 w-64 rounded-2xl" />
           <div className="space-y-4">
             {[...Array(5)].map((_, index) => (
-              <Card key={index}>
-                <CardContent className="p-6">
-                  <Skeleton className="h-20 w-full" />
-                </CardContent>
-              </Card>
+              <Skeleton key={index} className="h-32 w-full rounded-[2.5rem]" />
             ))}
           </div>
         </main>
@@ -114,116 +120,147 @@ export default function AdminCarsPage() {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-[#F9F6F1]">
       <Navbar />
 
-      <main className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold mb-2">إدارة السيارات</h1>
-            <p className="text-muted-foreground">
-              إضافة وتعديل وحذف السيارات في المتجر
-            </p>
+      <main className="container mx-auto px-4 py-24 max-w-7xl">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 mb-12">
+          <div className="space-y-4">
+            <h1 className="text-5xl font-[1000] tracking-tighter">إدارة السيارات</h1>
+            <p className="text-muted-foreground text-xl font-medium">التحكم في مخزون السيارات المعروضة</p>
+            <div className="h-1.5 w-24 bg-primary rounded-full" />
           </div>
-          <Button asChild>
-            <Link href="/admin/cars/new">
-              <Plus className="h-4 w-4 ml-2" />
+          
+          <Button asChild className="rounded-2xl h-14 px-8 text-lg font-black shadow-lg shadow-primary/20">
+            <Link href="/admin/cars/new" className="flex items-center">
+              <Plus className="h-5 w-5 ml-2" />
               إضافة سيارة جديدة
             </Link>
           </Button>
         </div>
 
-        <Card className="mb-6">
-          <CardContent className="p-4">
-            <div className="relative">
-              <Search className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="ابحث بالعلامة التجارية أو الموديل..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pr-10"
-              />
-            </div>
-          </CardContent>
-        </Card>
+        <div className="grid grid-cols-1 gap-8">
+          {/* Search bar */}
+          <div className="relative group">
+            <Search className="absolute right-8 top-1/2 -translate-y-1/2 h-6 w-6 text-muted-foreground group-focus-within:text-primary transition-colors" />
+            <Input
+              placeholder="ابحث بالعلامة التجارية، الموديل..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="h-20 rounded-[2rem] border-0 shadow-xl pr-16 pl-8 text-xl font-bold bg-white focus-visible:ring-primary/20"
+            />
+          </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>قائمة السيارات ({filteredCars.length})</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b">
-                    <th className="text-right pb-3">الصورة</th>
-                    <th className="text-right pb-3">العلامة التجارية</th>
-                    <th className="text-right pb-3">الموديل</th>
-                    <th className="text-right pb-3">السنة</th>
-                    <th className="text-right pb-3">السعر</th>
-                    <th className="text-right pb-3">الحالة</th>
-                    <th className="text-right pb-3">الإجراءات</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredCars.map((car) => (
-                    <tr key={car._id} className="border-b hover:bg-muted/50">
-                      <td className="py-3">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={car.images[0] || "/placeholder-car.jpg"}
-                          alt={`${car.brand} ${car.model}`}
-                          className="w-16 h-12 object-cover rounded"
-                        />
-                      </td>
-                      <td className="py-3 font-medium">{car.brand}</td>
-                      <td className="py-3">{car.model}</td>
-                      <td className="py-3">{car.year}</td>
-                      <td className="py-3 font-semibold">
-                        {car.price.toLocaleString()} ج.م
-                      </td>
-                      <td className="py-3">
-                        <Badge className={getStatusColor(car.status)}>
-                          {car.status}
-                        </Badge>
-                      </td>
-                      <td className="py-3">
-                        <div className="flex gap-2">
-                          <Button variant="outline" size="sm" asChild>
-                            <Link href={`/admin/cars/${car._id}/edit`}>
-                              <Edit className="h-4 w-4" />
-                            </Link>
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleDelete(car._id)}
-                            disabled={deleteLoading === car._id}
-                            className="text-red-600 hover:text-red-700 hover:border-red-600"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </td>
+          <Card className="border-0 shadow-2xl rounded-[2.5rem] bg-white overflow-hidden">
+            <CardHeader className="p-8 pb-0 flex flex-row items-center justify-between">
+              <CardTitle className="text-2xl font-black">قائمة المخزون ({filteredCars.length})</CardTitle>
+            </CardHeader>
+            <CardContent className="p-8">
+              <div className="overflow-x-auto -mx-8 px-8">
+                <table className="w-full border-separate border-spacing-y-4">
+                  <thead>
+                    <tr className="text-muted-foreground font-black text-sm uppercase tracking-widest">
+                      <th className="text-right pb-4 px-6">السيارة</th>
+                      <th className="text-right pb-4 px-6">المواصفات</th>
+                      <th className="text-right pb-4 px-6">السعر</th>
+                      <th className="text-right pb-4 px-6">الحالة</th>
+                      <th className="text-left pb-4 px-6">الإجراءات</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {filteredCars.map((car) => (
+                      <tr key={car._id} className="group">
+                        <td className="py-4 px-6 bg-gray-50/50 rounded-r-[2rem] first:rounded-r-[2rem]">
+                          <div className="flex items-center gap-6">
+                            <div className="h-20 w-28 bg-white rounded-2xl overflow-hidden shadow-md border-2 border-white shrink-0">
+                              <img
+                                src={car.images[0] || "/placeholder-car.jpg"}
+                                alt={`${car.brand} ${car.model}`}
+                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                              />
+                            </div>
+                            <div className="space-y-1">
+                              <div className="text-xl font-black">{car.brand} {car.model}</div>
+                              <div className="text-muted-foreground font-bold">{car.year} • {car.color}</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="py-4 px-6 bg-gray-50/50">
+                          <div className="space-y-1 font-bold text-muted-foreground">
+                            <div>{car.transmission} • {car.fuelType}</div>
+                            <div>{car.mileage.toLocaleString()} كم</div>
+                          </div>
+                        </td>
+                        <td className="py-4 px-6 bg-gray-50/50">
+                          <div className="text-2xl font-black text-primary">
+                            {car.price.toLocaleString()} <span className="text-sm">ج.م</span>
+                          </div>
+                        </td>
+                        <td className="py-4 px-6 bg-gray-50/50">
+                          <Badge className={`${getStatusColor(car.status)} border-2 rounded-full px-4 py-1 font-black text-sm shadow-sm`}>
+                            {car.status}
+                          </Badge>
+                        </td>
+                        <td className="py-4 px-6 bg-gray-50/50 rounded-l-[2rem] last:rounded-l-[2rem]">
+                          <div className="flex gap-3 justify-end">
+                            <Button variant="outline" size="icon" asChild className="h-12 w-12 rounded-xl border-2 hover:bg-white hover:text-primary transition-all">
+                              <Link href={`/admin/cars/${car._id}/edit`}>
+                                <Edit className="h-5 w-5" />
+                              </Link>
+                            </Button>
+                            
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <Button
+                                  variant="outline"
+                                  size="icon"
+                                  className="h-12 w-12 rounded-xl border-2 text-rose-600 hover:bg-rose-50 hover:border-rose-200 transition-all"
+                                >
+                                  <Trash2 className="h-5 w-5" />
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent className="rounded-[2.5rem] p-10 border-0 shadow-2xl">
+                                <DialogHeader className="space-y-4">
+                                  <DialogTitle className="text-2xl font-black">حذف السيارة؟</DialogTitle>
+                                  <DialogDescription className="text-lg font-medium leading-relaxed">
+                                    سيتم حذف {car.brand} {car.model} نهائياً من المتجر. لا يمكن التراجع عن هذا الإجراء.
+                                  </DialogDescription>
+                                </DialogHeader>
+                                <DialogFooter className="mt-8 gap-4">
+                                  <DialogClose asChild>
+                                    <Button variant="outline" className="rounded-2xl h-14 px-8 text-lg font-black border-2">إلغاء</Button>
+                                  </DialogClose>
+                                  <Button 
+                                    onClick={() => handleDelete(car._id)}
+                                    className="rounded-2xl h-14 px-8 text-lg font-black bg-rose-600 hover:bg-rose-700"
+                                  >
+                                    تأكيد الحذف
+                                  </Button>
+                                </DialogFooter>
+                              </DialogContent>
+                            </Dialog>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
 
-              {filteredCars.length === 0 && (
-                <div className="text-center py-8">
-                  <Car className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                  <h3 className="text-lg font-semibold mb-2">لا توجد سيارات</h3>
-                  <p className="text-muted-foreground">
-                    {searchTerm
-                      ? "لم يتم العثور على سيارات تطابق معايير البحث"
-                      : "لم يتم إضافة أي سيارات بعد"}
-                  </p>
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+                {filteredCars.length === 0 && (
+                  <div className="text-center py-24 bg-gray-50/50 rounded-[2rem] mt-4">
+                    <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
+                      <Car className="h-12 w-12 text-muted-foreground opacity-20" />
+                    </div>
+                    <h3 className="text-2xl font-[1000] mb-2 tracking-tight">لا توجد نتائج</h3>
+                    <p className="text-muted-foreground text-lg font-medium">
+                      {searchTerm ? "لم نجد أي سيارة تطابق بحثك حالياً" : "لم يتم إضافة أي سيارات للمخزون بعد"}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </main>
     </div>
   )

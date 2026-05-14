@@ -4,247 +4,187 @@ import { useState, useEffect } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { Navbar } from "@/components/navbar"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
-import { 
-  Calendar, 
-  User, 
-  Share2, 
-  Heart,
-  MessageCircle,
-  ArrowLeft
-} from "lucide-react"
+import { ChevronRight, Calendar, Tag, User, Share2, Link as LinkIcon } from "lucide-react"
 import Link from "next/link"
+import { toast } from "sonner"
 
-interface NewsItem {
-  id: string
-  title: string
-  excerpt: string
-  content: string
-  author: string
-  date: string
-  category: string
-  image?: string
-}
+// Custom SVG icons since lucide-react 1.14.0 doesn't include brand icons
+const Facebook = ({ className }: { className?: string }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+  </svg>
+)
+
+const Twitter = ({ className }: { className?: string }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3.1 16 1.7 13.5 1.7 13.5c.8.1 1.6 0 2.4-.2C1.5 12.8.5 10.5.5 10.5c.7.4 1.5.6 2.3.6C.8 9.7.5 7.5.5 7.5c1.7.9 3.5 1.3 5.4 1.4C5 6.1 5 4.5 5.9 3.3c.9-1.2 2.6-1.6 4.1-1 1.5.6 2.5 2.1 2.5 3.7 0 .5-.1 1-.2 1.5 1.2-1.2 2.6-2.1 4-2.8.4-.2.9-.4 1.3-.5.4-.1.9-.1 1.3 0-.1.3-.3.6-.5.9-.2.3-.5.6-.8.8.5-.1 1-.2 1.5-.4z" />
+  </svg>
+)
 
 export default function NewsDetailPage() {
   const params = useParams()
   const router = useRouter()
-  const [news, setNews] = useState<NewsItem | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [isLiked, setIsLiked] = useState(false)
-
-  // Mock data for demonstration
-  const mockNews: NewsItem = {
-    id: "1",
-    title: "إطلاق موديلات جديدة لعام 2024",
-    excerpt: "تستعد الشركات الكبرى لإطلاق أحدث موديلاتها مع تقنيات متطورة وميزات أمان متقدمة.",
-    content: `
-## مقدمة
-
-تشهد صناعة السيارات تطوراً هائلاً لعام 2024، حيث تعمل الشركات الرائدة على إطلاق موديلات جديدة تجمع بين الأداء العالي وكفاءة استهلاك الوقود.
-
-## التقنيات الجديدة
-
-### أنظمة القيادة الذاتية
-أبرز الميزات الجديدة تشمل أنظمة القيادة الذاتية المتقدمة التي تسمح للسيارة بالتحرك autonomously في ظروف معينة.
-
-### تقنيات الاتصال المحسّنة
-تقنيات الاتصال المحسّنة التي تربط السيارة بالهاتف الذكي وتوفر ميزات إضافية مثل التحكم عن بعد وتحديثات البرمجيات.
-
-### محركات كهربائية ذات مدى أطول
-محركات كهربائية ذات مدى أطول تصل إلى 500 كم بشحنة واحدة، مما يجعلها أكثر عملية للاستخدام اليومي.
-
-## الموديلات المتوقعة
-
-### تويوتا
-- تويوتا كامري 2024 بتصميم جديد ومحرك هايبرد محسّن
-- تويوتا بريوس 2024 بميزات أمان متقدمة
-
-### هونداي
-- هونداي سوناتا 2023 بشاشة لمس أكبر وتصميم رياضي
-- هونداي توسان 2024 بمحرك كهربائي بالكامل
-
-### مرسيدس
-- مرسيدس C-Class 2024 بتقنيات الاتصال المتقدمة
-- مرسيدس EQS 2024 بمدى 600 كم
-
-## الخلاصة
-
-مع هذه التطورات، يتوقع أن يكون عام 2024 نقطة تحول في صناعة السيارات، مع تركيز أكبر على الاستدامة والتقنيات الذكية.
-    `,
-    author: "أحمد محمد",
-    date: "2024-01-15",
-    category: "أخبار السيارات",
-    image: "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=1200&h=600&fit=crop"
-  }
+  const id = params.id as string
+  const [news, setNews] = useState<any>(null)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      setNews(mockNews)
-      setLoading(false)
-    }, 1000)
-  }, [params.id])
-
-  const handleShare = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: news?.title,
-        text: news?.excerpt,
-        url: window.location.href
-      })
-    } else {
-      navigator.clipboard.writeText(window.location.href)
-      alert("تم نسخ الرابط")
+    const fetchNews = async () => {
+      try {
+        const res = await fetch(`/api/news`)
+        const data = await res.json()
+        const item = data.data?.find((n: any) => n._id === id)
+        if (item) {
+          setNews(item)
+        } else {
+          toast.error("لم يتم العثور على الخبر")
+          router.push("/news")
+        }
+      } catch (e) {
+        toast.error("فشل في تحميل الخبر")
+      } finally {
+        setIsLoading(false)
+      }
     }
+    if (id) fetchNews()
+  }, [id, router])
+
+  const copyLink = () => {
+    navigator.clipboard.writeText(window.location.href)
+    toast.success("تم نسخ الرابط")
   }
 
-  const handleLike = () => {
-    setIsLiked(!isLiked)
-  }
-
-  if (loading) {
+  if (isLoading) {
     return (
-      <div className="min-h-screen">
+      <div className="min-h-screen bg-[#F9F6F1]">
         <Navbar />
-        <main className="container mx-auto px-4 py-8">
-          <div className="max-w-4xl mx-auto space-y-6">
-            <Skeleton className="h-64 w-full rounded-lg" />
+        <main className="container mx-auto px-4 py-24 max-w-4xl space-y-12">
+          <Skeleton className="h-12 w-64 rounded-full" />
+          <Skeleton className="h-[500px] w-full rounded-[3rem]" />
+          <div className="space-y-4">
             <Skeleton className="h-8 w-3/4" />
-            <Skeleton className="h-6 w-1/2" />
-            <div className="space-y-4">
-              <Skeleton className="h-4 w-full" />
-              <Skeleton className="h-4 w-full" />
-              <Skeleton className="h-4 w-3/4" />
-            </div>
+            <Skeleton className="h-8 w-full" />
+            <Skeleton className="h-8 w-full" />
           </div>
         </main>
       </div>
     )
   }
 
-  if (!news) {
-    return (
-      <div className="min-h-screen">
-        <Navbar />
-        <main className="container mx-auto px-4 py-8">
-          <Card className="p-8 text-center max-w-2xl mx-auto">
-            <h3 className="text-lg font-semibold mb-2">الخبر غير موجود</h3>
-            <p className="text-muted-foreground mb-4">
-              لم يتم العثور على الخبر المطلوب
-            </p>
-            <Button onClick={() => router.push("/news")}>
-              العودة إلى الأخبار
-            </Button>
-          </Card>
-        </main>
-      </div>
-    )
-  }
+  if (!news) return null
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-[#F9F6F1]">
       <Navbar />
-      
-      <main className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto">
-          {/* Breadcrumb */}
-          <div className="flex items-center gap-2 text-sm text-muted-foreground mb-6">
-            <Button variant="ghost" size="sm" onClick={() => router.push("/news")}>
-              <ArrowLeft className="h-4 w-4 ml-2" />
-              الأخبار
-            </Button>
-            <span>/</span>
-            <span>{news.title}</span>
+
+      <main className="container mx-auto px-4 py-24">
+        <div className="max-w-4xl mx-auto space-y-12">
+          {/* Back button */}
+          <Button variant="ghost" asChild className="rounded-full hover:bg-white -mr-4 group">
+            <Link href="/news" className="flex items-center text-muted-foreground hover:text-primary font-black">
+              <ChevronRight className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform" />
+              العودة للأخبار
+            </Link>
+          </Button>
+
+          {/* Header */}
+          <div className="space-y-8">
+            <div className="flex flex-wrap items-center gap-6 text-lg font-bold text-muted-foreground">
+              <Badge className="bg-primary/10 text-primary border-0 rounded-full px-6 py-2 font-black text-base uppercase tracking-wider">
+                {news.category}
+              </Badge>
+              <div className="flex items-center gap-2">
+                <Calendar className="h-5 w-5" />
+                {news.date}
+              </div>
+            </div>
+
+            <h1 className="text-5xl md:text-7xl font-[1000] tracking-tighter leading-tight">
+              {news.title}
+            </h1>
+
+            <p className="text-2xl text-muted-foreground font-medium leading-relaxed border-r-8 border-primary/20 pr-8">
+              {news.excerpt}
+            </p>
           </div>
 
-          {/* Article Header */}
-          <Card className="mb-6">
-            <CardHeader>
-              <div className="flex items-center justify-between mb-4">
-                <Badge variant="secondary">{news.category}</Badge>
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleLike}
-                    className={isLiked ? "text-red-500" : ""}
-                  >
-                    <Heart className={`h-4 w-4 ${isLiked ? "fill-current" : ""}`} />
-                  </Button>
-                  <Button variant="ghost" size="sm" onClick={handleShare}>
-                    <Share2 className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-              <CardTitle className="text-2xl mb-4">{news.title}</CardTitle>
-              <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                <div className="flex items-center gap-2">
-                  <User className="h-4 w-4" />
-                  {news.author}
-                </div>
-                <div className="flex items-center gap-2">
-                  <Calendar className="h-4 w-4" />
-                  {news.date}
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              {news.image && (
-                <div className="mb-6">
-                  <img
-                    src={news.image}
-                    alt={news.title}
-                    className="w-full h-64 md:h-96 object-cover rounded-lg"
-                  />
-                </div>
-              )}
-              
-              <div className="prose prose-lg max-w-none">
-                <div 
-                  dangerouslySetInnerHTML={{ 
-                    __html: news.content.replace(/\n/g, '<br />') 
-                  }} 
-                  className="leading-relaxed text-foreground"
-                />
-              </div>
-            </CardContent>
-          </Card>
+          {/* Featured Image */}
+          {news.image && (
+            <div className="relative aspect-[16/9] rounded-[3rem] overflow-hidden shadow-2xl border-8 border-white group">
+              <img
+                src={news.image}
+                alt={news.title}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[2s]"
+              />
+            </div>
+          )}
 
-          {/* Related Actions */}
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle>تفاعل مع الخبر</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex gap-4">
-                <Button
-                  variant={isLiked ? "default" : "outline"}
-                  onClick={handleLike}
-                >
-                  <Heart className={`h-4 w-4 ml-2 ${isLiked ? "fill-current" : ""}`} />
-                  {isLiked ? "إلغاء الإعجاب" : "إعجاب"}
-                </Button>
-                <Button variant="outline" onClick={handleShare}>
-                  <Share2 className="h-4 w-4 ml-2" />
-                  مشاركة
-                </Button>
-                <Button variant="outline">
-                  <MessageCircle className="h-4 w-4 ml-2" />
-                  تعليق
-                </Button>
+          {/* Content */}
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_250px] gap-16 items-start">
+            <div className="bg-white rounded-[3rem] p-12 shadow-xl space-y-8">
+              <div className="prose prose-xl max-w-none prose-p:font-medium prose-p:leading-relaxed prose-headings:font-black prose-headings:tracking-tighter">
+                {news.content.split('\n').map((para: string, i: number) => (
+                  <p key={i} className="mb-6">{para}</p>
+                ))}
               </div>
-            </CardContent>
-          </Card>
+            </div>
 
-          {/* Back to News */}
-          <div className="text-center">
-            <Button variant="outline" onClick={() => router.push("/news")}>
-              <ArrowLeft className="h-4 w-4 ml-2" />
-              العودة إلى الأخبار
-            </Button>
+            {/* Sidebar */}
+            <div className="space-y-8 sticky top-32">
+              <Card className="border-0 shadow-xl rounded-[2.5rem] bg-white overflow-hidden">
+                <CardHeader className="p-8 pb-4">
+                  <h3 className="text-xl font-black">مشاركة الخبر</h3>
+                </CardHeader>
+                <CardContent className="p-8 pt-0 flex flex-col gap-4">
+                  <Button variant="outline" onClick={copyLink} className="h-14 rounded-2xl border-2 font-bold justify-start gap-4">
+                    <LinkIcon className="h-5 w-5" />
+                    نسخ الرابط
+                  </Button>
+                  <Button variant="outline" className="h-14 rounded-2xl border-2 font-bold justify-start gap-4 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200">
+                    <Facebook className="h-5 w-5" />
+                    فيسبوك
+                  </Button>
+                  <Button variant="outline" className="h-14 rounded-2xl border-2 font-bold justify-start gap-4 hover:bg-sky-50 hover:text-sky-600 hover:border-sky-200">
+                    <Twitter className="h-5 w-5" />
+                    تويتر
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card className="border-0 shadow-xl rounded-[2.5rem] bg-primary text-white overflow-hidden">
+                <CardContent className="p-8 space-y-6">
+                  <h3 className="text-2xl font-black leading-tight">اشترك في نشرتنا الإخبارية</h3>
+                  <p className="font-bold opacity-80">كن أول من يعلم بجديد السيارات والعروض الحصرية</p>
+                  <Button className="w-full h-14 rounded-2xl bg-white text-primary hover:bg-white/90 font-black text-lg">
+                    اشترك الآن
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </div>
       </main>

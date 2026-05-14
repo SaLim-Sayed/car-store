@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import connectDB from '@/lib/mongoose';
 import Car from '@/lib/models/Car';
 import User from '@/lib/models/User';
+import News from '@/lib/models/News';
+import Showroom from '@/lib/models/Showroom';
 import { handleApiError } from '@/lib/api-helpers';
 
 export async function GET() {
@@ -14,12 +16,16 @@ export async function GET() {
       soldCars,
       reservedCars,
       totalUsers,
+      totalNews,
+      totalShowrooms,
     ] = await Promise.all([
       Car.countDocuments(),
       Car.countDocuments({ status: 'متاح' }),
       Car.countDocuments({ status: 'مباع' }),
       Car.countDocuments({ status: 'محجوز' }),
       User.countDocuments({ role: 'user' }),
+      News.countDocuments(),
+      Showroom.countDocuments(),
     ]);
 
     // Revenue: sum of prices of sold cars
@@ -38,6 +44,8 @@ export async function GET() {
         reservedCars,
         totalUsers,
         totalRevenue,
+        totalNews,
+        totalShowrooms,
       },
     });
   } catch (error) {

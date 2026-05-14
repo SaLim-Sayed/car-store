@@ -19,37 +19,16 @@ import {
   Info 
 } from "lucide-react"
 import Link from "next/link"
-import { useFeaturedCars } from "@/hooks/useCars"
+import { useFeaturedCars, Car as CarType } from "@/hooks/useCars"
+import { useNews } from "@/hooks/useContent"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Car as CarType } from "@/hooks/useCars"
-
-const newsItems = [
-  {
-    id: 1,
-    title: "إطلاق موديلات جديدة لعام 2024",
-    excerpt: "تستعد الشركات الكبرى لإطلاق أحدث موديلاتها مع تقنيات متطورة.",
-    date: "2024-01-15",
-    category: "أخبار السيارات",
-  },
-  {
-    id: 2,
-    title: "ارتفاع أسعار السيارات الكهربائية",
-    excerpt: "شهدت أسعار السيارات الكهربائية ارتفاعاً طفيفاً هذا الشهر.",
-    date: "2024-03-14",
-    category: "الأسعار",
-  },
-  {
-    id: 3,
-    title: "عروض حصرية على السيارات العائلية",
-    excerpt: "خصومات تصل إلى 20% على السيارات العائلية المختارة.",
-    date: "2024-01-13",
-    category: "عروض",
-  },
-]
 
 export default function HomePage() {
   const { data: carsData, isLoading, error } = useFeaturedCars();
+  const { data: newsData } = useNews(3);
+  
   const featuredCars = carsData?.data || [];
+  const newsItems = newsData?.data || [];
 
   return (
     <div className="min-h-screen bg-background">
@@ -240,8 +219,8 @@ export default function HomePage() {
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {newsItems.map((news) => (
-                <Card key={news.id} className="border-0 shadow-xl rounded-[2.5rem] hover:shadow-2xl transition-all group bg-white overflow-hidden">
+              {newsItems.map((news: any) => (
+                <Card key={news._id} className="border-0 shadow-xl rounded-[2.5rem] hover:shadow-2xl transition-all group bg-white overflow-hidden">
                   <CardHeader className="p-8 pb-4">
                     <div className="flex justify-between items-start mb-6">
                       <Badge variant="secondary" className="bg-[#FEF3C7] text-[#D97706] border-0 rounded-full px-4 py-1.5 font-bold">{news.category}</Badge>
@@ -253,7 +232,7 @@ export default function HomePage() {
                   </CardHeader>
                   <CardContent className="p-8 pt-0">
                     <p className="text-muted-foreground text-lg mb-8 line-clamp-2 leading-relaxed">{news.excerpt}</p>
-                    <Link href={`/news/${news.id}`} className="inline-flex items-center text-[#D97706] text-lg font-black hover:gap-4 transition-all">
+                    <Link href={`/news/${news._id}`} className="inline-flex items-center text-[#D97706] text-lg font-black hover:gap-4 transition-all">
                       قراءة المزيد
                       <ChevronLeft className="mr-2 h-5 w-5" />
                     </Link>

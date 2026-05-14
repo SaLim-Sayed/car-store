@@ -10,6 +10,8 @@ export interface AdminStats {
   soldCars: number;
   reservedCars: number;
   totalRevenue: number;
+  totalNews: number;
+  totalShowrooms: number;
 }
 
 export interface SeedResult {

@@ -1,0 +1,67 @@
+import { NextResponse } from 'next/server';
+import connectDB from '@/lib/mongoose';
+import Showroom from '@/lib/models/Showroom';
+import { handleApiError, getServerSession } from '@/lib/api-helpers';
+
+export async function GET(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    await connectDB();
+    const showroom = await Showroom.findById(params.id);
+    if (!showroom) {
+      return NextResponse.json({ success: false, error: 'المعرض غير موجود' }, { status: 404 });
+    }
+    return NextResponse.json({ success: true, data: showroom });
+  } catch (error) {
+    return handleApiError(error, 'فشل في جلب بيانات المعرض');
+  }
+}
+
+export async function PUT(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const session = await getServerSession();
+    if (!session || session.user.role !== 'admin') {
+      return NextResponse.json({ success: false, error: 'غير مصرح لك بالقيام بهذا الإجراء' }, { status: 403 });
+    }
+
+    await connectDB();
+    const body = await request.json();
+    const showroom = await Showroom.findByIdAndUpdate(params.id, body, { new: true, runValidators: true });
+    
+    if (!showroom) {
+      return NextResponse.json({ success: false, error: 'المعرض غير موجود' }, { status: 404 });
+    }
+
+    return NextResponse.json({ success: true, data: showroom });
+  } catch (error) {
+    return handleApiError(error, 'فشل في تحديث بيانات المعرض');
+  }
+}
+
+export async function DELETE(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const session = await getServerSession();
+    if (!session || session.user.role !== 'admin') {
+      return NextResponse.json({ success: false, error: 'غير مصرح لك بالقيام بهذا الإجراء' }, { status: 403 });
+    }
+
+    await connectDB();
+    const showroom = await Showroom.findByIdAndDelete(params.id);
+    
+    if (!showroom) {
+      return NextResponse.json({ success: false, error: 'المعرض غير موجود' }, { status: 404 });
+    }
+
+    return NextResponse.json({ success: true, data: {} });
+  } catch (error) {
+    return handleApiError(error, 'فشل في حذف المعرض');
+  }
+}

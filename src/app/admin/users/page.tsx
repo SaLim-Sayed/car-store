@@ -115,103 +115,108 @@ export default function AdminUsersPage() {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-[#F9F6F1]">
       <Navbar />
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-24">
         {/* Header */}
-        <div className="flex items-center gap-3 mb-8">
-          <Button variant="outline" size="sm" asChild>
-            <Link href="/admin/dashboard">
-              <ArrowRight className="h-4 w-4 ml-1" />
-              لوحة التحكم
-            </Link>
-          </Button>
-          <div className="flex-1">
-            <h1 className="text-3xl font-bold mb-1">إدارة المستخدمين</h1>
-            <p className="text-muted-foreground">عرض وإضافة مستخدمي النظام</p>
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 mb-12">
+          <div className="space-y-4">
+            <div className="flex items-center gap-3">
+               <Button variant="ghost" size="sm" asChild className="rounded-full hover:bg-white">
+                <Link href="/admin/dashboard" className="flex items-center text-muted-foreground hover:text-primary font-black">
+                  <ArrowRight className="h-4 w-4 ml-2" />
+                  لوحة التحكم
+                </Link>
+              </Button>
+            </div>
+            <h1 className="text-5xl font-[1000] tracking-tighter">إدارة المستخدمين</h1>
+            <p className="text-muted-foreground text-xl font-medium">عرض وإضافة مستخدمي النظام والمسؤولين</p>
+            <div className="h-1.5 w-24 bg-primary rounded-full" />
           </div>
-          <Button onClick={() => setShowCreateForm((v) => !v)}>
-            <Plus className="h-4 w-4 ml-2" />
-            إضافة مستخدم
+          
+          <Button onClick={() => setShowCreateForm((v) => !v)} className="rounded-2xl h-14 px-8 text-lg font-black shadow-lg shadow-primary/20">
+            <Plus className="h-5 w-5 ml-2" />
+            إضافة مستخدم جديد
           </Button>
         </div>
 
         {/* Create User Form */}
         {showCreateForm && (
-          <Card className="mb-8 border-primary/30">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <UserIcon className="h-5 w-5" />
+          <Card className="mb-12 border-0 shadow-2xl rounded-[2.5rem] bg-white overflow-hidden animate-in fade-in slide-in-from-top-8 duration-500">
+            <CardHeader className="p-8 pb-0">
+              <CardTitle className="flex items-center gap-3 text-2xl font-black">
+                <UserIcon className="h-6 w-6 text-primary" />
                 إنشاء مستخدم جديد
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <form onSubmit={handleCreateUser} className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="create-name">الاسم الكامل *</Label>
+            <CardContent className="p-8">
+              <form onSubmit={handleCreateUser} className="space-y-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="space-y-3">
+                    <Label htmlFor="create-name" className="text-lg font-black">الاسم الكامل *</Label>
                     <Input
                       id="create-name"
                       value={form.name}
                       onChange={(e) => setField("name", e.target.value)}
                       placeholder="أدخل الاسم الكامل"
-                      className={formErrors.name ? "border-red-500" : ""}
+                      className={`h-14 rounded-2xl border-2 px-6 font-bold ${formErrors.name ? "border-red-500" : "border-gray-50 focus:border-primary"}`}
                     />
                     {formErrors.name && (
-                      <p className="text-sm text-red-500">{formErrors.name}</p>
+                      <p className="text-sm text-red-500 font-bold">{formErrors.name}</p>
                     )}
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="create-email">البريد الإلكتروني *</Label>
+                  <div className="space-y-3">
+                    <Label htmlFor="create-email" className="text-lg font-black">البريد الإلكتروني *</Label>
                     <Input
                       id="create-email"
                       type="email"
                       value={form.email}
                       onChange={(e) => setField("email", e.target.value)}
                       placeholder="example@email.com"
-                      className={formErrors.email ? "border-red-500" : ""}
+                      className={`h-14 rounded-2xl border-2 px-6 font-bold ${formErrors.email ? "border-red-500" : "border-gray-50 focus:border-primary"}`}
                     />
                     {formErrors.email && (
-                      <p className="text-sm text-red-500">{formErrors.email}</p>
+                      <p className="text-sm text-red-500 font-bold">{formErrors.email}</p>
                     )}
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="create-password">كلمة المرور *</Label>
+                  <div className="space-y-3">
+                    <Label htmlFor="create-password" className="text-lg font-black">كلمة المرور *</Label>
                     <Input
                       id="create-password"
                       type="password"
                       value={form.password}
                       onChange={(e) => setField("password", e.target.value)}
                       placeholder="6 أحرف على الأقل"
-                      className={formErrors.password ? "border-red-500" : ""}
+                      className={`h-14 rounded-2xl border-2 px-6 font-bold ${formErrors.password ? "border-red-500" : "border-gray-50 focus:border-primary"}`}
                     />
                     {formErrors.password && (
-                      <p className="text-sm text-red-500">{formErrors.password}</p>
+                      <p className="text-sm text-red-500 font-bold">{formErrors.password}</p>
                     )}
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="create-role">الصلاحية *</Label>
+                  <div className="space-y-3">
+                    <Label htmlFor="create-role" className="text-lg font-black">الصلاحية *</Label>
                     <select
                       id="create-role"
                       value={form.role}
                       onChange={(e) => setField("role", e.target.value)}
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      className="flex h-14 w-full rounded-2xl border-2 border-gray-50 bg-white px-6 py-2 text-lg font-bold focus:border-primary focus:outline-none transition-colors"
                     >
                       <option value="user">مستخدم عادي</option>
                       <option value="admin">مسؤول</option>
                     </select>
                   </div>
                 </div>
-                <div className="flex gap-3 justify-end pt-2">
+                <div className="flex gap-4 justify-end">
                   <Button
                     type="button"
                     variant="outline"
+                    className="rounded-2xl h-14 px-8 text-lg font-black border-2"
                     onClick={() => setShowCreateForm(false)}
                   >
                     إلغاء
                   </Button>
-                  <Button type="submit" disabled={createLoading}>
+                  <Button type="submit" disabled={createLoading} className="rounded-2xl h-14 px-10 text-lg font-black shadow-lg shadow-primary/20">
                     {createLoading ? "جاري الإنشاء..." : "إنشاء المستخدم"}
                   </Button>
                 </div>
@@ -221,87 +226,91 @@ export default function AdminUsersPage() {
         )}
 
         {/* Search */}
-        <Card className="mb-6">
-          <CardContent className="p-4">
-            <div className="relative">
-              <Search className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
+        <Card className="mb-8 border-0 shadow-xl rounded-[2.5rem] bg-white overflow-hidden">
+          <CardContent className="p-6">
+            <div className="relative group">
+              <Search className="absolute right-6 top-4 h-6 w-6 text-muted-foreground group-focus-within:text-primary transition-colors" />
               <Input
                 placeholder="ابحث بالاسم أو البريد الإلكتروني..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pr-10"
+                className="h-14 pr-16 rounded-2xl border-2 border-gray-50 focus:border-primary text-lg font-bold"
               />
             </div>
           </CardContent>
         </Card>
 
         {/* Users Table */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Users className="h-5 w-5" />
+        <Card className="border-0 shadow-2xl rounded-[2.5rem] bg-white overflow-hidden">
+          <CardHeader className="p-8 border-b border-gray-50">
+            <CardTitle className="flex items-center gap-3 text-2xl font-black">
+              <Users className="h-6 w-6 text-primary" />
               قائمة المستخدمين ({filteredUsers.length})
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-0">
             {loading ? (
-              <div className="space-y-4">
+              <div className="p-8 space-y-4">
                 {Array.from({ length: 4 }).map((_, i) => (
-                  <Skeleton key={i} className="h-16 w-full" />
+                  <Skeleton key={i} className="h-20 w-full rounded-2xl" />
                 ))}
               </div>
             ) : (
               <div className="overflow-x-auto">
-                <table className="w-full">
+                <table className="w-full text-right">
                   <thead>
-                    <tr className="border-b">
-                      <th className="text-right pb-3 font-medium">الاسم</th>
-                      <th className="text-right pb-3 font-medium">البريد الإلكتروني</th>
-                      <th className="text-right pb-3 font-medium">الصلاحية</th>
-                      <th className="text-right pb-3 font-medium">الحالة</th>
-                      <th className="text-right pb-3 font-medium">تاريخ الإنشاء</th>
+                    <tr className="bg-gray-50/50">
+                      <th className="p-8 font-black text-muted-foreground text-sm uppercase tracking-wider">الاسم</th>
+                      <th className="p-8 font-black text-muted-foreground text-sm uppercase tracking-wider">البريد الإلكتروني</th>
+                      <th className="p-8 font-black text-muted-foreground text-sm uppercase tracking-wider">الصلاحية</th>
+                      <th className="p-8 font-black text-muted-foreground text-sm uppercase tracking-wider">الحالة</th>
+                      <th className="p-8 font-black text-muted-foreground text-sm uppercase tracking-wider text-left">تاريخ الإنشاء</th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody className="divide-y divide-gray-50">
                     {filteredUsers.map((user) => (
-                      <tr key={user._id} className="border-b hover:bg-muted/50">
-                        <td className="py-3 font-medium">
-                          <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-sm font-bold text-primary">
+                      <tr key={user._id} className="hover:bg-gray-50/50 transition-colors group">
+                        <td className="p-8">
+                          <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-lg font-black text-primary shadow-inner">
                               {user.name.charAt(0)}
                             </div>
-                            {user.name}
+                            <span className="font-black text-lg">{user.name}</span>
                           </div>
                         </td>
-                        <td className="py-3 text-muted-foreground">{user.email}</td>
-                        <td className="py-3">
+                        <td className="p-8">
+                          <span className="font-bold text-muted-foreground">{user.email}</span>
+                        </td>
+                        <td className="p-8">
                           {user.role === "admin" ? (
-                            <Badge className="bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300">
-                              <ShieldCheck className="h-3 w-3 ml-1" />
+                            <Badge className="bg-purple-100 text-purple-700 border-0 rounded-full px-4 py-1.5 font-black flex w-fit items-center">
+                              <ShieldCheck className="h-4 w-4 ml-2" />
                               مسؤول
                             </Badge>
                           ) : (
-                            <Badge variant="secondary">
-                              <UserIcon className="h-3 w-3 ml-1" />
+                            <Badge className="bg-blue-100 text-blue-700 border-0 rounded-full px-4 py-1.5 font-black flex w-fit items-center">
+                              <UserIcon className="h-4 w-4 ml-2" />
                               مستخدم
                             </Badge>
                           )}
                         </td>
-                        <td className="py-3">
+                        <td className="p-8">
                           {user.isActive ? (
-                            <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
-                              <UserCheck className="h-3 w-3 ml-1" />
+                            <Badge className="bg-emerald-100 text-emerald-700 border-0 rounded-full px-4 py-1.5 font-black flex w-fit items-center">
+                              <UserCheck className="h-4 w-4 ml-2" />
                               نشط
                             </Badge>
                           ) : (
-                            <Badge className="bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300">
-                              <UserX className="h-3 w-3 ml-1" />
+                            <Badge className="bg-rose-100 text-rose-700 border-0 rounded-full px-4 py-1.5 font-black flex w-fit items-center">
+                              <UserX className="h-4 w-4 ml-2" />
                               معطل
                             </Badge>
                           )}
                         </td>
-                        <td className="py-3 text-muted-foreground text-sm">
-                          {new Date(user.createdAt).toLocaleDateString("ar-SA")}
+                        <td className="p-8 text-left">
+                          <span className="font-bold text-muted-foreground">
+                            {new Date(user.createdAt).toLocaleDateString("ar-SA")}
+                          </span>
                         </td>
                       </tr>
                     ))}
@@ -309,11 +318,13 @@ export default function AdminUsersPage() {
                 </table>
 
                 {filteredUsers.length === 0 && (
-                  <div className="text-center py-8">
-                    <Users className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                    <h3 className="text-lg font-semibold mb-2">لا يوجد مستخدمون</h3>
-                    <p className="text-muted-foreground">
-                      {searchTerm ? "لا توجد نتائج مطابقة" : "لم يتم إضافة أي مستخدمين بعد"}
+                  <div className="text-center py-20 bg-white">
+                    <div className="w-24 h-24 bg-gray-50 rounded-[2rem] flex items-center justify-center mx-auto mb-6">
+                      <Users className="h-12 w-12 text-muted-foreground opacity-20" />
+                    </div>
+                    <h3 className="text-2xl font-[1000] mb-2 tracking-tight">لا يوجد مستخدمون</h3>
+                    <p className="text-muted-foreground text-lg font-medium">
+                      {searchTerm ? "لا توجد نتائج مطابقة لبحثك حالياً" : "لم يتم إضافة أي مستخدمين للنظام بعد"}
                     </p>
                   </div>
                 )}

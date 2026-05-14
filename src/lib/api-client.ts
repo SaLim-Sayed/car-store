@@ -114,6 +114,32 @@ export const authApi = {
     apiClient.post('/auth/reset-password', { token, password }).then(res => res.data),
 };
 
+export const newsApi = {
+  getNews: (limit?: number, status?: string) => 
+    apiClient.get('/news', { params: { limit, status } }).then(res => res.data),
+  getNewsById: (id: string) => 
+    apiClient.get(`/news/${id}`).then(res => res.data),
+  createNews: (newsData: any) => 
+    apiClient.post('/news', newsData).then(res => res.data),
+  updateNews: (id: string, newsData: any) => 
+    apiClient.put(`/news/${id}`, newsData).then(res => res.data),
+  deleteNews: (id: string) => 
+    apiClient.delete(`/news/${id}`).then(res => res.data),
+};
+
+export const showroomsApi = {
+  getShowrooms: (featured?: boolean) => 
+    apiClient.get('/showrooms', { params: { featured } }).then(res => res.data),
+  getShowroomById: (id: string) => 
+    apiClient.get(`/showrooms/${id}`).then(res => res.data),
+  createShowroom: (showoomData: any) => 
+    apiClient.post('/showrooms', showoomData).then(res => res.data),
+  updateShowroom: (id: string, showroomData: any) => 
+    apiClient.put(`/showrooms/${id}`, showroomData).then(res => res.data),
+  deleteShowroom: (id: string) => 
+    apiClient.delete(`/showrooms/${id}`).then(res => res.data),
+};
+
 export const adminApi = {
   // Get admin stats
   getStats: () => 

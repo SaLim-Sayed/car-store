@@ -90,7 +90,6 @@ export default function NewCarPage() {
       toast.error("حدث خطأ أثناء رفع الصورة")
     } finally {
       setIsUploading(false)
-      // Reset input
       e.target.value = ''
     }
   }
@@ -173,58 +172,59 @@ export default function NewCarPage() {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-[#F9F6F1]">
       <Navbar />
 
-      <main className="container mx-auto px-4 py-8 max-w-3xl">
-        <div className="flex items-center gap-3 mb-8">
-          <Button variant="outline" size="sm" asChild>
-            <Link href="/admin/cars">
-              <ArrowRight className="h-4 w-4 ml-1" />
-              رجوع
-            </Link>
-          </Button>
-          <div>
-            <h1 className="text-3xl font-bold">إضافة سيارة جديدة</h1>
-            <p className="text-muted-foreground">أدخل تفاصيل السيارة التي تريد إضافتها</p>
+      <main className="container mx-auto px-4 py-24 max-w-4xl">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 mb-12">
+          <div className="space-y-4">
+             <Button variant="ghost" size="sm" asChild className="rounded-full hover:bg-white -mr-4">
+              <Link href="/admin/cars" className="flex items-center text-muted-foreground hover:text-primary font-black">
+                <ArrowRight className="h-4 w-4 ml-2" />
+                قائمة السيارات
+              </Link>
+            </Button>
+            <h1 className="text-5xl font-[1000] tracking-tighter">إضافة سيارة</h1>
+            <p className="text-muted-foreground text-xl font-medium">أدخل تفاصيل السيارة الجديدة بدقة</p>
+            <div className="h-1.5 w-24 bg-primary rounded-full" />
           </div>
         </div>
 
-        <form onSubmit={onSubmit} className="space-y-6">
+        <form onSubmit={onSubmit} className="space-y-12">
           {/* Basic Info */}
-          <Card>
-            <CardHeader>
-              <CardTitle>المعلومات الأساسية</CardTitle>
+          <Card className="border-0 shadow-2xl rounded-[2.5rem] bg-white overflow-hidden">
+            <CardHeader className="p-8 pb-0">
+              <CardTitle className="text-2xl font-black">المواصفات الأساسية</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="brand">العلامة التجارية *</Label>
+            <CardContent className="p-8 space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-3">
+                  <Label htmlFor="brand" className="text-lg font-black">العلامة التجارية *</Label>
                   <Input
                     id="brand"
                     value={form.brand}
                     onChange={(e) => set("brand", e.target.value)}
-                    placeholder="مثال: تويوتا"
-                    className={errors.brand ? "border-red-500" : ""}
+                    placeholder="مثال: مرسيدس، بي إم دبليو"
+                    className={`h-14 rounded-2xl border-2 px-6 font-bold ${errors.brand ? "border-red-500" : "border-gray-50 focus:border-primary"}`}
                   />
-                  {errors.brand && <p className="text-sm text-red-500">{errors.brand}</p>}
+                  {errors.brand && <p className="text-sm text-red-500 font-bold">{errors.brand}</p>}
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="model">الموديل *</Label>
+                <div className="space-y-3">
+                  <Label htmlFor="model" className="text-lg font-black">الموديل *</Label>
                   <Input
                     id="model"
                     value={form.model}
                     onChange={(e) => set("model", e.target.value)}
-                    placeholder="مثال: كامري"
-                    className={errors.model ? "border-red-500" : ""}
+                    placeholder="مثال: C200, X5"
+                    className={`h-14 rounded-2xl border-2 px-6 font-bold ${errors.model ? "border-red-500" : "border-gray-50 focus:border-primary"}`}
                   />
-                  {errors.model && <p className="text-sm text-red-500">{errors.model}</p>}
+                  {errors.model && <p className="text-sm text-red-500 font-bold">{errors.model}</p>}
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="year">سنة الصنع *</Label>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="space-y-3">
+                  <Label htmlFor="year" className="text-lg font-black">سنة الصنع *</Label>
                   <Input
                     id="year"
                     type="number"
@@ -232,25 +232,25 @@ export default function NewCarPage() {
                     max={new Date().getFullYear() + 1}
                     value={form.year}
                     onChange={(e) => set("year", e.target.value)}
-                    className={errors.year ? "border-red-500" : ""}
+                    className={`h-14 rounded-2xl border-2 px-6 font-bold ${errors.year ? "border-red-500" : "border-gray-50 focus:border-primary"}`}
                   />
-                  {errors.year && <p className="text-sm text-red-500">{errors.year}</p>}
+                  {errors.year && <p className="text-sm text-red-500 font-bold">{errors.year}</p>}
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="price">السعر (ج.م) *</Label>
+                <div className="space-y-3">
+                  <Label htmlFor="price" className="text-lg font-black">السعر (ج.م) *</Label>
                   <Input
                     id="price"
                     type="number"
                     min={0}
                     value={form.price}
                     onChange={(e) => set("price", e.target.value)}
-                    placeholder="100000"
-                    className={errors.price ? "border-red-500" : ""}
+                    placeholder="1,250,000"
+                    className={`h-14 rounded-2xl border-2 px-6 font-bold ${errors.price ? "border-red-500" : "border-gray-50 focus:border-primary"}`}
                   />
-                  {errors.price && <p className="text-sm text-red-500">{errors.price}</p>}
+                  {errors.price && <p className="text-sm text-red-500 font-bold">{errors.price}</p>}
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="mileage">المسافة المقطوعة (كم) *</Label>
+                <div className="space-y-3">
+                  <Label htmlFor="mileage" className="text-lg font-black">المسافة (كم) *</Label>
                   <Input
                     id="mileage"
                     type="number"
@@ -258,59 +258,59 @@ export default function NewCarPage() {
                     value={form.mileage}
                     onChange={(e) => set("mileage", e.target.value)}
                     placeholder="0"
-                    className={errors.mileage ? "border-red-500" : ""}
+                    className={`h-14 rounded-2xl border-2 px-6 font-bold ${errors.mileage ? "border-red-500" : "border-gray-50 focus:border-primary"}`}
                   />
-                  {errors.mileage && <p className="text-sm text-red-500">{errors.mileage}</p>}
+                  {errors.mileage && <p className="text-sm text-red-500 font-bold">{errors.mileage}</p>}
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="fuelType">نوع الوقود *</Label>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="space-y-3">
+                  <Label htmlFor="fuelType" className="text-lg font-black">نوع الوقود *</Label>
                   <select
                     id="fuelType"
                     value={form.fuelType}
                     onChange={(e) => set("fuelType", e.target.value)}
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    className="flex h-14 w-full rounded-2xl border-2 border-gray-50 bg-white px-6 py-2 text-lg font-bold focus:border-primary focus:outline-none transition-colors"
                   >
                     {FUEL_TYPES.map((f) => (
                       <option key={f} value={f}>{f}</option>
                     ))}
                   </select>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="transmission">ناقل الحركة *</Label>
+                <div className="space-y-3">
+                  <Label htmlFor="transmission" className="text-lg font-black">ناقل الحركة *</Label>
                   <select
                     id="transmission"
                     value={form.transmission}
                     onChange={(e) => set("transmission", e.target.value)}
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    className="flex h-14 w-full rounded-2xl border-2 border-gray-50 bg-white px-6 py-2 text-lg font-bold focus:border-primary focus:outline-none transition-colors"
                   >
                     {TRANSMISSIONS.map((t) => (
                       <option key={t} value={t}>{t}</option>
                     ))}
                   </select>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="color">اللون *</Label>
+                <div className="space-y-3">
+                  <Label htmlFor="color" className="text-lg font-black">اللون *</Label>
                   <Input
                     id="color"
                     value={form.color}
                     onChange={(e) => set("color", e.target.value)}
-                    placeholder="أبيض"
-                    className={errors.color ? "border-red-500" : ""}
+                    placeholder="مثال: أسود ميتاليك"
+                    className={`h-14 rounded-2xl border-2 px-6 font-bold ${errors.color ? "border-red-500" : "border-gray-50 focus:border-primary"}`}
                   />
-                  {errors.color && <p className="text-sm text-red-500">{errors.color}</p>}
+                  {errors.color && <p className="text-sm text-red-500 font-bold">{errors.color}</p>}
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="status">الحالة *</Label>
+              <div className="space-y-3">
+                <Label htmlFor="status" className="text-lg font-black">الحالة المعروضة *</Label>
                 <select
                   id="status"
                   value={form.status}
                   onChange={(e) => set("status", e.target.value)}
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="flex h-14 w-full rounded-2xl border-2 border-gray-50 bg-white px-6 py-2 text-lg font-bold focus:border-primary focus:outline-none transition-colors"
                 >
                   {STATUSES.map((s) => (
                     <option key={s} value={s}>{s}</option>
@@ -318,86 +318,85 @@ export default function NewCarPage() {
                 </select>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="description">الوصف *</Label>
-                <RichTextEditor
-                  value={form.description}
-                  onChange={(val) => set("description", val)}
-                  placeholder="وصف تفصيلي للسيارة..."
-                />
+              <div className="space-y-3">
+                <Label htmlFor="description" className="text-lg font-black">الوصف التفصيلي *</Label>
+                <div className="rounded-2xl border-2 border-gray-50 overflow-hidden">
+                  <RichTextEditor
+                    value={form.description}
+                    onChange={(val) => set("description", val)}
+                    placeholder="اكتب وصفاً جذاباً للسيارة..."
+                  />
+                </div>
                 {errors.description && (
-                  <p className="text-sm text-red-500">{errors.description}</p>
+                  <p className="text-sm text-red-500 font-bold">{errors.description}</p>
                 )}
               </div>
             </CardContent>
           </Card>
 
           {/* Images */}
-          <Card>
-            <CardHeader>
-              <CardTitle>الصور *</CardTitle>
+          <Card className="border-0 shadow-2xl rounded-[2.5rem] bg-white overflow-hidden">
+            <CardHeader className="p-8 pb-0">
+              <CardTitle className="text-2xl font-black">معرض الصور</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label>رفع من الجهاز</Label>
-                  <Input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileUpload}
-                    disabled={isUploading}
-                    className="cursor-pointer"
-                  />
-                  {isUploading && (
-                    <p className="text-sm text-primary animate-pulse">جاري رفع الصورة...</p>
-                  )}
-                </div>
-
-                <div className="relative">
-                  <div className="absolute inset-0 flex items-center">
-                    <span className="w-full border-t" />
-                  </div>
-                  <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-background px-2 text-muted-foreground">أو</span>
+            <CardContent className="p-8 space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <div className="space-y-4">
+                  <Label className="text-lg font-black">رفع صور من جهازك</Label>
+                  <div className="relative h-40 border-4 border-dashed border-gray-100 rounded-[2rem] flex flex-col items-center justify-center hover:border-primary transition-colors cursor-pointer group">
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileUpload}
+                      disabled={isUploading}
+                      className="absolute inset-0 opacity-0 cursor-pointer z-10"
+                    />
+                    <Plus className="h-10 w-10 text-muted-foreground group-hover:text-primary mb-2 transition-colors" />
+                    <span className="text-muted-foreground font-black group-hover:text-primary transition-colors">
+                      {isUploading ? "جاري الرفع..." : "اختر ملفات"}
+                    </span>
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label>رابط الصورة (URL)</Label>
-                  <div className="flex gap-2">
+                <div className="space-y-4">
+                  <Label className="text-lg font-black">إضافة برابط مباشر</Label>
+                  <div className="flex gap-4">
                     <Input
                       value={newImage}
                       onChange={(e) => setNewImage(e.target.value)}
                       placeholder="https://example.com/image.jpg"
+                      className="h-14 rounded-2xl border-2 border-gray-50 px-6 font-bold"
                       onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addImage())}
                     />
-                    <Button type="button" onClick={addImage} variant="outline" size="icon">
-                      <Plus className="h-4 w-4" />
+                    <Button type="button" onClick={addImage} className="h-14 w-14 rounded-2xl shadow-lg">
+                      <Plus className="h-6 w-6" />
                     </Button>
                   </div>
                 </div>
               </div>
 
               {errors.images && (
-                <p className="text-sm text-red-500">{errors.images}</p>
+                <p className="text-sm text-red-500 font-bold">{errors.images}</p>
               )}
+              
               {form.images.length > 0 && (
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                   {form.images.map((img, idx) => (
-                    <div key={idx} className="relative group">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <div key={idx} className="relative aspect-square group rounded-3xl overflow-hidden shadow-lg border-4 border-white">
                       <img
                         src={img}
                         alt={`صورة ${idx + 1}`}
-                        className="w-full h-28 object-cover rounded border"
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                       />
-                      <button
-                        type="button"
-                        onClick={() => removeImage(idx)}
-                        className="absolute top-1 left-1 bg-red-500 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
+                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <button
+                          type="button"
+                          onClick={() => removeImage(idx)}
+                          className="w-12 h-12 bg-white text-destructive rounded-full flex items-center justify-center shadow-xl hover:scale-110 transition-transform"
+                        >
+                          <X className="h-6 w-6" />
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -406,49 +405,50 @@ export default function NewCarPage() {
           </Card>
 
           {/* Features */}
-          <Card>
-            <CardHeader>
-              <CardTitle>المميزات (اختياري)</CardTitle>
+          <Card className="border-0 shadow-2xl rounded-[2.5rem] bg-white overflow-hidden">
+            <CardHeader className="p-8 pb-0">
+              <CardTitle className="text-2xl font-black">مميزات إضافية</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex gap-2">
+            <CardContent className="p-8 space-y-6">
+              <div className="flex gap-4">
                 <Input
                   value={newFeature}
                   onChange={(e) => setNewFeature(e.target.value)}
-                  placeholder="مثال: نظام تثبيت السرعة"
+                  placeholder="مثال: بصمة، فتحة سقف، حساسات..."
+                  className="h-14 rounded-2xl border-2 border-gray-50 px-6 font-bold"
                   onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addFeature())}
                 />
-                <Button type="button" onClick={addFeature} variant="outline">
-                  <Plus className="h-4 w-4" />
+                <Button type="button" onClick={addFeature} className="h-14 px-8 rounded-2xl shadow-lg">
+                  إضافة
                 </Button>
               </div>
               {form.features.length > 0 && (
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-3">
                   {form.features.map((f, idx) => (
-                    <span
+                    <div
                       key={idx}
-                      className="inline-flex items-center gap-1 bg-muted px-3 py-1 rounded-full text-sm"
+                      className="inline-flex items-center gap-2 bg-[#1A1A1A] text-white px-5 py-2.5 rounded-2xl text-lg font-black shadow-lg"
                     >
                       {f}
                       <button
                         type="button"
                         onClick={() => removeFeature(idx)}
-                        className="text-muted-foreground hover:text-red-500"
+                        className="hover:text-red-400 transition-colors"
                       >
-                        <X className="h-3 w-3" />
+                        <X className="h-5 w-5" />
                       </button>
-                    </span>
+                    </div>
                   ))}
                 </div>
               )}
             </CardContent>
           </Card>
 
-          <div className="flex gap-4 justify-end">
-            <Button type="button" variant="outline" asChild>
+          <div className="flex gap-4 pt-8">
+            <Button type="button" variant="outline" asChild className="flex-1 h-16 rounded-2xl text-xl font-black border-2">
               <Link href="/admin/cars">إلغاء</Link>
             </Button>
-            <Button type="submit" disabled={isLoading}>
+            <Button type="submit" disabled={isLoading} className="flex-[2] h-16 rounded-2xl text-xl font-black shadow-xl shadow-primary/20">
               {isLoading ? "جاري الإضافة..." : "إضافة السيارة"}
             </Button>
           </div>
