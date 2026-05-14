@@ -11,8 +11,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "متجر السيارات",
-  description: "متجر سيارات حديث للبحث والشراء والبيع",
+  title: "معرض سيارات",
+  description: "أفضل سوق للسيارات - بيع وشراء سيارات جديدة ومستعملة بأفضل الأسعار",
 };
 
 export default function RootLayout({

@@ -81,8 +81,8 @@ const cars = [
 
 // Sample admin user
 const adminUser = {
-  name: "أحمد管理员",
-  email: "admin@carstore.com",
+  name: "أحمد المنياوي",
+  email: "admin@miniacars.com",
   password: "admin123",
   role: "admin"
 };

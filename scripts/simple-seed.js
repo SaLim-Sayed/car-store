@@ -82,8 +82,8 @@ async function seedDatabase() {
     const hashedPassword = await bcrypt.hash('admin123', 10);
     
     await User.create({
-      name: "أحمد管理员",
-      email: "admin@carstore.com",
+      name: "أحمد المنياوي",
+      email: "admin@miniacars.com",
       password: hashedPassword,
       role: "admin",
       isActive: true

@@ -2,18 +2,28 @@ import axios from 'axios';
 
 // Base URL logic: prioritize env var, fallback to current origin or localhost
 const getBaseUrl = () => {
+  // Server-side (SSR/SSG)
   if (typeof window === 'undefined') {
-    return process.env.NEXT_PUBLIC_API_URL || 'https://car-store-sepia.vercel.app/api';
+    return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
   }
   
+  // Client-side
   const envUrl = process.env.NEXT_PUBLIC_API_URL;
-  if (envUrl) return envUrl.endsWith('/api') ? envUrl : `${envUrl.replace(/\/$/, '')}/api`;
   
+  // If env var exists and we're not on localhost (production), use it
+  if (envUrl && !window.location.hostname.includes('localhost')) {
+    return envUrl.endsWith('/api') ? envUrl : `${envUrl.replace(/\/$/, '')}/api`;
+  }
+  
+  // Default to current origin /api for local development or if no env var
   return `${window.location.origin}/api`;
 };
 
+const baseURL = getBaseUrl();
+console.log('API Base URL:', baseURL);
+
 export const apiClient = axios.create({
-  baseURL: getBaseUrl(),
+  baseURL,
   timeout: 15000,
   headers: {
     'Content-Type': 'application/json',
