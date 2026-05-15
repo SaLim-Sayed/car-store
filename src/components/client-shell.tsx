@@ -13,10 +13,13 @@ export function ClientShell({ children }: { children: React.ReactNode }) {
     return <>{children}</>
   }
 
+  const isHomePage = pathname === "/"
+  const contentPadding = isHomePage ? "" : "pt-[7.5rem] md:pt-[8.75rem]"
+
   return (
     <>
       <Navbar />
-      <div className="">{children}</div>
+      <div className={contentPadding}>{children}</div>
       <WhatsAppFloat />
     </>
   )

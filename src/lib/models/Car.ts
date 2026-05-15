@@ -42,6 +42,11 @@ const CarSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
+  phone: {
+    type: String,
+    trim: true,
+    default: '',
+  },
   description: {
     type: String,
     required: true,

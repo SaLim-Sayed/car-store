@@ -13,6 +13,7 @@ export const carSchema = z.object({
   }),
   mileage: z.number().min(0, 'المسافة المقطوعة يجب أن تكون رقمًا موجبًا'),
   color: z.string().min(1, 'اللون مطلوب'),
+  phone: z.string().trim().optional(),
   description: z.string().min(10, 'الوصف يجب أن يكون 10 أحرف على الأقل'),
   images: z.array(z.string().url('رابط الصورة غير صالح')).min(1, 'صورة واحدة على الأقل مطلوبة'),
   features: z.array(z.string()).optional(),

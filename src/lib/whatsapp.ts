@@ -1,5 +1,6 @@
-/** Egypt: +20 10 14001708 */
-export const WHATSAPP_PHONE = '201014001708';
+import { SITE_PHONE_E164 } from '@/lib/phone';
+
+export const WHATSAPP_PHONE = SITE_PHONE_E164;
 
 export const WHATSAPP_MESSAGES = {
   default: 'مرحباً، أريد الاستفسار عن معرض سيارات المنيا',

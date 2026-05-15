@@ -14,9 +14,9 @@ import {
   Settings,
   Gauge,
   Palette,
-  Phone,
   Mail,
 } from "lucide-react"
+import { CallButton } from "@/components/call-button"
 
 interface CarDoc {
   _id: string
@@ -28,6 +28,7 @@ interface CarDoc {
   transmission: string
   mileage: number
   color: string
+  phone?: string
   description: string
   images: string[]
   features: string[]
@@ -238,10 +239,11 @@ export default function CarDetailPage() {
             </Card>
 
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
-              <Button size="lg" className="flex-1 h-16 rounded-[1.5rem] text-xl font-black bg-[#1A1A1A] hover:bg-black text-white shadow-xl">
-                <Phone className="h-6 w-6 ml-3" />
-                اتصل بالبائع
-              </Button>
+              <CallButton
+                phone={car.phone}
+                label="اتصل بالبائع"
+                className="flex-1 h-16 rounded-[1.5rem] text-xl bg-[#1A1A1A] hover:bg-black text-white shadow-xl"
+              />
               <Button variant="outline" size="lg" className="flex-1 h-16 rounded-[1.5rem] text-xl font-black border-2 border-gray-100 hover:bg-gray-50 shadow-lg">
                 <Mail className="h-6 w-6 ml-3" />
                 إرسال استفسار

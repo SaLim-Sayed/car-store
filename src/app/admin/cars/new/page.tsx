@@ -7,7 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { toast } from "sonner"
-import { ArrowRight, Plus, X } from "lucide-react"
+import { ArrowRight, Plus, X, Phone } from "lucide-react"
+import { SITE_PHONE_DISPLAY } from "@/lib/phone"
 import Link from "next/link"
 import { RichTextEditor } from "@/components/rich-text-editor"
 import { YearPicker } from "@/components/year-picker"
@@ -30,6 +31,7 @@ interface CarForm {
   transmission: Transmission
   mileage: string
   color: string
+  phone: string
   description: string
   images: string[]
   features: string[]
@@ -51,6 +53,7 @@ export default function NewCarPage() {
     transmission: "أوتوماتيك",
     mileage: "",
     color: "",
+    phone: "",
     description: "",
     images: [],
     features: [],
@@ -149,6 +152,7 @@ export default function NewCarPage() {
         year: Number(form.year),
         price: Number(form.price),
         mileage: Number(form.mileage),
+        phone: form.phone.trim(),
       }
 
       const res = await fetch("/api/cars", {
@@ -299,6 +303,25 @@ export default function NewCarPage() {
                   />
                   {errors.color && <p className="text-sm text-red-500 font-bold">{errors.color}</p>}
                 </div>
+              </div>
+
+              <div className="space-y-3">
+                <Label htmlFor="phone" className="text-lg font-black">رقم الهاتف للتواصل</Label>
+                <div className="relative">
+                  <Phone className="absolute right-6 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                  <Input
+                    id="phone"
+                    type="tel"
+                    value={form.phone}
+                    onChange={(e) => set("phone", e.target.value)}
+                    placeholder={`مثال: 01012345678 — اتركه فارغاً لاستخدام ${SITE_PHONE_DISPLAY}`}
+                    className="h-14 rounded-2xl border-2 pr-14 pl-6 font-bold border-gray-50 focus:border-primary"
+                    dir="ltr"
+                  />
+                </div>
+                <p className="text-sm text-muted-foreground font-medium">
+                  إن لم يُدخل رقم، سيُعرض رقم الموقع ({SITE_PHONE_DISPLAY}) للزوار.
+                </p>
               </div>
 
               <div className="space-y-3">

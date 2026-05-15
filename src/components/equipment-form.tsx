@@ -11,7 +11,8 @@ import { uploadImageFile } from "@/lib/client-image-upload"
 import { YearPicker } from "@/components/year-picker"
 import { currentYear } from "@/lib/date-utils"
 import { toast } from "sonner"
-import { Plus, X } from "lucide-react"
+import { Plus, X, Phone } from "lucide-react"
+import { SITE_PHONE_DISPLAY } from "@/lib/phone"
 
 const CATEGORIES = ["جرار", "حفار", "شاحنة", "معدة زراعية", "معدة بناء", "أخرى"] as const
 const CONDITIONS = ["جديد", "مستعمل"] as const
@@ -27,6 +28,7 @@ export interface EquipmentFormData {
   condition: (typeof CONDITIONS)[number]
   hours: string
   location: string
+  phone: string
   description: string
   images: string[]
   features: string[]
@@ -44,6 +46,7 @@ export const emptyEquipmentForm: EquipmentFormData = {
   condition: "مستعمل",
   hours: "0",
   location: "المنيا",
+  phone: "",
   description: "",
   images: [],
   features: [],
@@ -221,6 +224,21 @@ export function EquipmentForm({
           </div>
 
           <div className="space-y-3">
+            <Label className="text-lg font-black">رقم الهاتف للتواصل</Label>
+            <div className="relative">
+              <Phone className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <Input
+                type="tel"
+                value={form.phone}
+                onChange={(e) => set("phone", e.target.value)}
+                placeholder={`اتركه فارغاً لاستخدام ${SITE_PHONE_DISPLAY}`}
+                className="h-14 rounded-md border-2 border-gray-50 pr-12 pl-6 font-bold"
+                dir="ltr"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-3">
             <Label className="text-lg font-black">الوصف *</Label>
             <Textarea
               value={form.description}
@@ -333,6 +351,7 @@ export function equipmentFormToPayload(form: EquipmentFormData) {
     condition: form.condition,
     hours: Number(form.hours) || 0,
     location: form.location.trim(),
+    phone: form.phone.trim(),
     description: form.description.trim(),
     images: form.images,
     features: form.features,

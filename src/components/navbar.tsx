@@ -30,8 +30,9 @@ import {
   PlusCircle,
   Menu,
   X,
-  Mail,
 } from "lucide-react";
+import { GlobalSearch } from "@/components/global-search";
+import { cn } from "@/lib/utils";
 
 export function Navbar() {
   const pathname = usePathname();
@@ -41,9 +42,15 @@ export function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      const y = window.scrollY;
+      setIsScrolled((prev) => {
+        if (y > 60) return true;
+        if (y < 40) return false;
+        return prev;
+      });
     };
-    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -68,17 +75,30 @@ export function Navbar() {
   const textColor = isScrolled || !isHomePage ? "text-foreground" : "text-white";
   const logoBorderColor = isScrolled || !isHomePage ? "border-primary/20" : "border-white/30";
 
+  const [showNavbarSearch, setShowNavbarSearch] = useState(!isHomePage);
+
+  useEffect(() => {
+    if (isHomePage && isScrolled) {
+      setShowNavbarSearch(true);
+    } else if (!isHomePage && isScrolled) {
+      setShowNavbarSearch(true);
+    } else {
+      setShowNavbarSearch(false);
+    }
+  }, [isHomePage, isScrolled]);
+
   return (
     <header
-      className={`fixed top-0 z-50 w-full transition-all duration-500 ${
+      className={`fixed top-0 z-[100] w-full overflow-visible transition-all duration-500 ${
         isScrolled
           ? "bg-white/80 backdrop-blur-2xl border-b border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
-          : isHomePage 
-            ? "bg-transparent "
-            : "bg-white/50 backdrop-blur-xl border-b border-gray-50 "
+          : isHomePage
+            ? "bg-transparent"
+            : "bg-white/95 backdrop-blur-xl border-b border-gray-100"
       }`}
     >
-      <div className="container mx-auto flex items-center justify-between px-4 h-12 md:h-20">
+      <div className="container mx-auto px-4">
+      <div className="flex items-center justify-between h-12 md:h-16">
         <div className="flex items-center gap-3 md:gap-12">
           <Link
             href="/"
@@ -123,7 +143,6 @@ export function Navbar() {
         </div>
 
         <div className="flex items-center gap-2 md:gap-4">
-          <div className="flex items-center gap-2 md:gap-4">
             <div className="hidden md:block">
               <ThemeToggle />
             </div>
@@ -231,6 +250,9 @@ export function Navbar() {
                 className="fixed top-0 left-0 h-[100svh] w-[85vw] max-w-[340px] translate-x-0 translate-y-0 rounded-none rounded-r-md border-0 shadow-[0_0_60px_rgba(0,0,0,0.2)] p-0 overflow-hidden flex flex-col bg-white/98 backdrop-blur-3xl data-open:animate-in data-open:slide-in-from-left duration-500"
                 showCloseButton={false}
               >
+                <DialogHeader className="sr-only">
+                  <DialogTitle>قائمة التنقل</DialogTitle>
+                </DialogHeader>
                 <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
                   <div className="flex items-center gap-4">
                     <div className="h-12 w-12 rounded-md border-2 border-primary/20 overflow-hidden relative shadow-lg">
@@ -256,6 +278,12 @@ export function Navbar() {
                 </div>
 
                 <div className="flex-1 overflow-y-auto px-6 py-6">
+                  <div className="mb-6">
+                    <GlobalSearch
+                      variant="navbar"
+                      onNavigate={() => setIsMobileMenuOpen(false)}
+                    />
+                  </div>
                   <nav className="flex flex-col gap-2">
                     {navLinks.map((link) => {
                       const isActive = pathname === link.href;
@@ -317,8 +345,19 @@ export function Navbar() {
                 )}
               </DialogContent>
             </Dialog>
-          </div>
         </div>
+      </div>
+
+      <div
+        className={cn(
+          "hidden md:block overflow-hidden transition-[max-height,opacity,padding] duration-300",
+          showNavbarSearch
+            ? "max-h-20 opacity-100 pb-3 pt-1"
+            : "max-h-0 opacity-0 pb-0 pt-0 pointer-events-none"
+        )}
+      >
+        <GlobalSearch variant="navbar" onNavigate={() => setIsMobileMenuOpen(false)} />
+      </div>
       </div>
     </header>
   );

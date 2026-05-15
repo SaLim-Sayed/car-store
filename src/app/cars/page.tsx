@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { Suspense, useState, useEffect } from "react"
+import { useSearchParams } from "next/navigation"
 import { Navbar } from "@/components/navbar"
 import { CarSearch } from "@/components/car-search"
 import { CarCard } from "@/components/car-card"
@@ -12,9 +13,15 @@ import { Car as CarIcon } from "lucide-react"
 import { useCarStore } from "@/lib/store/carStore"
 import { useCars, CarsFilters, Car } from "@/hooks/useCars"
 
-export default function CarsPage() {
-  const { filters } = useCarStore()
+function CarsPageContent() {
+  const searchParams = useSearchParams()
+  const { filters, setFilters } = useCarStore()
   const [page, setPage] = useState(1)
+
+  useEffect(() => {
+    const q = searchParams.get("search")
+    if (q) setFilters({ search: q })
+  }, [searchParams, setFilters])
   
   // Convert store filters to API filters
   const apiFilters: CarsFilters = {
@@ -142,5 +149,29 @@ export default function CarsPage() {
         )}
       </main>
     </div>
+  )
+}
+
+function CarsPageFallback() {
+  return (
+    <div className="min-h-screen bg-background">
+      <main className="container mx-auto px-4 py-24">
+        <Skeleton className="h-14 w-64 mb-8" />
+        <Skeleton className="h-32 w-full max-w-xl mb-16" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Skeleton key={i} className="h-96 w-full rounded-[2.5rem]" />
+          ))}
+        </div>
+      </main>
+    </div>
+  )
+}
+
+export default function CarsPage() {
+  return (
+    <Suspense fallback={<CarsPageFallback />}>
+      <CarsPageContent />
+    </Suspense>
   )
 }

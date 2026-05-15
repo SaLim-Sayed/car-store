@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Calendar, MapPin, Tractor, Gauge, ArrowRight } from "lucide-react"
+import { CallButton } from "@/components/call-button"
 import Link from "next/link"
 import type { Equipment } from "@/hooks/useEquipment"
 
@@ -158,6 +159,12 @@ export default function EquipmentDetailPage() {
                 <p className="text-lg leading-relaxed font-medium whitespace-pre-wrap">{item.description}</p>
               </CardContent>
             </Card>
+
+            <CallButton
+              phone={item.phone}
+              label="اتصل بالبائع"
+              className="w-full h-16 rounded-[1.5rem] text-xl bg-[#1A1A1A] hover:bg-black text-white shadow-xl"
+            />
 
             {item.features?.length > 0 && (
               <Card className="border-0 shadow-xl rounded-[2rem]">

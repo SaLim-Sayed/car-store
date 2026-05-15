@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { Suspense, useState, useEffect } from "react"
+import { useSearchParams } from "next/navigation"
 import { Navbar } from "@/components/navbar"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -8,13 +9,21 @@ import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Input } from "@/components/ui/input"
 import { MapPin, Phone, Mail, Globe, Store, CheckCircle, ChevronLeft, Search } from "lucide-react"
+import { CallPhoneLink } from "@/components/call-button"
+import { formatPhoneDisplay } from "@/lib/phone"
 import Link from "next/link"
 import { useShowrooms } from "@/hooks/useContent"
 
-export default function ShowroomsPage() {
+function ShowroomsPageContent() {
+  const searchParams = useSearchParams()
   const { data: showroomsData, isLoading } = useShowrooms()
   const showrooms = showroomsData?.data || []
   const [searchTerm, setSearchTerm] = useState("")
+
+  useEffect(() => {
+    const q = searchParams.get("search")
+    if (q) setSearchTerm(q)
+  }, [searchParams])
 
   const filteredShowrooms = showrooms.filter((s: any) => 
     s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -91,12 +100,15 @@ export default function ShowroomsPage() {
                     </div>
 
                     <div className="space-y-4 pt-4 border-t border-gray-50 flex-1">
-                      <div className="flex items-center gap-4 text-muted-foreground font-bold hover:text-primary transition-colors cursor-pointer">
+                      <CallPhoneLink
+                        phone={showroom.phone}
+                        className="flex items-center gap-4 text-muted-foreground font-bold hover:text-primary transition-colors"
+                      >
                         <div className="h-10 w-10 rounded-xl bg-gray-50 flex items-center justify-center group-hover:bg-primary/5">
                           <Phone className="h-5 w-5" />
                         </div>
-                        <span>{showroom.phone}</span>
-                      </div>
+                        <span dir="ltr">{formatPhoneDisplay(showroom.phone)}</span>
+                      </CallPhoneLink>
                       {showroom.email && (
                         <div className="flex items-center gap-4 text-muted-foreground font-bold hover:text-primary transition-colors cursor-pointer">
                           <div className="h-10 w-10 rounded-xl bg-gray-50 flex items-center justify-center group-hover:bg-primary/5">
@@ -136,3 +148,25 @@ export default function ShowroomsPage() {
   )
 }
 
+function ShowroomsPageFallback() {
+  return (
+    <div className="min-h-screen bg-[#F9F6F1]">
+      <main className="container mx-auto px-4 py-24">
+        <Skeleton className="h-16 w-96 mx-auto mb-12" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} className="h-80 w-full rounded-[3rem]" />
+          ))}
+        </div>
+      </main>
+    </div>
+  )
+}
+
+export default function ShowroomsPage() {
+  return (
+    <Suspense fallback={<ShowroomsPageFallback />}>
+      <ShowroomsPageContent />
+    </Suspense>
+  )
+}

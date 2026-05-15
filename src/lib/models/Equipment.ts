@@ -46,6 +46,11 @@ const EquipmentSchema = new mongoose.Schema({
     trim: true,
     default: 'المنيا',
   },
+  phone: {
+    type: String,
+    trim: true,
+    default: '',
+  },
   description: {
     type: String,
     required: [true, 'يرجى إدخال الوصف'],

@@ -38,6 +38,7 @@ export default function EditEquipmentPage() {
       condition: item.condition as EquipmentFormData["condition"],
       hours: String(item.hours ?? 0),
       location: item.location || "المنيا",
+      phone: item.phone ?? "",
       description: item.description || "",
       images: item.images || [],
       features: item.features || [],

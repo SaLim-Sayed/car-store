@@ -1,10 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Search, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import Link from "next/link";
+import { GlobalSearch } from "@/components/global-search";
 
 const slides = [
   {
@@ -32,7 +31,6 @@ const slides = [
 
 export function HeroSlider() {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [searchQuery, setSearchQuery] = useState("");
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % slides.length);
@@ -45,7 +43,8 @@ export function HeroSlider() {
   }, []);
 
   return (
-    <section className="relative w-full min-h-[100svh] md:h-[750px] overflow-hidden">
+    <section className="relative w-full min-h-[100svh] md:h-[750px]">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden>
       {/* Background Slides */}
       {slides.map((slide, index) => (
         <div
@@ -64,6 +63,7 @@ export function HeroSlider() {
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/30" />
         </div>
       ))}
+      </div>
 
       {/* Content Container */}
       <div className="relative z-10 container mx-auto h-full flex flex-col justify-end md:justify-center pb-14 md:pb-0 px-4 md:px-8 pt-16 md:pt-0">
@@ -99,27 +99,13 @@ export function HeroSlider() {
             </p>
           </div>
 
-          {/* Search Bar */}
-          <div className="relative group w-full pt-2">
-            <div className="relative flex items-center bg-white rounded-md p-1.5 shadow-[0_20px_40px_-10px_rgba(0,0,0,0.4)] transition-transform group-focus-within:scale-[1.02] duration-500">
-              <div className="flex-1 flex items-center px-4 md:px-6">
-                <Search className="h-5 w-5 md:h-6 md:w-6 text-gray-400 ml-2 md:ml-3 shrink-0" />
-                <Input
-                  type="text"
-                  placeholder="ابحث عن سيارة، معرض، أو معدة..."
-                  className="border-0 focus-visible:ring-0 text-gray-900 placeholder:text-gray-400 text-base md:text-xl h-12 md:h-14 w-full bg-transparent text-right font-bold"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </div>
-              <Button size="xl" className="rounded-md bg-[#D97706] hover:bg-[#B45309] text-white shadow-lg shrink-0 min-w-[88px] md:min-w-[120px]">
-                بحث
-              </Button>
-            </div>
+          {/* Search */}
+          <div className="relative w-full pt-2">
+            <GlobalSearch variant="hero" />
           </div>
 
           {/* CTA Buttons */}
-          <div className="grid grid-cols-2 gap-3 md:flex md:flex-wrap md:gap-4 pt-2 md:pt-4 md:justify-end">
+          <div className="grid grid-cols-2 gap-3 md:flex md:flex-wrap md:gap-4 pt-2 md:pt-0 md:justify-end">
             <Button
               size="2xl"
               asChild

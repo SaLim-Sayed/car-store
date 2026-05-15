@@ -44,7 +44,7 @@ export default function HomePage() {
           <HeroSlider />
           
           {/* Overlapping Feature Cards */}
-          <div className="container mx-auto px-4 -mt-28 relative z-30">
+          <div className="container mx-auto px-4 -mt-20 relative z-30">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
               <Card className="shadow-xl border-0 rounded-[2.5rem] overflow-hidden group hover:-translate-y-2 transition-transform duration-500 bg-white">
                 <CardContent className="p-10 text-center space-y-6">
