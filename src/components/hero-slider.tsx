@@ -43,19 +43,21 @@ export function HeroSlider() {
   }, []);
 
   return (
-    <section className="relative w-full min-h-[100svh] md:h-[750px]">
-      <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden>
+    <section className="relative isolate z-0 w-full min-w-0 min-h-[100svh] md:h-[630px] overflow-x-hidden">
+      <div className="absolute inset-0 w-full overflow-hidden pointer-events-none" aria-hidden>
       {/* Background Slides */}
       {slides.map((slide, index) => (
         <div
           key={index}
-          className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-            index === currentSlide ? "opacity-100 scale-105" : "opacity-0 scale-100"
+          className={`absolute inset-0 w-full transition-opacity duration-1000 ease-in-out ${
+            index === currentSlide
+              ? "opacity-100 md:scale-105"
+              : "opacity-0 scale-100"
           }`}
           style={{ transitionProperty: "opacity, transform" }}
         >
           <div
-            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            className="absolute inset-0 w-full bg-cover bg-center bg-no-repeat"
             style={{ backgroundImage: `url('${slide.image}')` }}
           />
           {/* Dark Overlay with Gradient */}
@@ -66,8 +68,8 @@ export function HeroSlider() {
       </div>
 
       {/* Content Container */}
-      <div className="relative z-10 container mx-auto h-full flex flex-col justify-end md:justify-center pb-14 md:pb-0 px-4 md:px-8 pt-16 md:pt-0">
-        <div className="w-full max-w-4xl mx-auto md:mx-0 text-white space-y-5 md:space-y-8 animate-in fade-in slide-in-from-right-12 duration-1000">
+      <div className="relative z-10 container mx-auto w-full min-w-0 max-w-full h-full flex flex-col justify-end md:justify-center pb-14 md:pb-0 px-4 md:px-8 pt-16 md:pt-0">
+        <div className="w-full max-w-4xl mx-auto md:mx-0 min-w-0 text-white space-y-5 md:space-y-8 animate-in fade-in slide-in-from-right-12 duration-1000">
 
           {/* Exclusive Offer Badge */}
           <div className="flex justify-end">
@@ -82,7 +84,7 @@ export function HeroSlider() {
 
           {/* Main Heading */}
           <div className="space-y-2">
-            <h1 key={`title-${currentSlide}`} className="text-5xl md:text-6xl font-[1000] text-right leading-tight animate-in fade-in slide-in-from-right-8 duration-700">
+            <h1 key={`title-${currentSlide}`} className="text-3xl md:text-5xl font-[1000] text-right leading-tight animate-in fade-in slide-in-from-right-8 duration-700">
               {slides[currentSlide].title}
               <br />
               <span className="text-primary">{slides[currentSlide].highlight}</span>
@@ -91,10 +93,10 @@ export function HeroSlider() {
 
           {/* Subheading */}
           <div key={`sub-${currentSlide}`} className="space-y-3 md:space-y-4 text-right animate-in fade-in slide-in-from-right-12 duration-700 delay-150">
-            <p className="text-lg md:text-2xl text-white font-bold drop-shadow-lg">
+            <p className="text-base md:text-2xl text-white font-bold drop-shadow-lg">
               {slides[currentSlide].subtitle}
             </p>
-            <p className="text-sm md:text-lg text-white/70 leading-relaxed font-medium max-w-2xl ml-auto">
+            <p className="text-xs md:text-lg text-white/70 leading-relaxed font-medium max-w-2xl ms-auto">
               {slides[currentSlide].desc}
             </p>
           </div>

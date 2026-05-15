@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&family=Libre+Baskerville:wght@400;700&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
@@ -11,6 +11,7 @@
   --font-sans: 'Cairo', var(--font-sans);
   --font-mono: var(--font-geist-mono);
   --font-heading: 'Cairo', var(--font-sans);
+  --font-serif: 'Libre Baskerville', serif;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -69,6 +70,12 @@
   --input: #E5E5E5;
   --ring: #D97706;
   --radius: 1rem;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --radius: 0.75rem;
+  }
 }
 
 .dark {
@@ -134,7 +141,9 @@
   body {
     @apply bg-background text-foreground font-sans;
   }
+  /* Slightly smaller rem base (~15px): scales typography and rem-based spacing together */
   html {
     @apply font-sans;
+    font-size: 93.75%;
   }
 }

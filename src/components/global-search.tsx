@@ -192,7 +192,7 @@ export function GlobalSearch({
           placeholder={placeholder}
           className={cn(
             'border-0 bg-transparent focus-visible:ring-0 text-right font-bold w-full',
-            isHero && 'text-gray-900 placeholder:text-gray-400 text-base md:text-xl h-12 md:h-14',
+            isHero && 'text-gray-900 placeholder:text-gray-400 text-sm md:text-xl h-11 md:h-14',
             isNavbar && 'h-9 md:h-10 text-sm placeholder:text-muted-foreground'
           )}
           autoComplete="off"

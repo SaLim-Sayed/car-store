@@ -216,7 +216,7 @@ export default function FinancePage() {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             {financingOptions.map((option, index) => (
               <Card key={index} className={`relative border-0 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 ${option.popular ? 'ring-2 ring-blue-500' : ''}`}>
                 {option.popular && (
@@ -346,7 +346,7 @@ export default function FinancePage() {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             {requirements.map((req, index) => (
               <Card key={index} className="border-0 shadow-lg hover:shadow-xl transition-shadow">
                 <CardHeader className="text-center pb-4">
@@ -511,7 +511,7 @@ export default function FinancePage() {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-6 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-6 max-w-5xl mx-auto">
             {steps.map((step, index) => (
               <div key={index} className="text-center">
                 <div className="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">

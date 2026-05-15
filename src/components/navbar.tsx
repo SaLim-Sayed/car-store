@@ -22,15 +22,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  User,
-  Car,
-  LogOut,
-  Settings,
-  PlusCircle,
-  Menu,
-  X,
-} from "lucide-react";
+import { User, Car, LogOut, Settings, PlusCircle, Menu, X } from "lucide-react";
 import { GlobalSearch } from "@/components/global-search";
 import { cn } from "@/lib/utils";
 
@@ -72,8 +64,10 @@ export function Navbar() {
   ];
 
   const isHomePage = pathname === "/";
-  const textColor = isScrolled || !isHomePage ? "text-foreground" : "text-white";
-  const logoBorderColor = isScrolled || !isHomePage ? "border-primary/20" : "border-white/30";
+  const textColor =
+    isScrolled || !isHomePage ? "text-foreground" : "text-white";
+  const logoBorderColor =
+    isScrolled || !isHomePage ? "border-primary/20" : "border-white/30";
 
   const [showNavbarSearch, setShowNavbarSearch] = useState(!isHomePage);
 
@@ -89,7 +83,7 @@ export function Navbar() {
 
   return (
     <header
-      className={`fixed top-0 z-[100] w-full overflow-visible transition-all duration-500 ${
+      className={`fixed top-0 z-[50] w-full overflow-visible transition-all duration-500 ${
         isScrolled
           ? "bg-white/80 backdrop-blur-2xl border-b border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
           : isHomePage
@@ -98,51 +92,55 @@ export function Navbar() {
       }`}
     >
       <div className="container mx-auto px-4">
-      <div className="flex items-center justify-between h-12 md:h-16">
-        <div className="flex items-center gap-3 md:gap-12">
-          <Link
-            href="/"
-            className="flex items-center gap-3 md:gap-5 transition-all hover:scale-105 active:scale-95"
-          >
-            <div
-              className={`relative h-11 w-11 md:h-16 md:w-16 rounded-md overflow-hidden border-2 transition-all duration-500 ${logoBorderColor} shadow-xl`}
+        <div className="flex items-center justify-between h-12 md:h-16">
+          <div className="flex items-center gap-3 md:gap-12">
+            <Link
+              href="/"
+              className="flex items-center gap-3 md:gap-5 transition-all hover:scale-105 active:scale-95"
             >
-              <Image
-                src="/logo-maarad-sayarat.png"
-                alt="سيارات المنيا"
-                fill
-                className="object-cover"
-              />
-            </div>
-            <span
-              className={`hidden md:inline-block font-[1000] text-xl md:text-3xl tracking-tighter transition-colors duration-500 ${textColor}`}
-            >
-              سيارات المنيا
-            </span>
-          </Link>
-
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-10 mr-12">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`text-xl font-black transition-all duration-500 hover:text-primary relative group py-2 ${
-                  pathname === link.href
-                    ? textColor.includes("white") ? "text-white" : "text-primary"
-                    : textColor.includes("white") ? "text-white/70" : "text-muted-foreground"
-                }`}
+              <div
+                className={`relative h-9 w-9 md:h-16 md:w-16 rounded-md overflow-hidden border-2 transition-all duration-500 ${logoBorderColor} shadow-xl`}
               >
-                {link.label}
-                <span
-                  className={`absolute -bottom-1 right-0 h-1 bg-primary rounded-full transition-all duration-500 shadow-[0_0_12px_rgba(217,119,6,0.4)] ${pathname === link.href ? "w-full" : "w-0 group-hover:w-full"}`}
+                <Image
+                  src="/logo-maarad-sayarat.png"
+                  alt="سيارات المنيا"
+                  fill
+                  className="object-cover"
                 />
-              </Link>
-            ))}
-          </nav>
-        </div>
+              </div>
+              <span
+                className={`hidden md:inline-block font-[1000] text-lg md:text-3xl tracking-tighter transition-colors duration-500 ${textColor}`}
+              >
+                سيارات المنيا
+              </span>
+            </Link>
 
-        <div className="flex items-center gap-2 md:gap-4">
+            {/* Desktop Navigation */}
+            <nav className="hidden md:flex items-center gap-10 mr-12">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`text-xl font-black transition-all duration-500 hover:text-primary relative group py-2 ${
+                    pathname === link.href
+                      ? textColor.includes("white")
+                        ? "text-white"
+                        : "text-primary"
+                      : textColor.includes("white")
+                        ? "text-white/70"
+                        : "text-muted-foreground"
+                  }`}
+                >
+                  {link.label}
+                  <span
+                    className={`absolute -bottom-1 right-0 h-1 bg-primary rounded-full transition-all duration-500 shadow-[0_0_12px_rgba(217,119,6,0.4)] ${pathname === link.href ? "w-full" : "w-0 group-hover:w-full"}`}
+                  />
+                </Link>
+              ))}
+            </nav>
+          </div>
+
+          <div className="flex items-center gap-2 md:gap-4">
             <div className="hidden md:block">
               <ThemeToggle />
             </div>
@@ -152,7 +150,7 @@ export function Navbar() {
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="ghost"
-                    className={`h-11 md:h-14 px-4 md:px-7 rounded-md gap-2 md:gap-4 font-[1000] text-base md:text-xl transition-all duration-500 active:scale-95 ${textColor.includes("white") ? "text-white hover:bg-white/15" : "text-foreground bg-gray-50 hover:bg-gray-100 shadow-sm"}`}
+                    className={`h-9 md:h-14 px-3 md:px-7 rounded-md gap-2 md:gap-4 font-[1000] text-sm md:text-xl transition-all duration-500 active:scale-95 ${textColor.includes("white") ? "text-white hover:bg-white/15" : "text-foreground bg-gray-50 hover:bg-gray-100 shadow-sm"}`}
                   >
                     <div className="h-9 w-9 rounded-md bg-primary shadow-lg shadow-primary/30 flex items-center justify-center">
                       <User className="h-5 w-5 text-white" />
@@ -188,7 +186,9 @@ export function Navbar() {
                           <div className="h-10 w-10 rounded-md bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
                             <PlusCircle className="h-5 w-5 text-primary" />
                           </div>
-                          <span className="font-black text-lg">إضافة سيارة</span>
+                          <span className="font-black text-lg">
+                            إضافة سيارة
+                          </span>
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem
@@ -202,7 +202,9 @@ export function Navbar() {
                           <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
                             <Settings className="h-5 w-5 text-primary" />
                           </div>
-                          <span className="font-black text-lg">لوحة التحكم</span>
+                          <span className="font-black text-lg">
+                            لوحة التحكم
+                          </span>
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuSeparator className="my-3 opacity-50" />
@@ -215,7 +217,9 @@ export function Navbar() {
                     <div className="h-10 w-10 rounded-md bg-destructive/10 flex items-center justify-center">
                       <LogOut className="h-5 w-5" />
                     </div>
-                    <span className="font-black text-lg ml-auto mr-4">تسجيل الخروج</span>
+                    <span className="font-black text-lg ml-auto mr-4">
+                      تسجيل الخروج
+                    </span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -263,7 +267,7 @@ export function Navbar() {
                         className="object-cover"
                       />
                     </div>
-                    <span className="font-[1000] text-xl tracking-tighter">
+                    <span className="font-[1000] text-lg md:text-xl tracking-tighter">
                       سيارات المنيا
                     </span>
                   </div>
@@ -292,14 +296,16 @@ export function Navbar() {
                           key={link.href}
                           href={link.href}
                           onClick={() => setIsMobileMenuOpen(false)}
-                          className={`flex items-center justify-between px-5 py-4 rounded-md text-xl font-black transition-all active:scale-95 ${
+                          className={`flex items-center justify-between px-5 py-3 md:py-4 rounded-md text-lg md:text-xl font-black transition-all active:scale-95 ${
                             isActive
                               ? "bg-primary text-white shadow-lg shadow-primary/25"
                               : "text-muted-foreground hover:bg-gray-50 hover:text-foreground"
                           }`}
                         >
                           {link.label}
-                          {isActive && <div className="h-2 w-2 rounded-full bg-white" />}
+                          {isActive && (
+                            <div className="h-1.5 w-1.5 md:h-2 md:w-2 rounded-full bg-white" />
+                          )}
                         </Link>
                       );
                     })}
@@ -308,7 +314,7 @@ export function Navbar() {
                       <Link
                         href="/auth/login"
                         onClick={() => setIsMobileMenuOpen(false)}
-                        className="mt-4 flex items-center justify-center gap-3 px-5 py-4 rounded-md text-xl font-black bg-[#1A1A1A] text-white shadow-xl active:scale-95 transition-all"
+                        className="mt-4 flex items-center justify-center gap-3 px-5 py-3.5 rounded-md text-lg md:text-xl font-black bg-[#1A1A1A] text-white shadow-xl active:scale-95 transition-all"
                       >
                         <User className="h-6 w-6" />
                         تسجيل الدخول
@@ -324,7 +330,9 @@ export function Navbar() {
                         <User className="h-7 w-7 text-white" />
                       </div>
                       <div className="flex flex-col min-w-0 flex-1 text-right">
-                        <span className="text-lg font-black truncate">{user?.name}</span>
+                        <span className="text-lg font-black truncate">
+                          {user?.name}
+                        </span>
                         <span className="text-xs text-muted-foreground font-bold opacity-70 truncate">
                           {user?.email}
                         </span>
@@ -345,19 +353,22 @@ export function Navbar() {
                 )}
               </DialogContent>
             </Dialog>
+          </div>
         </div>
-      </div>
 
-      <div
-        className={cn(
-          "hidden md:block overflow-hidden transition-[max-height,opacity,padding] duration-300",
-          showNavbarSearch
-            ? "max-h-20 opacity-100 pb-3 pt-1"
-            : "max-h-0 opacity-0 pb-0 pt-0 pointer-events-none"
-        )}
-      >
-        <GlobalSearch variant="navbar" onNavigate={() => setIsMobileMenuOpen(false)} />
-      </div>
+        <div
+          className={cn(
+            "hidden md:block overflow-hidden transition-[max-height,opacity,padding] duration-300",
+            showNavbarSearch
+              ? "max-h-20 opacity-100 pb-3 pt-1"
+              : "max-h-0 opacity-0 pb-0 pt-0 pointer-events-none",
+          )}
+        >
+          <GlobalSearch
+            variant="navbar"
+            onNavigate={() => setIsMobileMenuOpen(false)}
+          />
+        </div>
       </div>
     </header>
   );

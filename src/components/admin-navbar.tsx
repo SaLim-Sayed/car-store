@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Link from "next/link"
-import Image from "next/image"
-import { usePathname, useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
+import { useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { usePathname, useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 import {
   LayoutDashboard,
   Car,
@@ -16,9 +16,9 @@ import {
   ExternalLink,
   Menu,
   X,
-} from "lucide-react"
-import { useAuthStore } from "@/lib/store/authStore"
-import { cn } from "@/lib/utils"
+} from "lucide-react";
+import { useAuthStore } from "@/lib/store/authStore";
+import { cn } from "@/lib/utils";
 
 const adminLinks = [
   { href: "/admin/dashboard", label: "لوحة التحكم", icon: LayoutDashboard },
@@ -27,39 +27,49 @@ const adminLinks = [
   { href: "/admin/showrooms", label: "المعارض", icon: Store },
   { href: "/admin/equipment", label: "المعدات", icon: Tractor },
   { href: "/admin/users", label: "المستخدمون", icon: Users },
-]
+];
 
 export function AdminNavbar() {
-  const pathname = usePathname()
-  const router = useRouter()
-  const { user, logout } = useAuthStore()
-  const [mobileOpen, setMobileOpen] = useState(false)
+  const pathname = usePathname();
+  const router = useRouter();
+  const { user, logout } = useAuthStore();
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleLogout = async () => {
     try {
-      await fetch("/api/auth/logout", { method: "POST" })
+      await fetch("/api/auth/logout", { method: "POST" });
     } catch {
       // ignore
     }
-    logout()
-    router.push("/auth/login")
-  }
+    logout();
+    router.push("/auth/login");
+  };
 
   const isActive = (href: string) => {
-    if (href === "/admin/dashboard") return pathname === href
-    return pathname === href || pathname.startsWith(`${href}/`)
-  }
+    if (href === "/admin/dashboard") return pathname === href;
+    return pathname === href || pathname.startsWith(`${href}/`);
+  };
 
   return (
-    <header className="fixed top-0 z-50 w-full border-b border-gray-100 bg-white/95 backdrop-blur-xl shadow-sm">
+    <header className="fixed top-0 z-40 w-full border-b border-gray-100 bg-white/95 backdrop-blur-xl shadow-sm">
       <div className="container mx-auto flex h-16 items-center justify-between gap-4 px-4 md:h-[4.5rem]">
         <div className="flex items-center gap-3 md:gap-8">
-          <Link href="/admin/dashboard" className="flex items-center gap-3 shrink-0">
+          <Link
+            href="/admin/dashboard"
+            className="flex items-center gap-3 shrink-0"
+          >
             <div className="relative h-10 w-10 md:h-12 md:w-12 overflow-hidden rounded-md border-2 border-primary/20 shadow-md">
-              <Image src="/logo-maarad-sayarat.png" alt="لوحة التحكم" fill className="object-cover" />
+              <Image
+                src="/logo-maarad-sayarat.png"
+                alt="لوحة التحكم"
+                fill
+                className="object-cover"
+              />
             </div>
             <div className="hidden sm:block text-right">
-              <p className="text-xs font-bold text-muted-foreground">لوحة الإدارة</p>
+              <p className="text-xs font-bold text-muted-foreground">
+                لوحة الإدارة
+              </p>
               <p className="text-lg font-[1000] leading-tight">سيارات المنيا</p>
             </div>
           </Link>
@@ -73,7 +83,7 @@ export function AdminNavbar() {
                   "flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-black transition-colors",
                   isActive(href)
                     ? "bg-primary text-white shadow-md shadow-primary/20"
-                    : "text-muted-foreground hover:bg-gray-50 hover:text-foreground"
+                    : "text-muted-foreground hover:bg-gray-50 hover:text-foreground",
                 )}
               >
                 <Icon className="h-4 w-4" />
@@ -84,7 +94,12 @@ export function AdminNavbar() {
         </div>
 
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" asChild className="hidden md:flex font-black rounded-xl">
+          <Button
+            variant="outline"
+            size="sm"
+            asChild
+            className="hidden md:flex font-black rounded-xl"
+          >
             <Link href="/" target="_blank" rel="noopener noreferrer">
               <ExternalLink className="h-4 w-4 ml-2" />
               عرض الموقع
@@ -114,7 +129,11 @@ export function AdminNavbar() {
             onClick={() => setMobileOpen((o) => !o)}
             aria-label="القائمة"
           >
-            {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            {mobileOpen ? (
+              <X className="h-6 w-6" />
+            ) : (
+              <Menu className="h-6 w-6" />
+            )}
           </Button>
         </div>
       </div>
@@ -128,7 +147,9 @@ export function AdminNavbar() {
               onClick={() => setMobileOpen(false)}
               className={cn(
                 "flex items-center gap-3 rounded-xl px-4 py-3 font-black",
-                isActive(href) ? "bg-primary text-white" : "text-muted-foreground hover:bg-gray-50"
+                isActive(href)
+                  ? "bg-primary text-white"
+                  : "text-muted-foreground hover:bg-gray-50",
               )}
             >
               <Icon className="h-5 w-5" />
@@ -146,8 +167,8 @@ export function AdminNavbar() {
           <button
             type="button"
             onClick={() => {
-              setMobileOpen(false)
-              handleLogout()
+              setMobileOpen(false);
+              handleLogout();
             }}
             className="flex w-full items-center gap-3 rounded-xl px-4 py-3 font-black text-destructive hover:bg-destructive/10"
           >
@@ -157,6 +178,5 @@ export function AdminNavbar() {
         </nav>
       )}
     </header>
-  )
+  );
 }
-

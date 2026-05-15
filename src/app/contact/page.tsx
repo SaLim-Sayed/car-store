@@ -163,7 +163,7 @@ export default function ContactPage() {
       {/* Contact Form and Map */}
       <section className="py-20">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-5xl mx-auto">
             {/* Contact Form */}
             <div>
               <h2 className="text-3xl font-bold mb-6">أرسل لنا رسالة</h2>
