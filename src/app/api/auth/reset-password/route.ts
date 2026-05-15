@@ -1,13 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import crypto from 'crypto';
-import connectDB from '@/lib/mongoose';
-import User from '@/lib/models/User';
 import { handleApiError } from '@/lib/api-helpers';
+import { applyPasswordReset } from '@/lib/password-reset';
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
-    await connectDB();
-
     const { token, password } = await request.json();
 
     if (!token || !password) {
@@ -24,24 +20,14 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+    const updated = await applyPasswordReset(token, password);
 
-    const user = await User.findOne({
-      resetPasswordToken: tokenHash,
-      resetPasswordExpires: { $gt: new Date() },
-    });
-
-    if (!user) {
+    if (!updated) {
       return NextResponse.json(
         { success: false, error: 'رمز إعادة التعيين غير صالح أو منتهي الصلاحية' },
         { status: 400 }
       );
     }
-
-    user.password = password;
-    user.resetPasswordToken = undefined;
-    user.resetPasswordExpires = undefined;
-    await user.save();
 
     return NextResponse.json({
       success: true,

@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import { PasswordInput } from "@/components/ui/password-input"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -181,9 +182,8 @@ export default function AdminUsersPage() {
                   </div>
                   <div className="space-y-3">
                     <Label htmlFor="create-password" className="text-lg font-black">كلمة المرور *</Label>
-                    <Input
+                    <PasswordInput
                       id="create-password"
-                      type="password"
                       value={form.password}
                       onChange={(e) => setField("password", e.target.value)}
                       placeholder="6 أحرف على الأقل"
