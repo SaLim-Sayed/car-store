@@ -1,6 +1,5 @@
 "use client"
 
-import { Navbar } from "@/components/navbar"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -28,7 +27,7 @@ export default function AdminNews() {
   return (
     <div className="min-h-screen bg-[#F9F6F1]">
  
-      <main className="container mx-auto px-4 py-24">
+      <main className="container mx-auto px-4 pb-8">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
           <div className="space-y-4">
             <h1 className="text-5xl font-[1000] tracking-tighter">إدارة الأخبار</h1>

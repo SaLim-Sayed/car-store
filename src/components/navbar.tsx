@@ -72,10 +72,10 @@ export function Navbar() {
     <header
       className={`fixed top-0 z-50 w-full transition-all duration-500 ${
         isScrolled
-          ? "bg-white/80 backdrop-blur-2xl border-b border-gray-100 py-2 md:py-3 shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
+          ? "bg-white/80 backdrop-blur-2xl border-b border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
           : isHomePage 
-            ? "bg-transparent py-3 md:py-6"
-            : "bg-white/50 backdrop-blur-xl border-b border-gray-50 py-2 md:py-4"
+            ? "bg-transparent "
+            : "bg-white/50 backdrop-blur-xl border-b border-gray-50 "
       }`}
     >
       <div className="container mx-auto flex items-center justify-between px-4 h-12 md:h-20">

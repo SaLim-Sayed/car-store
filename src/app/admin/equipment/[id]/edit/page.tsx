@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import Link from "next/link"
-import { Navbar } from "@/components/navbar"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { ArrowRight } from "lucide-react"
@@ -62,8 +61,7 @@ export default function EditEquipmentPage() {
   if (isLoading && !form.title) {
     return (
       <div className="min-h-screen bg-[#F9F6F1]">
-        <Navbar />
-        <main className="container mx-auto px-4 py-24 max-w-4xl space-y-8">
+        <main className="container mx-auto px-4 pb-8 max-w-4xl space-y-8">
           <Skeleton className="h-12 w-64" />
           <Skeleton className="h-96 w-full" />
         </main>
@@ -73,8 +71,7 @@ export default function EditEquipmentPage() {
 
   return (
     <div className="min-h-screen bg-[#F9F6F1]">
-      <Navbar />
-      <main className="container mx-auto px-4 py-24 max-w-4xl">
+      <main className="container mx-auto px-4 pb-8 max-w-4xl">
         <div className="space-y-4 mb-12">
           <Button variant="ghost" size="sm" asChild className="-mr-4">
             <Link href="/admin/equipment" className="font-black">

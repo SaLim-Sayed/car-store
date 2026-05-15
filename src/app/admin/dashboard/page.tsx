@@ -1,6 +1,5 @@
 "use client"
 
-import { Navbar } from "@/components/navbar"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -79,7 +78,7 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-[#F9F6F1]">
  
-      <main className="container mx-auto px-4 py-24">
+      <main className="container mx-auto px-4 pb-8">
         <div className="mb-12 space-y-4">
           <h1 className="text-5xl font-[1000] tracking-tighter">لوحة التحكم</h1>
           <p className="text-muted-foreground text-xl font-medium">إدارة وتتبع أداء متجرك بشكل احترافي</p>

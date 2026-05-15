@@ -1,7 +1,7 @@
 "use client"
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { Suspense, useState } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -14,8 +14,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { loginSchema, type LoginFormData } from "@/lib/validations/authSchema"
 import { useAuthStore } from "@/lib/store/authStore"
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const { login } = useAuthStore()
   const [isLoading, setIsLoading] = useState(false)
 
@@ -43,7 +44,14 @@ export default function LoginPage() {
       if (result.success) {
         login(result.data.user, result.data.token)
         toast.success("تم تسجيل الدخول بنجاح")
-        router.push("/")
+        const callbackUrl = searchParams.get("callbackUrl")
+        if (callbackUrl?.startsWith("/admin") && result.data.user.role === "admin") {
+          router.push(callbackUrl)
+        } else if (result.data.user.role === "admin") {
+          router.push("/admin/dashboard")
+        } else {
+          router.push("/")
+        }
       } else {
         toast.error(result.error || "فشل في تسجيل الدخول")
       }
@@ -121,5 +129,19 @@ export default function LoginPage() {
         </CardContent>
       </Card>
     </div>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+          <p className="text-muted-foreground font-medium">جاري التحميل...</p>
+        </div>
+      }
+    >
+      <LoginForm />
+    </Suspense>
   )
 }

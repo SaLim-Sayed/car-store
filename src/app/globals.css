@@ -68,7 +68,7 @@
   --border: #E5E5E5;
   --input: #E5E5E5;
   --ring: #D97706;
-  --radius: 0.5rem;
+  --radius: 1rem;
 }
 
 .dark {
@@ -90,6 +90,41 @@
   --border: #2A2A2A;
   --input: #2A2A2A;
   --ring: #D97706;
+}
+
+@keyframes whatsapp-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.45;
+  }
+  50% {
+    transform: scale(1.35);
+    opacity: 0;
+  }
+}
+
+@keyframes whatsapp-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.whatsapp-float {
+  animation: whatsapp-bounce 2.5s ease-in-out infinite;
+}
+
+.whatsapp-float-ping {
+  animation: whatsapp-pulse 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.whatsapp-float-ring {
+  animation: whatsapp-pulse 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+  animation-delay: 0.5s;
 }
 
 @layer base {

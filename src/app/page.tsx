@@ -1,6 +1,5 @@
 "use client"
 
-import { Navbar } from "@/components/navbar"
 import { HeroSlider } from "@/components/hero-slider"
 import { CarCard } from "@/components/car-card"
 import { Button } from "@/components/ui/button"
@@ -19,6 +18,8 @@ import {
   Info 
 } from "lucide-react"
 import Link from "next/link"
+import { getWhatsAppUrl, WHATSAPP_MESSAGES } from "@/lib/whatsapp"
+import { WhatsAppIcon } from "@/components/whatsapp-icon"
 import { useFeaturedCars, Car as CarType } from "@/hooks/useCars"
 import { useNews } from "@/hooks/useContent"
 import { useFeaturedEquipment, type Equipment } from "@/hooks/useEquipment"
@@ -43,7 +44,7 @@ export default function HomePage() {
           <HeroSlider />
           
           {/* Overlapping Feature Cards */}
-          <div className="container mx-auto px-4 -mt-24 relative z-30">
+          <div className="container mx-auto px-4 -mt-28 relative z-30">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
               <Card className="shadow-xl border-0 rounded-[2.5rem] overflow-hidden group hover:-translate-y-2 transition-transform duration-500 bg-white">
                 <CardContent className="p-10 text-center space-y-6">
@@ -105,9 +106,18 @@ export default function HomePage() {
                     <h3 className="text-4xl font-[1000] tracking-tight">اعرض سيارتك للبيع هنا</h3>
                     <p className="text-muted-foreground text-xl leading-relaxed font-medium">انشر إعلانك بسهولة، وصل لآلاف المشترين المحتملين في المنيا.</p>
                     <div className="flex flex-wrap gap-4 justify-center md:justify-start pt-2">
-                      <Button className="rounded-2xl px-10 h-16 text-xl font-black bg-[#EAB308] hover:bg-[#CA8A04] text-white shadow-lg shadow-yellow-500/20">
-                        <PlusCircle className="ml-2 h-6 w-6" />
-                        اعرض سيارتي
+                      <Button
+                        asChild
+                        className="rounded-2xl px-10 h-16 text-xl font-black bg-[#EAB308] hover:bg-[#CA8A04] text-white shadow-lg shadow-yellow-500/20"
+                      >
+                        <a
+                          href={getWhatsAppUrl(WHATSAPP_MESSAGES.sellCar)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <WhatsAppIcon className="ml-2 h-6 w-6" />
+                          اعرض سيارتي
+                        </a>
                       </Button>
                       <Button variant="secondary" className="rounded-2xl px-10 h-16 text-xl font-black bg-[#F1F1F1] hover:bg-gray-200 transition-colors">
                         تصفح المعروض
@@ -155,11 +165,18 @@ export default function HomePage() {
                     <h3 className="text-4xl font-[1000] tracking-tight">آلات زراعية ومعدات ثقيلة</h3>
                     <p className="text-muted-foreground text-xl leading-relaxed font-medium">جرارات، حفارات، شاحنات، ومعدات بناء وزراعة بأسعار تنافسية.</p>
                     <div className="flex flex-wrap gap-4 justify-center md:justify-start pt-2">
-                      <Button asChild className="rounded-2xl px-10 h-16 text-xl font-black bg-[#EAB308] hover:bg-[#CA8A04] text-white shadow-lg shadow-yellow-500/20">
-                        <Link href="/admin/equipment/new">
-                          <PlusCircle className="ml-2 h-6 w-6" />
+                      <Button
+                        asChild
+                        className="rounded-2xl px-10 h-16 text-xl font-black bg-[#EAB308] hover:bg-[#CA8A04] text-white shadow-lg shadow-yellow-500/20"
+                      >
+                        <a
+                          href={getWhatsAppUrl(WHATSAPP_MESSAGES.sellEquipment)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <WhatsAppIcon className="ml-2 h-6 w-6" />
                           اعرض معداتي
-                        </Link>
+                        </a>
                       </Button>
                       <Button asChild variant="secondary" className="rounded-2xl px-10 h-16 text-xl font-black bg-[#F1F1F1] hover:bg-gray-200 transition-colors">
                         <Link href="/equipment">

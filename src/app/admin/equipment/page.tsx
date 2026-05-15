@@ -1,6 +1,5 @@
 "use client"
 
-import { Navbar } from "@/components/navbar"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -25,8 +24,7 @@ export default function AdminEquipmentPage() {
 
   return (
     <div className="min-h-screen bg-[#F9F6F1]">
-      <Navbar />
-      <main className="container mx-auto px-4 py-24">
+      <main className="container mx-auto px-4 pb-8">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 mb-12">
           <div className="space-y-4">
             <h1 className="text-5xl font-[1000] tracking-tighter">المعدات الزراعية</h1>

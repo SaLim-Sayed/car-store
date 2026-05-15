@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import { Navbar } from "@/components/navbar"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -106,7 +105,7 @@ export default function AdminCarsPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#F9F6F1]">
-           <main className="container mx-auto px-4 py-24 max-w-7xl space-y-8">
+           <main className="container mx-auto px-4 pb-8 max-w-7xl space-y-8">
           <Skeleton className="h-16 w-64 rounded-2xl" />
           <div className="space-y-4">
             {[...Array(5)].map((_, index) => (
@@ -121,7 +120,7 @@ export default function AdminCarsPage() {
   return (
     <div className="min-h-screen bg-[#F9F6F1]">
  
-      <main className="container mx-auto px-4 py-24 max-w-7xl">
+      <main className="container mx-auto px-4 pb-8 max-w-7xl">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 mb-12">
           <div className="space-y-4">
             <h1 className="text-5xl font-[1000] tracking-tighter">إدارة السيارات</h1>
@@ -245,7 +244,7 @@ export default function AdminCarsPage() {
                 </table>
 
                 {filteredCars.length === 0 && (
-                  <div className="text-center py-24 bg-gray-50/50 rounded-[2rem] mt-4">
+                  <div className="text-center pb-8 bg-gray-50/50 rounded-[2rem] mt-4">
                     <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
                       <Car className="h-12 w-12 text-muted-foreground opacity-20" />
                     </div>
