@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Plus, Trash2, Edit, ExternalLink, Calendar, Tag } from "lucide-react"
 import Link from "next/link"
 import { useNews, useDeleteNews } from "@/hooks/useContent"
+import { FormattedDate } from "@/components/formatted-date"
 import {
   Dialog,
   DialogContent,
@@ -86,7 +87,7 @@ export default function AdminNews() {
                     <div className="flex items-center gap-4 text-sm text-muted-foreground font-bold mb-1">
                        <div className="flex items-center gap-1.5">
                          <Calendar className="h-4 w-4" />
-                         {news.date}
+                         <FormattedDate value={news.date} />
                        </div>
                        <div className="h-1 w-1 bg-gray-300 rounded-full" />
                        <div className="flex items-center gap-1.5">

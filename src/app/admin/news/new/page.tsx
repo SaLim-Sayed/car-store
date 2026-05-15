@@ -14,6 +14,8 @@ import Link from "next/link"
 import { useCreateNews } from "@/hooks/useContent"
 import { uploadImageIfNeeded } from "@/lib/client-image-upload"
 import { ImageUpload } from "@/components/image-upload"
+import { DatePicker } from "@/components/date-picker"
+import { todayIso } from "@/lib/date-utils"
 
 export default function NewNewsPage() {
   const router = useRouter()
@@ -26,7 +28,8 @@ export default function NewNewsPage() {
     content: "",
     image: "",
     category: "أخبار السوق",
-    status: "نشط"
+    status: "نشط",
+    date: todayIso(),
   })
 
   const [errors, setErrors] = useState<Partial<Record<keyof typeof form, string>>>({})
@@ -37,6 +40,7 @@ export default function NewNewsPage() {
     if (!form.excerpt) newErrors.excerpt = "الملخص مطلوب"
     if (!form.content) newErrors.content = "المحتوى مطلوب"
     if (!form.image) newErrors.image = "الصورة مطلوبة"
+    if (!form.date) newErrors.date = "تاريخ النشر مطلوب"
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
@@ -52,7 +56,7 @@ export default function NewNewsPage() {
         {
           ...form,
           image,
-          date: new Date().toLocaleDateString("ar-SA")
+          date: form.date,
         },
         {
           onSuccess: () => {
@@ -104,6 +108,17 @@ export default function NewNewsPage() {
                 />
                 {errors.title && <p className="text-sm text-red-500 font-bold">{errors.title}</p>}
               </div>
+
+              <DatePicker
+                id="news-date"
+                label="تاريخ النشر"
+                value={form.date}
+                onChange={(date) => setForm({ ...form, date })}
+                error={errors.date}
+                required
+                max={todayIso()}
+                inputClassName="rounded-md"
+              />
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-3">

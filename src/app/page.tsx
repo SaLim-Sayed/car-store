@@ -23,6 +23,7 @@ import { useFeaturedCars, Car as CarType } from "@/hooks/useCars"
 import { useNews } from "@/hooks/useContent"
 import { useFeaturedEquipment, type Equipment } from "@/hooks/useEquipment"
 import { EquipmentCard } from "@/components/equipment-card"
+import { FormattedDate } from "@/components/formatted-date"
 import { Skeleton } from "@/components/ui/skeleton"
 
 export default function HomePage() {
@@ -254,7 +255,7 @@ export default function HomePage() {
                   <CardHeader className="p-8 pb-4">
                     <div className="flex justify-between items-start mb-6">
                       <Badge variant="secondary" className="bg-[#FEF3C7] text-[#D97706] border-0 rounded-full px-4 py-1.5 font-bold">{news.category}</Badge>
-                      <span className="text-sm font-bold text-muted-foreground">{news.date}</span>
+                      <FormattedDate value={news.date} className="text-sm font-bold text-muted-foreground" />
                     </div>
                     <CardTitle className="text-2xl font-black group-hover:text-primary transition-colors leading-tight">
                       {news.title}

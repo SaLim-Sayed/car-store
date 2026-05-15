@@ -11,6 +11,8 @@ import { toast } from "sonner"
 import { ArrowRight, Plus, X } from "lucide-react"
 import Link from "next/link"
 import { RichTextEditor } from "@/components/rich-text-editor"
+import { YearPicker } from "@/components/year-picker"
+import { currentYear } from "@/lib/date-utils"
 
 const FUEL_TYPES = ["بنزين", "ديزل", "كهرباء", "هايبرد"] as const
 const TRANSMISSIONS = ["يدوي", "أوتوماتيك"] as const
@@ -222,19 +224,16 @@ export default function NewCarPage() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div className="space-y-3">
-                  <Label htmlFor="year" className="text-lg font-black">سنة الصنع *</Label>
-                  <Input
-                    id="year"
-                    type="number"
-                    min={1900}
-                    max={new Date().getFullYear() + 1}
-                    value={form.year}
-                    onChange={(e) => set("year", e.target.value)}
-                    className={`h-14 rounded-2xl border-2 px-6 font-bold ${errors.year ? "border-red-500" : "border-gray-50 focus:border-primary"}`}
-                  />
-                  {errors.year && <p className="text-sm text-red-500 font-bold">{errors.year}</p>}
-                </div>
+                <YearPicker
+                  id="year"
+                  label="سنة الصنع"
+                  value={form.year}
+                  onChange={(year) => set("year", year)}
+                  error={errors.year}
+                  required
+                  endYear={currentYear() + 1}
+                  selectClassName="rounded-2xl"
+                />
                 <div className="space-y-3">
                   <Label htmlFor="price" className="text-lg font-black">السعر (ج.م) *</Label>
                   <Input

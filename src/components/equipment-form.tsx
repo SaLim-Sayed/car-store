@@ -8,6 +8,8 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { ImageUpload } from "@/components/image-upload"
 import { uploadImageFile } from "@/lib/client-image-upload"
+import { YearPicker } from "@/components/year-picker"
+import { currentYear } from "@/lib/date-utils"
 import { toast } from "sonner"
 import { Plus, X } from "lucide-react"
 
@@ -147,15 +149,12 @@ export function EquipmentForm({
                 className={`h-14 rounded-md border-2 px-6 font-bold ${errors.price ? "border-red-500" : "border-gray-50"}`}
               />
             </div>
-            <div className="space-y-3">
-              <Label className="text-lg font-black">سنة الصنع</Label>
-              <Input
-                type="number"
-                value={form.year}
-                onChange={(e) => set("year", e.target.value)}
-                className="h-14 rounded-md border-2 border-gray-50 px-6 font-bold"
-              />
-            </div>
+            <YearPicker
+              label="سنة الصنع"
+              value={form.year}
+              onChange={(year) => set("year", year)}
+              endYear={currentYear() + 1}
+            />
             <div className="space-y-3">
               <Label className="text-lg font-black">ساعات التشغيل</Label>
               <Input

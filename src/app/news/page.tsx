@@ -8,7 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Calendar, User, ArrowLeft, ChevronLeft, Tag, Search } from "lucide-react";
 import Link from "next/link";
-import { useNews } from "@/hooks/useContent";
+import { useNews } from "@/hooks/useContent"
+import { FormattedDate } from "@/components/formatted-date";
 
 export default function NewsPage() {
   const [selectedCategory, setSelectedCategory] = useState("الكل");
@@ -97,7 +98,7 @@ export default function NewsPage() {
                       <div className="flex items-center gap-4 text-sm text-muted-foreground font-bold">
                         <div className="flex items-center gap-1.5">
                           <Calendar className="h-4 w-4" />
-                          {item.date}
+                          <FormattedDate value={item.date} />
                         </div>
                       </div>
                       <CardTitle className="text-3xl font-black leading-tight group-hover:text-primary transition-colors">

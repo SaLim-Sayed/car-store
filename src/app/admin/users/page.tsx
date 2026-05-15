@@ -19,6 +19,7 @@ import {
   User as UserIcon,
 } from "lucide-react"
 import Link from "next/link"
+import { FormattedDate } from "@/components/formatted-date"
 import { ArrowRight } from "lucide-react"
 
 interface UserDoc {
@@ -308,7 +309,7 @@ export default function AdminUsersPage() {
                         </td>
                         <td className="p-8 text-left">
                           <span className="font-bold text-muted-foreground">
-                            {new Date(user.createdAt).toLocaleDateString("ar-SA")}
+                            <FormattedDate value={user.createdAt?.slice(0, 10) || user.createdAt} />
                           </span>
                         </td>
                       </tr>

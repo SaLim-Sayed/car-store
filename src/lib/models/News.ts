@@ -29,7 +29,7 @@ const NewsSchema = new mongoose.Schema({
   },
   date: {
     type: String,
-    default: () => new Date().toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' }),
+    default: () => new Date().toISOString().slice(0, 10),
   },
   status: {
     type: String,

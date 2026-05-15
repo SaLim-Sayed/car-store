@@ -10,6 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { ChevronRight, Calendar, Tag, User, Share2, Link as LinkIcon } from "lucide-react"
 import Link from "next/link"
 import { toast } from "sonner"
+import { FormattedDate } from "@/components/formatted-date"
 
 // Custom SVG icons since lucide-react 1.14.0 doesn't include brand icons
 const Facebook = ({ className }: { className?: string }) => (
@@ -118,7 +119,7 @@ export default function NewsDetailPage() {
               </Badge>
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4 md:h-5 md:w-5" />
-                {news.date}
+                <FormattedDate value={news.date} />
               </div>
             </div>
 
