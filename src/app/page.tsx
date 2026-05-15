@@ -105,23 +105,22 @@ export default function HomePage() {
                   <div className="flex-1 space-y-8 order-2 md:order-1 text-center md:text-right">
                     <h3 className="text-4xl font-[1000] tracking-tight">اعرض سيارتك للبيع هنا</h3>
                     <p className="text-muted-foreground text-xl leading-relaxed font-medium">انشر إعلانك بسهولة، وصل لآلاف المشترين المحتملين في المنيا.</p>
-                    <div className="flex flex-wrap gap-4 justify-center md:justify-start pt-2">
-                      <Button
-                        asChild
-                        className="rounded-2xl px-10 h-16 text-xl font-black bg-[#EAB308] hover:bg-[#CA8A04] text-white shadow-lg shadow-yellow-500/20"
-                      >
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start pt-2 w-full max-w-lg">
+                      <Button asChild size="2xl" variant="accent" className="w-full sm:flex-1 min-w-[200px]">
                         <a
                           href={getWhatsAppUrl(WHATSAPP_MESSAGES.sellCar)}
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          <WhatsAppIcon className="ml-2 h-6 w-6" />
+                          <WhatsAppIcon />
                           اعرض سيارتي
                         </a>
                       </Button>
-                      <Button variant="secondary" className="rounded-2xl px-10 h-16 text-xl font-black bg-[#F1F1F1] hover:bg-gray-200 transition-colors">
-                        تصفح المعروض
-                        <ChevronLeft className="mr-2 h-6 w-6" />
+                      <Button asChild size="2xl" variant="surface" className="w-full sm:flex-1 min-w-[200px]">
+                        <Link href="/cars">
+                          تصفح المعروض
+                          <ChevronLeft />
+                        </Link>
                       </Button>
                     </div>
                   </div>
@@ -137,17 +136,17 @@ export default function HomePage() {
                   <div className="flex-1 space-y-8 order-2 md:order-1 text-center md:text-right">
                     <h3 className="text-4xl font-[1000] tracking-tight">معارض السيارات بأنحاء المنيا</h3>
                     <p className="text-muted-foreground text-xl leading-relaxed font-medium">دليل شامل لجميع معارض السيارات في محافظة المنيا.</p>
-                    <div className="flex flex-wrap gap-4 justify-center md:justify-start pt-2">
-                      <Button asChild className="rounded-2xl px-10 h-16 text-xl font-black bg-[#EAB308] hover:bg-[#CA8A04] text-white shadow-lg shadow-yellow-500/20">
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start pt-2 w-full max-w-lg">
+                      <Button asChild size="2xl" variant="accent" className="w-full sm:flex-1 min-w-[200px]">
                         <Link href="/admin/showrooms/new">
-                          <PlusCircle className="ml-2 h-6 w-6" />
+                          <PlusCircle />
                           اشتراك معرض جديد
                         </Link>
                       </Button>
-                      <Button asChild variant="secondary" className="rounded-2xl px-10 h-16 text-xl font-black bg-[#F1F1F1] hover:bg-gray-200 transition-colors">
+                      <Button asChild size="2xl" variant="surface" className="w-full sm:flex-1 min-w-[200px]">
                         <Link href="/showrooms">
                           تصفح المعارض
-                          <ChevronLeft className="mr-2 h-6 w-6" />
+                          <ChevronLeft />
                         </Link>
                       </Button>
                     </div>
@@ -164,24 +163,21 @@ export default function HomePage() {
                   <div className="flex-1 space-y-8 order-2 md:order-1 text-center md:text-right">
                     <h3 className="text-4xl font-[1000] tracking-tight">آلات زراعية ومعدات ثقيلة</h3>
                     <p className="text-muted-foreground text-xl leading-relaxed font-medium">جرارات، حفارات، شاحنات، ومعدات بناء وزراعة بأسعار تنافسية.</p>
-                    <div className="flex flex-wrap gap-4 justify-center md:justify-start pt-2">
-                      <Button
-                        asChild
-                        className="rounded-2xl px-10 h-16 text-xl font-black bg-[#EAB308] hover:bg-[#CA8A04] text-white shadow-lg shadow-yellow-500/20"
-                      >
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start pt-2 w-full max-w-lg">
+                      <Button asChild size="2xl" variant="accent" className="w-full sm:flex-1 min-w-[200px]">
                         <a
                           href={getWhatsAppUrl(WHATSAPP_MESSAGES.sellEquipment)}
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          <WhatsAppIcon className="ml-2 h-6 w-6" />
+                          <WhatsAppIcon />
                           اعرض معداتي
                         </a>
                       </Button>
-                      <Button asChild variant="secondary" className="rounded-2xl px-10 h-16 text-xl font-black bg-[#F1F1F1] hover:bg-gray-200 transition-colors">
+                      <Button asChild size="2xl" variant="surface" className="w-full sm:flex-1 min-w-[200px]">
                         <Link href="/equipment">
                           تصفح المعروض
-                          <ChevronLeft className="mr-2 h-6 w-6" />
+                          <ChevronLeft />
                         </Link>
                       </Button>
                     </div>
@@ -199,10 +195,10 @@ export default function HomePage() {
           <section className="space-y-8">
             <div className="flex justify-between items-center">
               <h2 className="text-5xl md:text-6xl font-[1000] tracking-tighter">السيارات المميزة</h2>
-              <Button variant="outline" asChild className="rounded-full px-10 h-14 text-xl font-black bg-white text-black border-gray-200 hover:bg-gray-50 shadow-sm">
-                <Link href="/cars" className="flex items-center">
+              <Button variant="outline" asChild size="xl" className="rounded-full bg-white text-black border-gray-200 hover:bg-gray-50 shadow-sm shrink-0">
+                <Link href="/cars">
                   عرض الكل
-                  <ChevronLeft className="mr-2 h-6 w-6" />
+                  <ChevronLeft />
                 </Link>
               </Button>
             </div>
@@ -239,10 +235,10 @@ export default function HomePage() {
             <section className="space-y-8">
               <div className="flex justify-between items-center">
                 <h2 className="text-5xl md:text-6xl font-[1000] tracking-tighter">معدات زراعية مميزة</h2>
-                <Button variant="outline" asChild className="rounded-full px-10 h-14 text-xl font-black bg-white">
-                  <Link href="/equipment" className="flex items-center">
+                <Button variant="outline" asChild size="xl" className="rounded-full bg-white shrink-0">
+                  <Link href="/equipment">
                     عرض الكل
-                    <ChevronLeft className="mr-2 h-6 w-6" />
+                    <ChevronLeft />
                   </Link>
                 </Button>
               </div>
@@ -258,10 +254,10 @@ export default function HomePage() {
           <section className="space-y-12">
             <div className="flex justify-between items-center">
               <h2 className="text-4xl md:text-5xl font-black tracking-tight">أحدث الأخبار</h2>
-              <Button variant="outline" asChild className="rounded-full px-8 h-12 text-lg font-bold bg-white text-black border-gray-200 hover:bg-gray-50">
-                <Link href="/news" className="flex items-center">
+              <Button variant="outline" asChild size="xl" className="rounded-full bg-white text-black border-gray-200 hover:bg-gray-50 shrink-0">
+                <Link href="/news">
                   عرض الكل
-                  <ChevronLeft className="mr-2 h-5 w-5" />
+                  <ChevronLeft />
                 </Link>
               </Button>
             </div>

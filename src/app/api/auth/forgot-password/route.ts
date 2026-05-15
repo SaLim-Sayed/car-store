@@ -40,13 +40,17 @@ export async function POST(request: NextRequest) {
     user.resetPasswordExpires = new Date(Date.now() + 60 * 60 * 1000);
     await user.save();
 
-    // In production you'd send an email here.
-    // For development, the token is returned directly.
+    const appUrl =
+      process.env.NEXT_PUBLIC_APP_URL ||
+      process.env.APP_URL ||
+      'http://localhost:3000';
+    const resetUrl = `${appUrl.replace(/\/$/, '')}/auth/reset-password?token=${resetToken}`;
+
+    // TODO: send resetUrl by email in production (SMTP / Resend / etc.)
     return NextResponse.json({
       success: true,
       message: 'إذا كان البريد الإلكتروني مسجلاً، ستتلقى رابط استعادة كلمة المرور',
-      // Only expose token in dev for testing
-      ...(process.env.NODE_ENV === 'development' && { resetToken }),
+      ...(process.env.NODE_ENV === 'development' && { resetToken, resetUrl }),
     });
   } catch (error) {
     return handleApiError(error, 'فشل في معالجة طلب استعادة كلمة المرور');

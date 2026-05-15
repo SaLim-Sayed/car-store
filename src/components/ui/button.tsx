@@ -19,6 +19,10 @@ const buttonVariants = cva(
         destructive:
           "bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40",
         link: "text-primary underline-offset-4 hover:underline",
+        accent:
+          "bg-[#EAB308] text-white hover:bg-[#CA8A04] shadow-lg shadow-yellow-500/20 [a]:hover:bg-[#CA8A04]",
+        surface:
+          "bg-[#F1F1F1] text-foreground hover:bg-gray-200 aria-expanded:bg-[#F1F1F1]",
       },
       size: {
         default:
@@ -32,6 +36,9 @@ const buttonVariants = cva(
         "icon-sm":
           "size-7 rounded-[min(var(--radius-md),12px)] in-data-[slot=button-group]:rounded-lg",
         "icon-lg": "size-9",
+        xl: "h-14 min-h-14 gap-2 rounded-2xl px-8 text-lg font-black has-data-[icon=inline-end]:pr-6 has-data-[icon=inline-start]:pl-6 [&_svg:not([class*='size-'])]:size-5",
+        "2xl":
+          "h-14 min-h-14 gap-2 rounded-2xl px-8 text-lg font-black sm:h-16 sm:min-h-16 sm:px-10 sm:text-xl has-data-[icon=inline-end]:pr-6 has-data-[icon=inline-start]:pl-6 sm:has-data-[icon=inline-end]:pr-8 sm:has-data-[icon=inline-start]:pl-8 [&_svg:not([class*='size-'])]:size-5 sm:[&_svg:not([class*='size-'])]:size-6",
       },
     },
     defaultVariants: {

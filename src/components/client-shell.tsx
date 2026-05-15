@@ -7,8 +7,9 @@ import { WhatsAppFloat } from "@/components/whatsapp-float"
 export function ClientShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const isAdmin = pathname?.startsWith("/admin")
+  const isAuth = pathname?.startsWith("/auth")
 
-  if (isAdmin) {
+  if (isAdmin || isAuth) {
     return <>{children}</>
   }
 

@@ -112,26 +112,26 @@ export function HeroSlider() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
-              <Button className="rounded-md px-6 md:px-10 h-12 md:h-14 text-base md:text-xl font-black bg-[#D97706] hover:bg-[#B45309] text-white transition-all shadow-lg shrink-0">
+              <Button size="xl" className="rounded-md bg-[#D97706] hover:bg-[#B45309] text-white shadow-lg shrink-0 min-w-[88px] md:min-w-[120px]">
                 بحث
               </Button>
             </div>
           </div>
 
           {/* CTA Buttons */}
-          <div className="grid grid-cols-2 md:flex md:flex-wrap gap-3 md:gap-6 pt-2 md:pt-4 md:justify-end">
+          <div className="grid grid-cols-2 gap-3 md:flex md:flex-wrap md:gap-4 pt-2 md:pt-4 md:justify-end">
             <Button
-              size="lg"
+              size="2xl"
               asChild
-              className="rounded-md h-13 md:h-16 text-base md:text-xl font-black bg-white text-black hover:bg-gray-100 border-0 shadow-2xl transition-all hover:scale-105 active:scale-95 px-4 md:px-12"
+              className="rounded-md bg-white text-black hover:bg-gray-100 border-0 shadow-2xl transition-all hover:scale-105 active:scale-95 w-full md:w-auto md:min-w-[200px]"
             >
               <Link href="/cars">استعرض السيارات</Link>
             </Button>
             <Button
-              size="lg"
+              size="2xl"
               variant="outline"
               asChild
-              className="rounded-md h-13 md:h-16 text-base md:text-xl font-black border-white/30 text-white bg-white/10 backdrop-blur-md hover:bg-white/20 transition-all hover:scale-105 active:scale-95 px-4 md:px-12"
+              className="rounded-md border-white/30 text-white bg-white/10 backdrop-blur-md hover:bg-white/20 transition-all hover:scale-105 active:scale-95 w-full md:w-auto md:min-w-[200px]"
             >
               <Link href="/about">لمعرفة المزيد</Link>
             </Button>

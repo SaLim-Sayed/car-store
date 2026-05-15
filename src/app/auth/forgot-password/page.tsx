@@ -4,17 +4,18 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "sonner"
+import Link from "next/link"
+import { Mail, ArrowRight, CheckCircle2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { forgotPasswordSchema, type ForgotPasswordFormData } from "@/lib/validations/authSchema"
-import Link from "next/link"
+import { AuthLayout } from "@/components/auth/auth-layout"
+import { AuthField } from "@/components/auth/auth-field"
 
 export default function ForgotPasswordPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [devResetUrl, setDevResetUrl] = useState<string | null>(null)
 
   const {
     register,
@@ -29,9 +30,7 @@ export default function ForgotPasswordPage() {
     try {
       const response = await fetch("/api/auth/forgot-password", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       })
 
@@ -39,11 +38,12 @@ export default function ForgotPasswordPage() {
 
       if (result.success) {
         setIsSubmitted(true)
+        if (result.resetUrl) setDevResetUrl(result.resetUrl)
         toast.success("تم إرسال رابط إعادة تعيين كلمة المرور")
       } else {
         toast.error(result.error || "فشل في إرسال رابط إعادة التعيين")
       }
-    } catch (error) {
+    } catch {
       toast.error("حدث خطأ ما. يرجى المحاولة مرة أخرى.")
     } finally {
       setIsLoading(false)
@@ -52,69 +52,71 @@ export default function ForgotPasswordPage() {
 
   if (isSubmitted) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
-        <Card className="w-full max-w-md">
-          <CardHeader className="text-center">
-            <CardTitle className="text-2xl font-bold">تم الإرسال بنجاح</CardTitle>
-            <CardDescription>
-              تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="text-center">
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-              تحقق من بريدك الإلكتروني واتبع التعليمات لإعادة تعيين كلمة المرور
-            </p>
+      <AuthLayout
+        title="تم الإرسال بنجاح"
+        subtitle="تحقق من بريدك الإلكتروني واتبع التعليمات لإعادة تعيين كلمة المرور"
+        footer={
+          <Link href="/auth/login" className="font-black text-primary hover:underline">
+            العودة إلى تسجيل الدخول
+          </Link>
+        }
+      >
+        <div className="flex flex-col items-center gap-6 py-4 text-center">
+          <div className="flex h-20 w-20 items-center justify-center rounded-full bg-green-100 text-green-600">
+            <CheckCircle2 className="h-10 w-10" />
+          </div>
+          <p className="text-muted-foreground font-medium leading-relaxed">
+            إذا كان البريد مسجلاً لدينا، ستصلك رسالة تحتوي على رابط إعادة التعيين خلال دقائق.
+          </p>
+          {devResetUrl && (
+            <div className="w-full rounded-xl border border-amber-200 bg-amber-50 p-4 text-right text-sm">
+              <p className="mb-2 font-black text-amber-900">وضع التطوير — رابط إعادة التعيين:</p>
+              <a
+                href={devResetUrl}
+                className="break-all font-medium text-primary underline"
+              >
+                {devResetUrl}
+              </a>
+            </div>
+          )}
+          <Button size="xl" className="w-full" asChild>
             <Link href="/auth/login">
-              <Button className="w-full">العودة إلى تسجيل الدخول</Button>
+              <ArrowRight className="h-5 w-5" />
+              العودة إلى تسجيل الدخول
             </Link>
-          </CardContent>
-        </Card>
-      </div>
+          </Button>
+        </div>
+      </AuthLayout>
     )
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold">نسيت كلمة المرور</CardTitle>
-          <CardDescription>
-            أدخل بريدك الإلكتروني وسنرسل لك رابطاً لإعادة تعيين كلمة المرور
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">البريد الإلكتروني</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="example@email.com"
-                {...register("email")}
-                className={errors.email ? "border-red-500" : ""}
-              />
-              {errors.email && (
-                <p className="text-sm text-red-500">{errors.email.message}</p>
-              )}
-            </div>
+    <AuthLayout
+      title="نسيت كلمة المرور"
+      subtitle="أدخل بريدك الإلكتروني وسنرسل لك رابطاً لإعادة تعيين كلمة المرور"
+      footer={
+        <Link href="/auth/login" className="inline-flex items-center gap-2 font-black text-primary hover:underline">
+          <ArrowRight className="h-4 w-4" />
+          العودة إلى تسجيل الدخول
+        </Link>
+      }
+    >
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+        <AuthField
+          id="email"
+          label="البريد الإلكتروني"
+          type="email"
+          placeholder="example@email.com"
+          autoComplete="email"
+          error={errors.email?.message}
+          {...register("email")}
+        />
 
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "جاري الإرسال..." : "إرسال رابط إعادة التعيين"}
-            </Button>
-          </form>
-
-          <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              <Link
-                href="/auth/login"
-                className="text-primary hover:underline font-medium"
-              >
-                العودة إلى تسجيل الدخول
-              </Link>
-            </p>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+        <Button type="submit" size="xl" className="w-full" disabled={isLoading}>
+          <Mail className="h-5 w-5" />
+          {isLoading ? "جاري الإرسال..." : "إرسال رابط إعادة التعيين"}
+        </Button>
+      </form>
+    </AuthLayout>
   )
 }
