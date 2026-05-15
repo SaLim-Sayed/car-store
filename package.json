@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "verify:resend": "node --env-file=.env.local -e \"if(!process.env.RESEND_API_KEY?.trim()){console.error('❌ RESEND_API_KEY missing in .env.local');process.exit(1)}console.log('✓ RESEND_API_KEY is set')\""
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

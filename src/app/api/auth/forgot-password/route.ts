@@ -1,13 +1,29 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { handleApiError } from '@/lib/api-helpers';
 import { createPasswordResetToken } from '@/lib/password-reset';
-import { sendPasswordResetEmail } from '@/lib/send-reset-email';
+import {
+  getResendConfigError,
+  sendPasswordResetEmail,
+} from '@/lib/send-reset-email';
 
 const successMessage =
   'إذا كان البريد الإلكتروني مسجلاً، ستتلقى رابط استعادة كلمة المرور';
 
 export async function POST(request: NextRequest) {
   try {
+    const configError = getResendConfigError();
+    if (configError && process.env.NODE_ENV === 'production') {
+      console.error('Forgot password:', configError);
+      return NextResponse.json(
+        {
+          success: false,
+          error:
+            'خدمة البريد غير مُفعّلة. أضف RESEND_API_KEY في إعدادات Vercel ثم أعد النشر.',
+        },
+        { status: 503 }
+      );
+    }
+
     const body = await request.json();
     const { email } = body;
 
@@ -32,13 +48,16 @@ export async function POST(request: NextRequest) {
     );
 
     if (!sent) {
-      console.warn('Password reset email not sent:', emailError);
+      console.error('Password reset email failed:', emailError);
+      console.error('Reset URL (support only):', resetUrl);
 
       if (process.env.NODE_ENV === 'production') {
         return NextResponse.json(
           {
             success: false,
-            error: 'تعذر إرسال البريد. تحقق من إعدادات Resend.',
+            error:
+              emailError ||
+              'تعذر إرسال البريد. تحقق من Resend: المفتاح، عنوان المرسل، وتوثيق النطاق.',
           },
           { status: 500 }
         );

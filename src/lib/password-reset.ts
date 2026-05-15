@@ -1,5 +1,6 @@
 import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
+import { getAppUrl } from '@/lib/app-url';
 import { getUsersCollection } from '@/lib/get-users-collection';
 
 const RESET_EXPIRY_MS = 60 * 60 * 1000; // 1 hour
@@ -9,11 +10,7 @@ export function hashResetToken(token: string): string {
 }
 
 export function buildResetUrl(token: string): string {
-  const appUrl =
-    process.env.NEXT_PUBLIC_APP_URL ||
-    process.env.APP_URL ||
-    'http://localhost:3000';
-  return `${appUrl.replace(/\/$/, '')}/auth/reset-password?token=${token}`;
+  return `${getAppUrl()}/auth/reset-password?token=${token}`;
 }
 
 /** Create reset token in MongoDB; returns raw token + URL if user exists. */

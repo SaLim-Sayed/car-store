@@ -1,18 +1,32 @@
 import { Resend } from 'resend';
+import { getResendApiKey, getResendConfigError } from '@/lib/server-env';
 
-const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
+export { getResendConfigError };
+
+function getFromAddress(): string {
+  const configured = process.env.RESEND_FROM_EMAIL?.trim();
+  if (configured) return configured;
+  return 'onboarding@resend.dev';
+}
+
+function getResendClient(): Resend | null {
+  const key = getResendApiKey();
+  if (!key) return null;
+  return new Resend(key);
+}
 
 export async function sendPasswordResetEmail(
   to: string,
   resetUrl: string,
   userName: string
 ): Promise<{ sent: boolean; error?: string }> {
-  if (!resend) {
-    return { sent: false, error: 'RESEND_API_KEY is not configured' };
+  const configError = getResendConfigError();
+  if (configError) {
+    return { sent: false, error: configError };
   }
 
-  const from =
-    process.env.RESEND_FROM_EMAIL || 'سيارات المنيا <onboarding@resend.dev>';
+  const resend = getResendClient()!;
+  const from = getFromAddress();
 
   const { error } = await resend.emails.send({
     from,
@@ -40,8 +54,12 @@ export async function sendPasswordResetEmail(
   });
 
   if (error) {
-    console.error('Resend error:', error);
-    return { sent: false, error: error.message };
+    console.error('Resend error:', JSON.stringify(error));
+    const hint =
+      error.message?.includes('domain') || error.message?.includes('from')
+        ? 'استخدم onboarding@resend.dev أو فعّل نطاقك في Resend'
+        : error.message;
+    return { sent: false, error: hint };
   }
 
   return { sent: true };
