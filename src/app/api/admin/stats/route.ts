@@ -4,6 +4,7 @@ import Car from '@/lib/models/Car';
 import User from '@/lib/models/User';
 import News from '@/lib/models/News';
 import Showroom from '@/lib/models/Showroom';
+import Equipment from '@/lib/models/Equipment';
 import { handleApiError } from '@/lib/api-helpers';
 
 export async function GET() {
@@ -18,6 +19,7 @@ export async function GET() {
       totalUsers,
       totalNews,
       totalShowrooms,
+      totalEquipment,
     ] = await Promise.all([
       Car.countDocuments(),
       Car.countDocuments({ status: 'متاح' }),
@@ -26,6 +28,7 @@ export async function GET() {
       User.countDocuments({ role: 'user' }),
       News.countDocuments(),
       Showroom.countDocuments(),
+      Equipment.countDocuments(),
     ]);
 
     // Revenue: sum of prices of sold cars
@@ -46,6 +49,7 @@ export async function GET() {
         totalRevenue,
         totalNews,
         totalShowrooms,
+        totalEquipment,
       },
     });
   } catch (error) {

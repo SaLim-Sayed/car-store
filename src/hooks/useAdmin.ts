@@ -12,6 +12,7 @@ export interface AdminStats {
   totalRevenue: number;
   totalNews: number;
   totalShowrooms: number;
+  totalEquipment: number;
 }
 
 export interface SeedResult {

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import connectDB from '@/lib/mongoose';
 import Showroom from '@/lib/models/Showroom';
 import { handleApiError, getServerSession } from '@/lib/api-helpers';
+import { persistImageUrl } from '@/lib/persist-image';
 
 export async function GET(
   request: Request,
@@ -33,6 +34,9 @@ export async function PUT(
 
     await connectDB();
     const body = await request.json();
+    if (body.logo) {
+      body.logo = await persistImageUrl(body.logo);
+    }
     const showroom = await Showroom.findByIdAndUpdate(id, body, { new: true, runValidators: true });
     
     if (!showroom) {

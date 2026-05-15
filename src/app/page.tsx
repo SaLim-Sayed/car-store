@@ -21,14 +21,18 @@ import {
 import Link from "next/link"
 import { useFeaturedCars, Car as CarType } from "@/hooks/useCars"
 import { useNews } from "@/hooks/useContent"
+import { useFeaturedEquipment, type Equipment } from "@/hooks/useEquipment"
+import { EquipmentCard } from "@/components/equipment-card"
 import { Skeleton } from "@/components/ui/skeleton"
 
 export default function HomePage() {
   const { data: carsData, isLoading, error } = useFeaturedCars();
   const { data: newsData } = useNews(3);
+  const { data: equipmentData } = useFeaturedEquipment(3);
   
   const featuredCars = carsData?.data || [];
   const newsItems = newsData?.data || [];
+  const featuredEquipment = equipmentData?.data || [];
 
   return (
     <div className="min-h-screen bg-background">
@@ -123,13 +127,17 @@ export default function HomePage() {
                     <h3 className="text-4xl font-[1000] tracking-tight">معارض السيارات بأنحاء المنيا</h3>
                     <p className="text-muted-foreground text-xl leading-relaxed font-medium">دليل شامل لجميع معارض السيارات في محافظة المنيا.</p>
                     <div className="flex flex-wrap gap-4 justify-center md:justify-start pt-2">
-                      <Button className="rounded-2xl px-10 h-16 text-xl font-black bg-[#EAB308] hover:bg-[#CA8A04] text-white shadow-lg shadow-yellow-500/20">
-                        <PlusCircle className="ml-2 h-6 w-6" />
-                        اشتراك معرض جديد
+                      <Button asChild className="rounded-2xl px-10 h-16 text-xl font-black bg-[#EAB308] hover:bg-[#CA8A04] text-white shadow-lg shadow-yellow-500/20">
+                        <Link href="/admin/showrooms/new">
+                          <PlusCircle className="ml-2 h-6 w-6" />
+                          اشتراك معرض جديد
+                        </Link>
                       </Button>
-                      <Button variant="secondary" className="rounded-2xl px-10 h-16 text-xl font-black bg-[#F1F1F1] hover:bg-gray-200 transition-colors">
-                        تصفح المعارض
-                        <ChevronLeft className="mr-2 h-6 w-6" />
+                      <Button asChild variant="secondary" className="rounded-2xl px-10 h-16 text-xl font-black bg-[#F1F1F1] hover:bg-gray-200 transition-colors">
+                        <Link href="/showrooms">
+                          تصفح المعارض
+                          <ChevronLeft className="mr-2 h-6 w-6" />
+                        </Link>
                       </Button>
                     </div>
                   </div>
@@ -146,13 +154,17 @@ export default function HomePage() {
                     <h3 className="text-4xl font-[1000] tracking-tight">آلات زراعية ومعدات ثقيلة</h3>
                     <p className="text-muted-foreground text-xl leading-relaxed font-medium">جرارات، حفارات، شاحنات، ومعدات بناء وزراعة بأسعار تنافسية.</p>
                     <div className="flex flex-wrap gap-4 justify-center md:justify-start pt-2">
-                      <Button className="rounded-2xl px-10 h-16 text-xl font-black bg-[#EAB308] hover:bg-[#CA8A04] text-white shadow-lg shadow-yellow-500/20">
-                        <PlusCircle className="ml-2 h-6 w-6" />
-                        اعرض معداتي
+                      <Button asChild className="rounded-2xl px-10 h-16 text-xl font-black bg-[#EAB308] hover:bg-[#CA8A04] text-white shadow-lg shadow-yellow-500/20">
+                        <Link href="/admin/equipment/new">
+                          <PlusCircle className="ml-2 h-6 w-6" />
+                          اعرض معداتي
+                        </Link>
                       </Button>
-                      <Button variant="secondary" className="rounded-2xl px-10 h-16 text-xl font-black bg-[#F1F1F1] hover:bg-gray-200 transition-colors">
-                        تصفح المعروض
-                        <ChevronLeft className="mr-2 h-6 w-6" />
+                      <Button asChild variant="secondary" className="rounded-2xl px-10 h-16 text-xl font-black bg-[#F1F1F1] hover:bg-gray-200 transition-colors">
+                        <Link href="/equipment">
+                          تصفح المعروض
+                          <ChevronLeft className="mr-2 h-6 w-6" />
+                        </Link>
                       </Button>
                     </div>
                   </div>
@@ -204,6 +216,25 @@ export default function HomePage() {
               </div>
             )}
           </section>
+
+          {featuredEquipment.length > 0 && (
+            <section className="space-y-8">
+              <div className="flex justify-between items-center">
+                <h2 className="text-5xl md:text-6xl font-[1000] tracking-tighter">معدات زراعية مميزة</h2>
+                <Button variant="outline" asChild className="rounded-full px-10 h-14 text-xl font-black bg-white">
+                  <Link href="/equipment" className="flex items-center">
+                    عرض الكل
+                    <ChevronLeft className="mr-2 h-6 w-6" />
+                  </Link>
+                </Button>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {featuredEquipment.map((item: Equipment) => (
+                  <EquipmentCard key={item._id} equipment={item} />
+                ))}
+              </div>
+            </section>
+          )}
 
           {/* News Section */}
           <section className="space-y-12">

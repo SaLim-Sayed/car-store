@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import connectDB from '@/lib/mongoose';
 import Showroom from '@/lib/models/Showroom';
 import { handleApiError, getServerSession } from '@/lib/api-helpers';
+import { persistImageUrl } from '@/lib/persist-image';
 
 export async function GET(request: Request) {
   try {
@@ -27,6 +28,9 @@ export async function POST(request: Request) {
 
     await connectDB();
     const body = await request.json();
+    if (body.logo) {
+      body.logo = await persistImageUrl(body.logo);
+    }
     const showroom = await Showroom.create(body);
 
     return NextResponse.json({ success: true, data: showroom }, { status: 201 });

@@ -14,6 +14,7 @@ import {
   Plus,
   Settings,
   CheckCircle,
+  Tractor,
 } from "lucide-react"
 import Link from "next/link"
 import { useAdminStats, useSeedDatabase } from "@/hooks/useAdmin"
@@ -52,6 +53,13 @@ export default function AdminDashboard() {
           bgColor: "bg-indigo-100 dark:bg-indigo-900",
         },
         {
+          title: "المعدات",
+          value: (stats.totalEquipment || 0).toLocaleString(),
+          icon: Tractor,
+          color: "text-emerald-600",
+          bgColor: "bg-emerald-100 dark:bg-emerald-900",
+        },
+        {
           title: "الأخبار",
           value: (stats.totalNews || 0).toLocaleString(),
           icon: CheckCircle,
@@ -79,9 +87,9 @@ export default function AdminDashboard() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-8 mb-12">
           {isLoading
-            ? Array.from({ length: 5 }).map((_, i) => (
+            ? Array.from({ length: 6 }).map((_, i) => (
                 <Card key={i} className="border-0 shadow-lg rounded-[2rem]">
                   <CardContent className="p-8">
                     <Skeleton className="h-6 w-1/2 mb-4" />
@@ -143,6 +151,12 @@ export default function AdminDashboard() {
                 <Link href="/admin/showrooms" className="flex items-center">
                   <Database className="h-5 w-5 ml-3 text-indigo-600" />
                   إدارة المعارض
+                </Link>
+              </Button>
+              <Button variant="outline" asChild className="w-full h-14 justify-between rounded-2xl text-lg font-black border-2 border-gray-50 hover:bg-gray-50 px-6">
+                <Link href="/admin/equipment" className="flex items-center">
+                  <Tractor className="h-5 w-5 ml-3 text-emerald-600" />
+                  المعدات الزراعية
                 </Link>
               </Button>
             </CardContent>

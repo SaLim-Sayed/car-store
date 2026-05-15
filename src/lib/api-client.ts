@@ -124,6 +124,30 @@ export const newsApi = {
     apiClient.delete(`/news/${id}`).then(res => res.data),
 };
 
+export const equipmentApi = {
+  getEquipment: (params?: {
+    page?: number;
+    limit?: number;
+    search?: string;
+    category?: string;
+    featured?: boolean;
+    minPrice?: number;
+    maxPrice?: number;
+  }) => apiClient.get('/equipment', { params }).then((res) => res.data),
+
+  getEquipmentById: (id: string) =>
+    apiClient.get(`/equipment/${id}`).then((res) => res.data),
+
+  createEquipment: (data: Record<string, unknown>) =>
+    apiClient.post('/equipment', data).then((res) => res.data),
+
+  updateEquipment: (id: string, data: Record<string, unknown>) =>
+    apiClient.put(`/equipment/${id}`, data).then((res) => res.data),
+
+  deleteEquipment: (id: string) =>
+    apiClient.delete(`/equipment/${id}`).then((res) => res.data),
+};
+
 export const showroomsApi = {
   getShowrooms: (featured?: boolean) => 
     apiClient.get('/showrooms', { params: { featured } }).then(res => res.data),
