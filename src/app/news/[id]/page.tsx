@@ -82,8 +82,7 @@ export default function NewsDetailPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-[#F9F6F1]">
-        <Navbar />
-        <main className="container mx-auto px-4 py-24 max-w-4xl space-y-12">
+           <main className="container mx-auto px-4 pt-24 pb-12 max-w-4xl space-y-8">
           <Skeleton className="h-12 w-64 rounded-full" />
           <Skeleton className="h-[500px] w-full rounded-[3rem]" />
           <div className="space-y-4">
@@ -100,42 +99,41 @@ export default function NewsDetailPage() {
 
   return (
     <div className="min-h-screen bg-[#F9F6F1]">
-      <Navbar />
-
-      <main className="container mx-auto px-4 py-24">
-        <div className="max-w-4xl mx-auto space-y-12">
+ 
+      <main className="container mx-auto px-4 pt-20 pb-16">
+        <div className="max-w-4xl mx-auto space-y-8 md:space-y-12">
           {/* Back button */}
-          <Button variant="ghost" asChild className="rounded-full hover:bg-white -mr-4 group">
-            <Link href="/news" className="flex items-center text-muted-foreground hover:text-primary font-black">
-              <ChevronRight className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform" />
+          <Button variant="ghost" asChild className="rounded-full hover:bg-white -mr-2 group">
+            <Link href="/news" className="flex items-center text-muted-foreground hover:text-primary font-black text-sm md:text-base">
+              <ChevronRight className="h-4 w-4 md:h-5 md:w-5 ml-1 md:ml-2 group-hover:translate-x-1 transition-transform" />
               العودة للأخبار
             </Link>
           </Button>
 
           {/* Header */}
-          <div className="space-y-8">
-            <div className="flex flex-wrap items-center gap-6 text-lg font-bold text-muted-foreground">
-              <Badge className="bg-primary/10 text-primary border-0 rounded-full px-6 py-2 font-black text-base uppercase tracking-wider">
+          <div className="space-y-5 md:space-y-8">
+            <div className="flex flex-wrap items-center gap-3 md:gap-6 text-base md:text-lg font-bold text-muted-foreground">
+              <Badge className="bg-primary/10 text-primary border-0 rounded-full px-4 md:px-6 py-1.5 md:py-2 font-black text-sm md:text-base uppercase tracking-wider">
                 {news.category}
               </Badge>
               <div className="flex items-center gap-2">
-                <Calendar className="h-5 w-5" />
+                <Calendar className="h-4 w-4 md:h-5 md:w-5" />
                 {news.date}
               </div>
             </div>
 
-            <h1 className="text-5xl md:text-7xl font-[1000] tracking-tighter leading-tight">
+            <h1 className="text-3xl sm:text-5xl md:text-7xl font-[1000] tracking-tighter leading-tight">
               {news.title}
             </h1>
 
-            <p className="text-2xl text-muted-foreground font-medium leading-relaxed border-r-8 border-primary/20 pr-8">
+            <p className="text-base md:text-2xl text-muted-foreground font-medium leading-relaxed border-r-4 md:border-r-8 border-primary/20 pr-4 md:pr-8">
               {news.excerpt}
             </p>
           </div>
 
           {/* Featured Image */}
           {news.image && (
-            <div className="relative aspect-[16/9] rounded-[3rem] overflow-hidden shadow-2xl border-8 border-white group">
+            <div className="relative aspect-[16/9] rounded-[1.5rem] md:rounded-[3rem] overflow-hidden shadow-2xl border-2 md:border-8 border-white group">
               <img
                 src={news.image}
                 alt={news.title}
@@ -145,42 +143,46 @@ export default function NewsDetailPage() {
           )}
 
           {/* Content */}
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_250px] gap-16 items-start">
-            <div className="bg-white rounded-[3rem] p-12 shadow-xl space-y-8">
-              <div className="prose prose-xl max-w-none prose-p:font-medium prose-p:leading-relaxed prose-headings:font-black prose-headings:tracking-tighter">
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_250px] gap-8 md:gap-16 items-start">
+            {/* Main Article */}
+            <div className="bg-white rounded-2xl md:rounded-[3rem] p-6 md:p-12 shadow-xl space-y-8 order-2 lg:order-1">
+              <div className="prose prose-base md:prose-xl max-w-none prose-p:font-medium prose-p:leading-relaxed prose-headings:font-black prose-headings:tracking-tighter">
                 {news.content.split('\n').map((para: string, i: number) => (
-                  <p key={i} className="mb-6">{para}</p>
+                  <p key={i} className="mb-4 md:mb-6">{para}</p>
                 ))}
               </div>
             </div>
 
             {/* Sidebar */}
-            <div className="space-y-8 sticky top-32">
-              <Card className="border-0 shadow-xl rounded-[2.5rem] bg-white overflow-hidden">
-                <CardHeader className="p-8 pb-4">
-                  <h3 className="text-xl font-black">مشاركة الخبر</h3>
+            <div className="space-y-4 md:space-y-8 lg:sticky lg:top-32 order-1 lg:order-2">
+              {/* Share Card */}
+              <Card className="border-0 shadow-xl rounded-2xl md:rounded-[2.5rem] bg-white overflow-hidden">
+                <CardHeader className="p-5 md:p-8 pb-3 md:pb-4">
+                  <h3 className="text-lg md:text-xl font-black">مشاركة الخبر</h3>
                 </CardHeader>
-                <CardContent className="p-8 pt-0 flex flex-col gap-4">
-                  <Button variant="outline" onClick={copyLink} className="h-14 rounded-2xl border-2 font-bold justify-start gap-4">
-                    <LinkIcon className="h-5 w-5" />
-                    نسخ الرابط
+                <CardContent className="p-5 md:p-8 pt-0 flex flex-row md:flex-col gap-3">
+                  <Button variant="outline" onClick={copyLink} className="flex-1 md:flex-none h-11 md:h-14 rounded-xl md:rounded-2xl border-2 font-bold justify-start gap-2 md:gap-4 text-sm md:text-base">
+                    <LinkIcon className="h-4 w-4 md:h-5 md:w-5" />
+                    <span className="hidden sm:inline">نسخ الرابط</span>
+                    <span className="sm:hidden">نسخ</span>
                   </Button>
-                  <Button variant="outline" className="h-14 rounded-2xl border-2 font-bold justify-start gap-4 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200">
-                    <Facebook className="h-5 w-5" />
+                  <Button variant="outline" className="flex-1 md:flex-none h-11 md:h-14 rounded-xl md:rounded-2xl border-2 font-bold justify-start gap-2 md:gap-4 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 text-sm md:text-base">
+                    <Facebook className="h-4 w-4 md:h-5 md:w-5" />
                     فيسبوك
                   </Button>
-                  <Button variant="outline" className="h-14 rounded-2xl border-2 font-bold justify-start gap-4 hover:bg-sky-50 hover:text-sky-600 hover:border-sky-200">
-                    <Twitter className="h-5 w-5" />
+                  <Button variant="outline" className="flex-1 md:flex-none h-11 md:h-14 rounded-xl md:rounded-2xl border-2 font-bold justify-start gap-2 md:gap-4 hover:bg-sky-50 hover:text-sky-600 hover:border-sky-200 text-sm md:text-base">
+                    <Twitter className="h-4 w-4 md:h-5 md:w-5" />
                     تويتر
                   </Button>
                 </CardContent>
               </Card>
 
-              <Card className="border-0 shadow-xl rounded-[2.5rem] bg-primary text-white overflow-hidden">
-                <CardContent className="p-8 space-y-6">
-                  <h3 className="text-2xl font-black leading-tight">اشترك في نشرتنا الإخبارية</h3>
-                  <p className="font-bold opacity-80">كن أول من يعلم بجديد السيارات والعروض الحصرية</p>
-                  <Button className="w-full h-14 rounded-2xl bg-white text-primary hover:bg-white/90 font-black text-lg">
+              {/* Newsletter Card */}
+              <Card className="border-0 shadow-xl rounded-2xl md:rounded-[2.5rem] bg-primary text-white overflow-hidden">
+                <CardContent className="p-5 md:p-8 space-y-4 md:space-y-6">
+                  <h3 className="text-lg md:text-2xl font-black leading-tight">اشترك في نشرتنا الإخبارية</h3>
+                  <p className="text-sm md:text-base font-bold opacity-80">كن أول من يعلم بجديد السيارات والعروض الحصرية</p>
+                  <Button className="w-full h-11 md:h-14 rounded-xl md:rounded-2xl bg-white text-primary hover:bg-white/90 font-black text-base md:text-lg">
                     اشترك الآن
                   </Button>
                 </CardContent>

@@ -10,9 +10,11 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Skeleton } from "@/components/ui/skeleton"
 import { toast } from "sonner"
-import { ArrowRight, Plus, X, Image as ImageIcon } from "lucide-react"
+import { ArrowRight } from "lucide-react"
 import Link from "next/link"
 import { useNews, useUpdateNews } from "@/hooks/useContent"
+import { uploadImageIfNeeded } from "@/lib/client-image-upload"
+import { ImageUpload } from "@/components/image-upload"
 
 export default function EditNewsPage() {
   const router = useRouter()
@@ -60,36 +62,6 @@ export default function EditNewsPage() {
 
   const [errors, setErrors] = useState<Partial<Record<keyof typeof form, string>>>({})
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-
-    setIsUploading(true)
-    try {
-      const formData = new FormData()
-      formData.append('file', file)
-
-      const res = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      })
-
-      const data = await res.json()
-
-      if (data.success) {
-        setForm((prev) => ({ ...prev, image: data.url }))
-        toast.success("تم رفع الصورة بنجاح")
-      } else {
-        toast.error(data.error || "فشل رفع الصورة")
-      }
-    } catch {
-      toast.error("حدث خطأ أثناء رفع الصورة")
-    } finally {
-      setIsUploading(false)
-      e.target.value = ''
-    }
-  }
-
   const validate = () => {
     const newErrors: Partial<Record<keyof typeof form, string>> = {}
     if (!form.title) newErrors.title = "العنوان مطلوب"
@@ -104,28 +76,33 @@ export default function EditNewsPage() {
     e.preventDefault()
     if (!validate()) return
 
-    updateMutation.mutate(
-      {
-        id,
-        data: form
-      },
-      {
-        onSuccess: () => {
-          toast.success("تم تحديث الخبر بنجاح")
-          router.push("/admin/news")
+    try {
+      const image = await uploadImageIfNeeded(form.image)
+
+      updateMutation.mutate(
+        {
+          id,
+          data: { ...form, image }
         },
-        onError: (error: any) => {
-          toast.error(error?.message || "فشل في تحديث الخبر")
+        {
+          onSuccess: () => {
+            toast.success("تم تحديث الخبر بنجاح")
+            router.push("/admin/news")
+          },
+          onError: (error: any) => {
+            toast.error(error?.response?.data?.error || error?.message || "فشل في تحديث الخبر")
+          }
         }
-      }
-    )
+      )
+    } catch {
+      toast.error("فشل رفع الصورة. جرّب رفع الملف مرة أخرى.")
+    }
   }
 
   if (isLoadingData && !form.title) {
     return (
       <div className="min-h-screen bg-[#F9F6F1]">
-        <Navbar />
-        <main className="container mx-auto px-4 py-24 max-w-4xl space-y-12">
+           <main className="container mx-auto px-4 py-24 max-w-4xl space-y-12">
           <Skeleton className="h-16 w-64 rounded-2xl" />
           <Skeleton className="h-[600px] w-full rounded-[2.5rem]" />
         </main>
@@ -135,8 +112,7 @@ export default function EditNewsPage() {
 
   return (
     <div className="min-h-screen bg-[#F9F6F1]">
-      <Navbar />
-
+ 
       <main className="container mx-auto px-4 py-24 max-w-4xl">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 mb-12">
           <div className="space-y-4">
@@ -229,46 +205,13 @@ export default function EditNewsPage() {
             <CardHeader className="p-8 pb-0">
               <CardTitle className="text-2xl font-black">الصورة البارزة</CardTitle>
             </CardHeader>
-            <CardContent className="p-8 space-y-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-                <div className="space-y-4">
-                  <Label className="text-lg font-black">تغيير الصورة</Label>
-                  <div className="relative h-48 border-4 border-dashed border-gray-100 rounded-[2rem] flex flex-col items-center justify-center hover:border-primary transition-colors cursor-pointer group">
-                    <Input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleFileUpload}
-                      disabled={isUploading}
-                      className="absolute inset-0 opacity-0 cursor-pointer z-10"
-                    />
-                    <ImageIcon className="h-12 w-12 text-muted-foreground group-hover:text-primary mb-3 transition-colors" />
-                    <span className="text-muted-foreground font-black group-hover:text-primary transition-colors">
-                      {isUploading ? "جاري الرفع..." : "اختر صورة جديدة لتغييرها"}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="space-y-4">
-                  <Label className="text-lg font-black">رابط الصورة (URL)</Label>
-                  <Input
-                    value={form.image}
-                    onChange={(e) => setForm({ ...form, image: e.target.value })}
-                    placeholder="https://example.com/image.jpg"
-                    className={`h-14 rounded-2xl border-2 px-6 font-bold ${errors.image ? "border-red-500" : "border-gray-50 focus:border-primary"}`}
-                  />
-                </div>
-              </div>
-
-              {form.image && (
-                <div className="relative aspect-video rounded-[2rem] overflow-hidden shadow-xl border-4 border-white group">
-                  <img
-                    src={form.image}
-                    alt="معاينة"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                  />
-                </div>
-              )}
-              {errors.image && <p className="text-sm text-red-500 font-bold">{errors.image}</p>}
+            <CardContent className="p-8">
+              <ImageUpload
+                value={form.image}
+                onChange={(image) => setForm((prev) => ({ ...prev, image }))}
+                error={errors.image}
+                onUploadingChange={setIsUploading}
+              />
             </CardContent>
           </Card>
 

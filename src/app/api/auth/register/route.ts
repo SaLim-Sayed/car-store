@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
       { expiresIn: JWT_EXPIRES_IN }
     );
 
-    return NextResponse.json(
+    const response = NextResponse.json(
       {
         success: true,
         data: {
@@ -68,6 +68,16 @@ export async function POST(request: NextRequest) {
       },
       { status: 201 }
     );
+
+    response.cookies.set('auth-token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 60 * 60 * 24 * 7,
+    });
+
+    return response;
   } catch (error) {
     return handleApiError(error, 'فشل في إنشاء الحساب');
   }

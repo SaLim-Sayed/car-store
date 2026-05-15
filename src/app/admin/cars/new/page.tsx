@@ -173,8 +173,7 @@ export default function NewCarPage() {
 
   return (
     <div className="min-h-screen bg-[#F9F6F1]">
-      <Navbar />
-
+ 
       <main className="container mx-auto px-4 py-24 max-w-4xl">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 mb-12">
           <div className="space-y-4">

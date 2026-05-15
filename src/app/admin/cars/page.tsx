@@ -106,8 +106,7 @@ export default function AdminCarsPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#F9F6F1]">
-        <Navbar />
-        <main className="container mx-auto px-4 py-24 max-w-7xl space-y-8">
+           <main className="container mx-auto px-4 py-24 max-w-7xl space-y-8">
           <Skeleton className="h-16 w-64 rounded-2xl" />
           <div className="space-y-4">
             {[...Array(5)].map((_, index) => (
@@ -121,8 +120,7 @@ export default function AdminCarsPage() {
 
   return (
     <div className="min-h-screen bg-[#F9F6F1]">
-      <Navbar />
-
+ 
       <main className="container mx-auto px-4 py-24 max-w-7xl">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 mb-12">
           <div className="space-y-4">

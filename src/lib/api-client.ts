@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { clearClientAuth, getClientAuthToken } from '@/lib/auth-token';
 
 // Base URL logic: prioritize env var, fallback to current origin or localhost
 const getBaseUrl = () => {
@@ -33,12 +34,9 @@ export const apiClient = axios.create({
 // Request interceptor to add auth token
 apiClient.interceptors.request.use(
   (config) => {
-    // Add auth token from localStorage if available
-    if (typeof window !== 'undefined') {
-      const token = localStorage.getItem('token');
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
+    const token = getClientAuthToken();
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
@@ -56,9 +54,8 @@ apiClient.interceptors.response.use(
     // Handle 401 unauthorized - redirect to login
     if (error.response?.status === 401) {
       if (typeof window !== 'undefined') {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        window.location.href = '/login';
+        clearClientAuth();
+        window.location.href = '/auth/login';
       }
     }
     return Promise.reject(error);

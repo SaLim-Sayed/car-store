@@ -207,8 +207,7 @@ export default function EditCarPage() {
   if (loadingCar) {
     return (
       <div className="min-h-screen bg-[#F9F6F1]">
-        <Navbar />
-        <main className="container mx-auto px-4 py-24 max-w-4xl space-y-12">
+           <main className="container mx-auto px-4 py-24 max-w-4xl space-y-12">
           <Skeleton className="h-16 w-64 rounded-2xl" />
           <Skeleton className="h-[600px] w-full rounded-[2.5rem]" />
         </main>
@@ -218,8 +217,7 @@ export default function EditCarPage() {
 
   return (
     <div className="min-h-screen bg-[#F9F6F1]">
-      <Navbar />
-
+ 
       <main className="container mx-auto px-4 py-24 max-w-4xl">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 mb-12">
           <div className="space-y-4">

@@ -36,8 +36,7 @@ export default function CarsPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
-
+ 
       <main className="container mx-auto px-4 py-24">
         <div className="mb-16 space-y-4">
           <h1 className="text-5xl md:text-6xl font-[1000] tracking-tighter">جميع السيارات</h1>

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import connectDB from '@/lib/mongoose';
 import News from '@/lib/models/News';
 import { handleApiError, getServerSession } from '@/lib/api-helpers';
+import { persistImageUrl } from '@/lib/persist-image';
 
 export async function GET(request: Request) {
   try {
@@ -28,6 +29,11 @@ export async function POST(request: Request) {
 
     await connectDB();
     const body = await request.json();
+
+    if (body.image) {
+      body.image = await persistImageUrl(body.image);
+    }
+
     const news = await News.create(body);
 
     return NextResponse.json({ success: true, data: news }, { status: 201 });

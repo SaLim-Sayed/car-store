@@ -16,8 +16,8 @@ const NewsSchema = new mongoose.Schema({
   category: {
     type: String,
     required: [true, 'يرجى اختيار القسم'],
-    enum: ['أخبار', 'عروض', 'نصائح', 'جديد'],
-    default: 'أخبار',
+    enum: ['أخبار السوق', 'جديد السيارات', 'نصائح تهمك', 'مراجعات', 'أخبار', 'عروض', 'نصائح', 'جديد'],
+    default: 'أخبار السوق',
   },
   image: {
     type: String,

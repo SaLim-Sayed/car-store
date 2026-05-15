@@ -186,8 +186,7 @@ export default function FinancePage() {
 
   return (
     <div className="min-h-screen">
-      <Navbar />
-      
+       
       {/* Hero Section */}
       <section className="relative bg-gradient-to-r from-blue-600 to-purple-600 text-white py-20">
         <div className="container mx-auto px-4">

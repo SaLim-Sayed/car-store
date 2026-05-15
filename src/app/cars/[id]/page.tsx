@@ -82,8 +82,7 @@ export default function CarDetailPage() {
   if (loading) {
     return (
       <div className="min-h-screen">
-        <Navbar />
-        <main className="container mx-auto px-4 py-8">
+           <main className="container mx-auto px-4 py-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div>
               <Skeleton className="h-96 w-full rounded-lg" />
@@ -103,8 +102,7 @@ export default function CarDetailPage() {
   if (error || !car) {
     return (
       <div className="min-h-screen">
-        <Navbar />
-        <main className="container mx-auto px-4 py-8">
+           <main className="container mx-auto px-4 py-8">
           <Card className="p-8 text-center">
             <Car className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
             <h3 className="text-lg font-semibold mb-2">السيارة غير موجودة</h3>
@@ -122,8 +120,7 @@ export default function CarDetailPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
-
+ 
       <main className="container mx-auto px-4 py-24">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
           {/* Images Section */}

@@ -70,8 +70,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-[#F9F6F1]">
-      <Navbar />
-
+ 
       <main className="container mx-auto px-4 py-24">
         <div className="mb-12 space-y-4">
           <h1 className="text-5xl font-[1000] tracking-tighter">لوحة التحكم</h1>

@@ -1,17 +1,21 @@
 import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
+import { getTokenFromCookieHeader } from '@/lib/auth-token';
 
 const JWT_SECRET = process.env.JWT_SECRET!;
 
 export async function getServerSession() {
   try {
     const headersList = await headers();
+    let token = '';
     const authorization = headersList.get('authorization');
+    if (authorization) {
+      token = authorization.split(' ')[1];
+    } else {
+      token = getTokenFromCookieHeader(headersList.get('cookie')) || '';
+    }
 
-    if (!authorization) return null;
-
-    const token = authorization.split(' ')[1];
     if (!token) return null;
 
     try {

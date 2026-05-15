@@ -1,83 +1,129 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Search, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 
+const slides = [
+  {
+    image: "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=1600&q=80",
+    title: "مجموعة سيارات",
+    highlight: "فاخرة",
+    subtitle: "اكتشف أحدث الموديلات والعروض الحصرية",
+    desc: "مجموعتنا الواسعة من السيارات الجديدة والمستعملة بأفضل الأسعار في السوق، مع خيارات تمويل مرنة وضمان شامل."
+  },
+  {
+    image: "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1600&q=80",
+    title: "أفضل العروض على",
+    highlight: "السيارات المستعملة",
+    subtitle: "سيارات مفحصة ومضمونة بأسعار لا تقبل المنافسة",
+    desc: "نضمن لك الجودة والموثوقية في كل سيارة نعرضها، مع تقارير فحص فنية شاملة لراحة بالك."
+  },
+  {
+    image: "https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=1600&q=80",
+    title: "احصل على سيارة",
+    highlight: "أحلامك اليوم",
+    subtitle: "خيارات تمويل مرنة تناسب ميزانيتك",
+    desc: "تواصل معنا لمعرفة أحدث خطط التمويل الميسرة والعروض البنكية الحصرية لعملائنا في المنيا."
+  }
+];
+
 export function HeroSlider() {
+  const [currentSlide, setCurrentSlide] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
 
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % slides.length);
+  };
+
+  // Auto-play
+  useEffect(() => {
+    const timer = setInterval(nextSlide, 6000);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
-    <section className="relative w-full h-[600px] md:h-[750px] overflow-hidden">
-      {/* Background Image */}
-      <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-1000"
-        style={{
-          backgroundImage:
-            "url('https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=1200&h=600&fit=crop')",
-        }}
-      >
-        {/* Dark Overlay with Gradient */}
-        <div className="absolute inset-0 bg-gradient-to-l from-black/80 via-black/40 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
-      </div>
+    <section className="relative w-full min-h-[100svh] md:h-[750px] overflow-hidden">
+      {/* Background Slides */}
+      {slides.map((slide, index) => (
+        <div
+          key={index}
+          className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+            index === currentSlide ? "opacity-100 scale-105" : "opacity-0 scale-100"
+          }`}
+          style={{ transitionProperty: "opacity, transform" }}
+        >
+          <div
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            style={{ backgroundImage: `url('${slide.image}')` }}
+          />
+          {/* Dark Overlay with Gradient */}
+          <div className="absolute inset-0 bg-gradient-to-l from-black/80 via-black/50 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/30" />
+        </div>
+      ))}
 
       {/* Content Container */}
-      <div className="relative z-10 container mx-auto h-full flex flex-col justify-center px-4 md:px-8">
-        <div className="max-w-4xl text-white space-y-8 animate-in fade-in slide-in-from-right-12 duration-1000">
+      <div className="relative z-10 container mx-auto h-full flex flex-col justify-end md:justify-center pb-14 md:pb-0 px-4 md:px-8 pt-16 md:pt-0">
+        <div className="w-full max-w-4xl mx-auto md:mx-0 text-white space-y-5 md:space-y-8 animate-in fade-in slide-in-from-right-12 duration-1000">
+
           {/* Exclusive Offer Badge */}
-          {/* <div className="inline-flex items-center gap-3 px-6 py-2.5 bg-primary/10 backdrop-blur-xl border-2 border-primary/20 rounded-full text-white text-base font-black tracking-wider animate-in fade-in zoom-in duration-1000 shadow-2xl shadow-primary/20">
-            <span className="relative flex h-3 w-3">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-primary" />
-            </span>
-            عروض حصرية لفترة محدودة
-          </div> */}
+          <div className="flex justify-end">
+            <div className="inline-flex items-center gap-2.5 px-5 py-2 bg-primary/20 backdrop-blur-xl border border-primary/40 rounded-md text-primary text-sm font-black tracking-wider shadow-xl">
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary" />
+              </span>
+              عروض حصرية
+            </div>
+          </div>
 
           {/* Main Heading */}
-          <h1 className="text-6xl  md:text-5xl font-[1000]   text-right">
-            مجموعة سيارات
-            <span className="text-primary "> فاخرة </span>
-          </h1>
+          <div className="space-y-2">
+            <h1 key={`title-${currentSlide}`} className="text-5xl md:text-6xl font-[1000] text-right leading-tight animate-in fade-in slide-in-from-right-8 duration-700">
+              {slides[currentSlide].title}
+              <br />
+              <span className="text-primary">{slides[currentSlide].highlight}</span>
+            </h1>
+          </div>
 
           {/* Subheading */}
-          <div className="space-y-6 max-w-2xl ml-auto text-right">
-            <p className="text-2xl md:text-3xl text-white font-bold drop-shadow-lg">
-              اكتشف أحدث الموديلات العالمية بأسعار تنافسية
+          <div key={`sub-${currentSlide}`} className="space-y-3 md:space-y-4 text-right animate-in fade-in slide-in-from-right-12 duration-700 delay-150">
+            <p className="text-lg md:text-2xl text-white font-bold drop-shadow-lg">
+              {slides[currentSlide].subtitle}
             </p>
-            <p className="text-lg md:text-xl text-white/70 leading-relaxed font-medium">
-              نحن نقدم لك تجربة فريدة في اختيار سيارتك القادمة مع باقة متنوعة من
-              الخيارات التي تلبي كافة تطلعاتك.
+            <p className="text-sm md:text-lg text-white/70 leading-relaxed font-medium max-w-2xl ml-auto">
+              {slides[currentSlide].desc}
             </p>
           </div>
 
-          {/* Search Bar Integrated */}
-          <div className="relative max-w-3xl group w-full ml-auto pt-4">
-            <div className="relative flex items-center bg-white rounded-[2rem] p-1.5 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] transition-transform group-focus-within:scale-[1.02] duration-500">
-              <Button className="rounded-[1.7rem] px-14 h-16 text-2xl font-black bg-[#1A1A1A] hover:bg-black text-white transition-all shadow-xl">
-                بحث
-              </Button>
-              <div className="flex-1 flex items-center px-8">
+          {/* Search Bar */}
+          <div className="relative group w-full pt-2">
+            <div className="relative flex items-center bg-white rounded-md p-1.5 shadow-[0_20px_40px_-10px_rgba(0,0,0,0.4)] transition-transform group-focus-within:scale-[1.02] duration-500">
+              <div className="flex-1 flex items-center px-4 md:px-6">
+                <Search className="h-5 w-5 md:h-6 md:w-6 text-gray-400 ml-2 md:ml-3 shrink-0" />
                 <Input
                   type="text"
-                  placeholder="ابحث عن سيارتك المثالية..."
-                  className="border-0 focus-visible:ring-0 text-gray-900 placeholder:text-gray-400 text-xl md:text-2xl h-16 w-full bg-transparent text-right font-black"
+                  placeholder="ابحث عن سيارة، معرض، أو معدة..."
+                  className="border-0 focus-visible:ring-0 text-gray-900 placeholder:text-gray-400 text-base md:text-xl h-12 md:h-14 w-full bg-transparent text-right font-bold"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
-                <Search className="h-8 w-8 text-gray-400 mr-4" />
               </div>
+              <Button className="rounded-md px-6 md:px-10 h-12 md:h-14 text-base md:text-xl font-black bg-[#D97706] hover:bg-[#B45309] text-white transition-all shadow-lg shrink-0">
+                بحث
+              </Button>
             </div>
           </div>
 
           {/* CTA Buttons */}
-          <div className="flex flex-wrap gap-6 pt-8 justify-end">
+          <div className="grid grid-cols-2 md:flex md:flex-wrap gap-3 md:gap-6 pt-2 md:pt-4 md:justify-end">
             <Button
               size="lg"
               asChild
-              className="rounded-3xl px-12 h-16 text-xl font-black bg-white text-black hover:bg-gray-100 border-0 shadow-2xl transition-all hover:scale-105 active:scale-95"
+              className="rounded-md h-13 md:h-16 text-base md:text-xl font-black bg-white text-black hover:bg-gray-100 border-0 shadow-2xl transition-all hover:scale-105 active:scale-95 px-4 md:px-12"
             >
               <Link href="/cars">استعرض السيارات</Link>
             </Button>
@@ -85,12 +131,26 @@ export function HeroSlider() {
               size="lg"
               variant="outline"
               asChild
-              className="rounded-3xl px-12 h-16 text-xl font-black border-white/20 text-white bg-white/5 backdrop-blur-md hover:bg-white/10 transition-all hover:scale-105 active:scale-95"
+              className="rounded-md h-13 md:h-16 text-base md:text-xl font-black border-white/30 text-white bg-white/10 backdrop-blur-md hover:bg-white/20 transition-all hover:scale-105 active:scale-95 px-4 md:px-12"
             >
               <Link href="/about">لمعرفة المزيد</Link>
             </Button>
           </div>
         </div>
+      </div>
+
+      {/* Pagination Dots */}
+      <div className="absolute bottom-12 right-1/2 translate-x-1/2 md:translate-x-0 md:right-8 z-30 flex gap-3">
+        {slides.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setCurrentSlide(i)}
+            className={`h-2.5 transition-all duration-500 rounded-full ${
+              i === currentSlide ? "w-10 bg-primary shadow-[0_0_15px_rgba(217,119,6,0.5)]" : "w-2.5 bg-white/30 hover:bg-white/50"
+            }`}
+            aria-label={`Go to slide ${i + 1}`}
+          />
+        ))}
       </div>
 
       {/* Decorative Elements */}
