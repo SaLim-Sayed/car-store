@@ -8,51 +8,51 @@ import Equipment from '@/lib/models/Equipment';
 import { handleApiError } from '@/lib/api-helpers';
 
 export async function GET() {
-  try {
-    await connectDB();
+ try {
+ await connectDB();
 
-    const [
-      totalCars,
-      availableCars,
-      soldCars,
-      reservedCars,
-      totalUsers,
-      totalNews,
-      totalShowrooms,
-      totalEquipment,
-    ] = await Promise.all([
-      Car.countDocuments(),
-      Car.countDocuments({ status: 'متاح' }),
-      Car.countDocuments({ status: 'مباع' }),
-      Car.countDocuments({ status: 'محجوز' }),
-      User.countDocuments({ role: 'user' }),
-      News.countDocuments(),
-      Showroom.countDocuments(),
-      Equipment.countDocuments(),
-    ]);
+ const [
+ totalCars,
+ availableCars,
+ soldCars,
+ reservedCars,
+ totalUsers,
+ totalNews,
+ totalShowrooms,
+ totalEquipment,
+ ] = await Promise.all([
+ Car.countDocuments(),
+ Car.countDocuments({ status: 'متاح' }),
+ Car.countDocuments({ status: 'مباع' }),
+ Car.countDocuments({ status: 'محجوز' }),
+ User.countDocuments({ role: 'user' }),
+ News.countDocuments(),
+ Showroom.countDocuments(),
+ Equipment.countDocuments(),
+ ]);
 
-    // Revenue: sum of prices of sold cars
-    const revenueAgg = await Car.aggregate([
-      { $match: { status: 'مباع' } },
-      { $group: { _id: null, total: { $sum: '$price' } } },
-    ]);
-    const totalRevenue = revenueAgg[0]?.total ?? 0;
+ // Revenue: sum of prices of sold cars
+ const revenueAgg = await Car.aggregate([
+ { $match: { status: 'مباع' } },
+ { $group: { _id: null, total: { $sum: '$price' } } },
+ ]);
+ const totalRevenue = revenueAgg[0]?.total ?? 0;
 
-    return NextResponse.json({
-      success: true,
-      data: {
-        totalCars,
-        availableCars,
-        soldCars,
-        reservedCars,
-        totalUsers,
-        totalRevenue,
-        totalNews,
-        totalShowrooms,
-        totalEquipment,
-      },
-    });
-  } catch (error) {
-    return handleApiError(error, 'فشل في جلب الإحصائيات');
-  }
+ return NextResponse.json({
+ success: true,
+ data: {
+ totalCars,
+ availableCars,
+ soldCars,
+ reservedCars,
+ totalUsers,
+ totalRevenue,
+ totalNews,
+ totalShowrooms,
+ totalEquipment,
+ },
+ });
+ } catch (error) {
+ return handleApiError(error, 'فشل في جلب الإحصائيات');
+ }
 }

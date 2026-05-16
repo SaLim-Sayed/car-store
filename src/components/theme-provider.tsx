@@ -6,26 +6,26 @@ import { ThemeProvider as NextThemesProvider } from "next-themes"
 // Workaround for React 19 warning about next-themes script tag
 // See: https://github.com/pacocoursey/next-themes/issues/271
 if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
-  const orig = console.error;
-  console.error = (...args: any[]) => {
-    if (typeof args[0] === 'string' && args[0].includes('Encountered a script tag')) return;
-    orig.apply(console, args);
-  };
+ const orig = console.error;
+ console.error = (...args: any[]) => {
+ if (typeof args[0] === 'string' && args[0].includes('Encountered a script tag')) return;
+ orig.apply(console, args);
+ };
 }
 
 interface ThemeProviderProps {
-  children: React.ReactNode
+ children: React.ReactNode
 }
 
 export function ThemeProvider({ children }: ThemeProviderProps) {
-  return (
-    <NextThemesProvider 
-      attribute="class"
-      defaultTheme="system"
-      enableSystem
-      disableTransitionOnChange
-    >
-      {children}
-    </NextThemesProvider>
-  )
+ return (
+ <NextThemesProvider 
+ attribute="class"
+ defaultTheme="system"
+ enableSystem
+ disableTransitionOnChange
+ >
+ {children}
+ </NextThemesProvider>
+ )
 }

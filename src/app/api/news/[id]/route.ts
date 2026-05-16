@@ -5,72 +5,72 @@ import { handleApiError, getServerSession } from '@/lib/api-helpers';
 import { persistImageUrl } from '@/lib/persist-image';
 
 export async function GET(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> }
+ request: Request,
+ { params }: { params: Promise<{ id: string }> }
 ) {
-  try {
-    const { id } = await params;
-    await connectDB();
-    const news = await News.findById(id);
-    if (!news) {
-      return NextResponse.json({ success: false, error: 'الخبر غير موجود' }, { status: 404 });
-    }
-    return NextResponse.json({ success: true, data: news });
-  } catch (error) {
-    return handleApiError(error, 'فشل في جلب الخبر');
-  }
+ try {
+ const { id } = await params;
+ await connectDB();
+ const news = await News.findById(id);
+ if (!news) {
+ return NextResponse.json({ success: false, error: 'الخبر غير موجود' }, { status: 404 });
+ }
+ return NextResponse.json({ success: true, data: news });
+ } catch (error) {
+ return handleApiError(error, 'فشل في جلب الخبر');
+ }
 }
 
 export async function PUT(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> }
+ request: Request,
+ { params }: { params: Promise<{ id: string }> }
 ) {
-  try {
-    const { id } = await params;
-    const session = await getServerSession();
-    if (!session || session.user.role !== 'admin') {
-      return NextResponse.json({ success: false, error: 'غير مصرح لك بالقيام بهذا الإجراء' }, { status: 403 });
-    }
+ try {
+ const { id } = await params;
+ const session = await getServerSession();
+ if (!session || session.user.role !== 'admin') {
+ return NextResponse.json({ success: false, error: 'غير مصرح لك بالقيام بهذا الإجراء' }, { status: 403 });
+ }
 
-    await connectDB();
-    const body = await request.json();
+ await connectDB();
+ const body = await request.json();
 
-    if (body.image) {
-      body.image = await persistImageUrl(body.image);
-    }
+ if (body.image) {
+ body.image = await persistImageUrl(body.image);
+ }
 
-    const news = await News.findByIdAndUpdate(id, body, { new: true, runValidators: true });
-    
-    if (!news) {
-      return NextResponse.json({ success: false, error: 'الخبر غير موجود' }, { status: 404 });
-    }
+ const news = await News.findByIdAndUpdate(id, body, { new: true, runValidators: true });
+ 
+ if (!news) {
+ return NextResponse.json({ success: false, error: 'الخبر غير موجود' }, { status: 404 });
+ }
 
-    return NextResponse.json({ success: true, data: news });
-  } catch (error) {
-    return handleApiError(error, 'فشل في تحديث الخبر');
-  }
+ return NextResponse.json({ success: true, data: news });
+ } catch (error) {
+ return handleApiError(error, 'فشل في تحديث الخبر');
+ }
 }
 
 export async function DELETE(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> }
+ request: Request,
+ { params }: { params: Promise<{ id: string }> }
 ) {
-  try {
-    const { id } = await params;
-    const session = await getServerSession();
-    if (!session || session.user.role !== 'admin') {
-      return NextResponse.json({ success: false, error: 'غير مصرح لك بالقيام بهذا الإجراء' }, { status: 403 });
-    }
+ try {
+ const { id } = await params;
+ const session = await getServerSession();
+ if (!session || session.user.role !== 'admin') {
+ return NextResponse.json({ success: false, error: 'غير مصرح لك بالقيام بهذا الإجراء' }, { status: 403 });
+ }
 
-    await connectDB();
-    const news = await News.findByIdAndDelete(id);
-    
-    if (!news) {
-      return NextResponse.json({ success: false, error: 'الخبر غير موجود' }, { status: 404 });
-    }
+ await connectDB();
+ const news = await News.findByIdAndDelete(id);
+ 
+ if (!news) {
+ return NextResponse.json({ success: false, error: 'الخبر غير موجود' }, { status: 404 });
+ }
 
-    return NextResponse.json({ success: true, data: {} });
-  } catch (error) {
-    return handleApiError(error, 'فشل في حذف الخبر');
-  }
+ return NextResponse.json({ success: true, data: {} });
+ } catch (error) {
+ return handleApiError(error, 'فشل في حذف الخبر');
+ }
 }

@@ -5,39 +5,39 @@ import { handleApiError, getServerSession } from '@/lib/api-helpers';
 import { persistImageUrl } from '@/lib/persist-image';
 
 export async function GET(request: Request) {
-  try {
-    await connectDB();
-    const { searchParams } = new URL(request.url);
-    const limit = parseInt(searchParams.get('limit') || '10');
-    const status = searchParams.get('status') || 'نشط';
+ try {
+ await connectDB();
+ const { searchParams } = new URL(request.url);
+ const limit = parseInt(searchParams.get('limit') || '10');
+ const status = searchParams.get('status') || 'نشط';
 
-    const query = status === 'all' ? {} : { status };
-    const news = await News.find(query).sort({ createdAt: -1 }).limit(limit);
+ const query = status === 'all' ? {} : { status };
+ const news = await News.find(query).sort({ createdAt: -1 }).limit(limit);
 
-    return NextResponse.json({ success: true, data: news });
-  } catch (error) {
-    return handleApiError(error, 'فشل في جلب الأخبار');
-  }
+ return NextResponse.json({ success: true, data: news });
+ } catch (error) {
+ return handleApiError(error, 'فشل في جلب الأخبار');
+ }
 }
 
 export async function POST(request: Request) {
-  try {
-    const session = await getServerSession();
-    if (!session || session.user.role !== 'admin') {
-      return NextResponse.json({ success: false, error: 'غير مصرح لك بالقيام بهذا الإجراء' }, { status: 403 });
-    }
+ try {
+ const session = await getServerSession();
+ if (!session || session.user.role !== 'admin') {
+ return NextResponse.json({ success: false, error: 'غير مصرح لك بالقيام بهذا الإجراء' }, { status: 403 });
+ }
 
-    await connectDB();
-    const body = await request.json();
+ await connectDB();
+ const body = await request.json();
 
-    if (body.image) {
-      body.image = await persistImageUrl(body.image);
-    }
+ if (body.image) {
+ body.image = await persistImageUrl(body.image);
+ }
 
-    const news = await News.create(body);
+ const news = await News.create(body);
 
-    return NextResponse.json({ success: true, data: news }, { status: 201 });
-  } catch (error) {
-    return handleApiError(error, 'فشل في إضافة الخبر');
-  }
+ return NextResponse.json({ success: true, data: news }, { status: 201 });
+ } catch (error) {
+ return handleApiError(error, 'فشل في إضافة الخبر');
+ }
 }

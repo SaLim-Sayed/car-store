@@ -7,35 +7,35 @@ import { Toaster } from "@/components/ui/sonner";
 import { ClientShell } from "@/components/client-shell";
 
 const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
+ subsets: ["latin"],
+ variable: "--font-inter",
 });
 
 export const metadata: Metadata = {
-  title: "معرض سيارات",
-  description: "أفضل سوق للسيارات - بيع وشراء سيارات جديدة ومستعملة بأفضل الأسعار",
+ title: "معرض سيارات",
+ description: "أفضل سوق للسيارات - بيع وشراء سيارات جديدة ومستعملة بأفضل الأسعار",
 };
 
 export default function RootLayout({
-  children,
+ children,
 }: Readonly<{
-  children: React.ReactNode;
+ children: React.ReactNode;
 }>) {
-  return (
-    <html
-      lang="ar"
-      dir="rtl"
-      className={`${inter.variable} h-full antialiased`}
-      suppressHydrationWarning
-    >
-      <body className="min-h-full flex flex-col font-sans overflow-x-hidden">
-        <ThemeProvider>
-          <QueryProvider>
-            <ClientShell>{children}</ClientShell>
-            <Toaster />
-          </QueryProvider>
-        </ThemeProvider>
-      </body>
-    </html>
-  );
+ return (
+ <html
+ lang="ar"
+ dir="rtl"
+ className={`${inter.variable} h-full antialiased`}
+ suppressHydrationWarning
+ >
+ <body className="min-h-full flex flex-col font-sans overflow-x-hidden">
+ <ThemeProvider>
+ <QueryProvider>
+ <ClientShell>{children}</ClientShell>
+ <Toaster />
+ </QueryProvider>
+ </ThemeProvider>
+ </body>
+ </html>
+ );
 }

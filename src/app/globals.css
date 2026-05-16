@@ -51,25 +51,25 @@
 }
 
 :root {
-  --background: #F9F6F1; /* Warm beige from screenshot */
+  --background: #F4F4F4; /* Professional Light Gray */
   --foreground: #1A1A1A;
   --card: #FFFFFF;
   --card-foreground: #1A1A1A;
   --popover: #FFFFFF;
   --popover-foreground: #1A1A1A;
-  --primary: #D97706; /* Rich gold/amber */
+  --primary: #1B3E7A; /* Hatla2ee Navy Blue */
   --primary-foreground: #FFFFFF;
   --secondary: #F1F1F1;
   --secondary-foreground: #1A1A1A;
   --muted: #F1F1F1;
   --muted-foreground: #666666;
-  --accent: #F1F1F1;
-  --accent-foreground: #1A1A1A;
+  --accent: #E28328; /* Hatla2ee Orange */
+  --accent-foreground: #FFFFFF;
   --destructive: #EF4444;
   --border: #E5E5E5;
   --input: #E5E5E5;
-  --ring: #D97706;
-  --radius: 1rem;
+  --ring: #E28328; /* Hatla2ee Orange */
+  --radius: 0.5rem; /* Boxier for professional look */
 }
 
 @media (max-width: 768px) {
@@ -85,18 +85,18 @@
   --card-foreground: #F9F6F1;
   --popover: #1A1A1A;
   --popover-foreground: #F9F6F1;
-  --primary: #D97706;
-  --primary-foreground: #0F0F0F;
+  --primary: #1B3E7A;
+  --primary-foreground: #FFFFFF;
   --secondary: #2A2A2A;
   --secondary-foreground: #F9F6F1;
   --muted: #2A2A2A;
   --muted-foreground: #A1A1AA;
-  --accent: #2A2A2A;
-  --accent-foreground: #F9F6F1;
+  --accent: #E28328;
+  --accent-foreground: #FFFFFF;
   --destructive: #7F1D1D;
   --border: #2A2A2A;
   --input: #2A2A2A;
-  --ring: #D97706;
+  --ring: #E28328;
 }
 
 @keyframes whatsapp-pulse {
