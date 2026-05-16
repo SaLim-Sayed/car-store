@@ -7,7 +7,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
   Car,
-  TrendingUp,
   Shield,
   PlusCircle,
   ChevronLeft,
@@ -24,14 +23,14 @@ import { useFeaturedCars, Car as CarType } from "@/hooks/useCars";
 import { useNews } from "@/hooks/useContent";
 import { useFeaturedEquipment, type Equipment } from "@/hooks/useEquipment";
 import { EquipmentCard } from "@/components/equipment-card";
-import { FormattedDate } from "@/components/formatted-date";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SwiperSlide } from "swiper/react";
 import { HomeSectionCarousel } from "@/components/home-section-carousel";
+import { NewsHomeCard, type NewsHomeItem } from "@/components/news-home-card";
 
 export default function HomePage() {
   const { data: carsData, isLoading } = useFeaturedCars();
-  const { data: newsData } = useNews(6);
+  const { data: newsData, isLoading: newsLoading } = useNews(6);
   const { data: equipmentData } = useFeaturedEquipment(6);
 
   const featuredCars = carsData?.data || [];
@@ -153,7 +152,7 @@ export default function HomePage() {
 
           {/* Featured Cars Section */}
           <section className="space-y-12">
-            <div className="flex flex-col md:flex-row justify-between items-end gap-6 border-b border-gray-200 pb-12">
+            <div className="flex md:flex-row justify-between items-end gap-6 border-b border-gray-200 pb-12">
               <div className="space-y-4 text-right">
                 <Badge
                   variant="secondary"
@@ -161,7 +160,7 @@ export default function HomePage() {
                 >
                   الأكثر طلباً
                 </Badge>
-                <h2 className="text-4xl md:text-7xl font-[1000] tracking-tighter text-[#1A1A1A]">
+                <h2 className="text-4xl mx-2 truncate md:text-7xl font-[1000] tracking-tighter text-[#1A1A1A]">
                   سيارات <span className="text-primary italic">مختارة</span>
                 </h2>
               </div>
@@ -220,7 +219,7 @@ export default function HomePage() {
           {/* Equipment Section */}
           {featuredEquipment.length > 0 && (
             <section className="space-y-12">
-              <div className="flex flex-col md:flex-row justify-between items-end gap-6 border-b border-gray-200 pb-12">
+              <div className="flex md:flex-row justify-between items-end gap-6 border-b border-gray-200 pb-12">
                 <div className="space-y-4 text-right">
                   <Badge
                     variant="secondary"
@@ -228,7 +227,7 @@ export default function HomePage() {
                   >
                     معدات ثقيلة
                   </Badge>
-                  <h2 className="text-4xl md:text-7xl font-[1000] tracking-tighter text-[#1A1A1A]">
+                  <h2 className="text-4xl mx-2 truncate md:text-7xl font-[1000] tracking-tighter text-[#1A1A1A]">
                     آلات ومعدات <span className="text-emerald-600">زراعية</span>
                   </h2>
                 </div>
@@ -267,13 +266,19 @@ export default function HomePage() {
           )}
 
           {/* News Section */}
-          <section className="space-y-16">
-            <div className="flex flex-col md:flex-row justify-between items-center gap-8">
-              <div className="space-y-4 text-center md:text-right">
-                <h2 className="text-4xl md:text-7xl font-[1000] tracking-tighter text-[#1A1A1A]">
-                  أخبار <span className="text-blue-600">السوق</span>
+          <section className="space-y-12">
+            <div className="flex flex-col justify-between gap-6 border-b border-gray-200 pb-12 md:flex-row md:items-end">
+              <div className="space-y-4 text-right">
+                <Badge
+                  variant="secondary"
+                  className="rounded-full bg-blue-100 px-4 py-1.5 text-xs font-black uppercase tracking-widest text-blue-700"
+                >
+                  أخبار السوق
+                </Badge>
+                <h2 className="mx-2 truncate text-4xl font-[1000] tracking-tighter text-[#1A1A1A] md:text-7xl">
+                  أخبار <span className="text-blue-600 italic">المنيا</span>
                 </h2>
-                <p className="text-muted-foreground text-lg md:text-xl font-bold">
+                <p className="text-lg font-bold text-muted-foreground md:text-xl">
                   كل ما يخص عالم السيارات في محافظة المنيا أولاً بأول.
                 </p>
               </div>
@@ -281,7 +286,7 @@ export default function HomePage() {
                 variant="outline"
                 asChild
                 size="xl"
-                className="rounded-full bg-white text-black border-gray-200 hover:bg-blue-600 hover:text-white transition-all px-10"
+                className="shrink-0 rounded-full border-gray-200 bg-white px-10 text-black transition-all hover:bg-blue-600 hover:text-white"
               >
                 <Link href="/news" className="flex items-center gap-2">
                   عرض كل الأخبار
@@ -290,53 +295,52 @@ export default function HomePage() {
               </Button>
             </div>
 
-            {newsItems.length > 0 && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {newsItems.map(
-                  (news: {
-                    _id: string
-                    category: string
-                    date: string
-                    title: string
-                    excerpt: string
-                  }) => (
-                  <Card
-                    key={news._id}
-                    className="border-0 shadow-xl rounded-[2.5rem] hover:shadow-2xl transition-all group bg-white overflow-hidden h-full flex flex-col"
-                  >
-                    <CardHeader className="p-10 pb-4 flex-1">
-                      <div className="flex justify-between items-center mb-6">
-                        <Badge className="bg-blue-50 text-blue-700 border-0 rounded-full px-4 py-1.5 font-black text-[10px] uppercase tracking-wider">
-                          {news.category}
-                        </Badge>
-                        <FormattedDate
-                          value={news.date}
-                          className="text-xs font-bold text-muted-foreground"
-                        />
-                      </div>
-                      <CardTitle className="text-2xl md:text-3xl font-black group-hover:text-blue-600 transition-colors leading-tight mb-4">
-                        {news.title}
-                      </CardTitle>
-                      <p className="text-muted-foreground text-base leading-relaxed line-clamp-3 font-medium">
-                        {news.excerpt}
-                      </p>
-                    </CardHeader>
-                    <div className="px-10 pb-10 mt-auto">
-                      <Link
-                        href={`/news/${news._id}`}
-                        className="inline-flex items-center text-blue-600 text-lg font-black group/read"
-                      >
-                        قراءة المزيد
-                        <ArrowRight className="mr-3 h-5 w-5 rotate-180 group-hover/read:-translate-x-2 transition-transform" />
-                      </Link>
-                    </div>
-                  </Card>
-                ))}
+            {(newsLoading || newsItems.length > 0) && (
+              <div className="w-full max-w-full min-w-0 overflow-hidden pb-4">
+                <HomeSectionCarousel
+                  navKey="news-market"
+                  loop={!newsLoading && newsItems.length > 3}
+                  autoplayDelay={6200}
+                  spaceBetween={24}
+                  slidesPerView={1}
+                  breakpoints={{
+                    640: { slidesPerView: 2 },
+                    1024: { slidesPerView: 3 },
+                  }}
+                >
+                  {newsLoading
+                    ? Array.from({ length: 3 }).map((_, i) => (
+                        <SwiperSlide key={i} className="h-auto!">
+                          <Card className="flex h-full flex-col overflow-hidden rounded-[2.5rem] border-0 shadow-lg">
+                            <CardHeader className="space-y-6 p-10 pb-4">
+                              <div className="flex justify-between">
+                                <Skeleton className="h-7 w-24 rounded-full" />
+                                <Skeleton className="h-4 w-20" />
+                              </div>
+                              <Skeleton className="h-10 w-full max-w-md" />
+                              <div className="space-y-3">
+                                <Skeleton className="h-4 w-full" />
+                                <Skeleton className="h-4 w-full" />
+                                <Skeleton className="h-4 w-[80%]" />
+                              </div>
+                            </CardHeader>
+                            <div className="px-10 pb-10">
+                              <Skeleton className="h-6 w-32" />
+                            </div>
+                          </Card>
+                        </SwiperSlide>
+                      ))
+                    : newsItems.map((news: NewsHomeItem) => (
+                        <SwiperSlide key={news._id} className="h-auto!">
+                          <NewsHomeCard news={news} />
+                        </SwiperSlide>
+                      ))}
+                </HomeSectionCarousel>
               </div>
             )}
           </section>
         </div>
-        <div className="container mx-auto max-w-7xl px-4 -mt-24 relative z-30 w-full">
+        <div className="container mx-auto max-w-7xl px-4 py-20 relative z-30 w-full">
           <div className="w-full overflow-hidden pb-8">
             <HomeSectionCarousel
               navKey="hero-stats"

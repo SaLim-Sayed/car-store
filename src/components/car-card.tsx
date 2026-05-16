@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Fuel, Settings, Calendar } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface CarCardProps {
   car: {
@@ -37,8 +38,9 @@ export function CarCard({ car }: CarCardProps) {
     }
   };
 
+  const router = useRouter()
   return (
-    <Card className="group flex h-full min-h-0 flex-col overflow-hidden border-0 rounded-2xl bg-white shadow-[0_8px_30px_rgb(0,0,0,0.06)] transition-all duration-500 md:rounded-[2rem] md:shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+    <Card onClick={() => router.push(`/cars/${car._id}`)} cursor-pointer className="group flex h-full min-h-0 flex-col overflow-hidden border-0 rounded-2xl bg-white shadow-[0_8px_30px_rgb(0,0,0,0.06)] transition-all duration-500 md:rounded-[2rem] md:shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
       <CardHeader className="shrink-0 p-0">
         <div className="relative h-44 overflow-hidden sm:h-48 md:h-56">
           <Image
@@ -89,7 +91,7 @@ export function CarCard({ car }: CarCardProps) {
 
         <Button
           asChild
-          className="mt-auto w-full shrink-0 rounded-xl bg-[#1A1A1A] py-2.5 text-sm font-black shadow-md transition-all hover:bg-black hover:shadow-lg md:h-14 md:rounded-2xl md:text-lg md:shadow-xl"
+          className="mt-auto w-full h-12 shrink-0 rounded-xl bg-[#1A1A1A] py-2.5 text-sm font-black shadow-md transition-all hover:bg-black hover:shadow-lg md:h-14 md:rounded-2xl md:text-lg md:shadow-xl"
         >
           <Link href={`/cars/${car._id}`}>عرض التفاصيل</Link>
         </Button>

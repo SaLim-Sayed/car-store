@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Calendar, MapPin, Tractor } from "lucide-react"
 import type { Equipment } from "@/hooks/useEquipment"
+import { useRouter } from "next/navigation"
 
 interface EquipmentCardProps {
   equipment: Equipment
@@ -20,9 +21,9 @@ export function EquipmentCard({ equipment }: EquipmentCardProps) {
 
   const image = equipment.images?.[0] || "/placeholder-car.jpg"
   const label = equipment.title || `${equipment.brand} ${equipment.model || ""}`.trim()
-
+  const router = useRouter()
   return (
-    <Card className="group flex h-full min-h-0 flex-col overflow-hidden border-0 rounded-2xl bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-500 hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)] md:rounded-[2rem]">
+    <Card onClick={() => router.push(`/equipment/${equipment._id}`)} cursor-pointer className="group flex h-full min-h-0 flex-col overflow-hidden border-0 rounded-2xl bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-500 hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)] md:rounded-[2rem]">
       <CardHeader className="shrink-0 p-0">
         <div className="relative h-40 md:h-56 overflow-hidden">
           <Image
@@ -74,7 +75,7 @@ export function EquipmentCard({ equipment }: EquipmentCardProps) {
           {equipment.description.replace(/<[^>]*>?/gm, "")}
         </p>
 
-        <Button asChild className="mt-auto w-full shrink-0 rounded-xl bg-[#1A1A1A] py-2.5 text-sm font-black shadow-md transition-all hover:bg-black hover:shadow-lg md:h-14 md:rounded-2xl md:text-lg md:shadow-xl">
+        <Button asChild className="mt-auto w-full h-12 shrink-0 rounded-xl bg-[#1A1A1A] py-2.5 text-sm font-black shadow-md transition-all hover:bg-black hover:shadow-lg md:h-14 md:rounded-2xl md:text-lg md:shadow-xl">
           <Link href={`/equipment/${equipment._id}`}>عرض التفاصيل</Link>
         </Button>
       </CardContent>
