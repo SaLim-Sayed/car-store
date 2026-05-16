@@ -23,7 +23,7 @@ export function EquipmentCard({ equipment }: EquipmentCardProps) {
  const label = equipment.title || `${equipment.brand} ${equipment.model || ""}`.trim()
  const router = useRouter()
  return (
- <Card onClick={() => router.push(`/equipment/${equipment._id}`)} cursor-pointer className="group flex h-full min-h-0 flex-col overflow-hidden border-0 rounded-2xl bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-500 hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)] md:rounded-[2rem]">
+ <Card onClick={() => router.push(`/equipment/${equipment._id}`)} cursor-pointer className="group flex h-full min-h-0 flex-col overflow-hidden border border-gray-200 rounded-lg bg-white shadow-none transition-all duration-300 hover:shadow-sm">
  <CardHeader className="shrink-0 p-0">
  <div className="relative h-36 md:h-44 overflow-hidden">
  <Image

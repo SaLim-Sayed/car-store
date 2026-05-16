@@ -40,7 +40,7 @@ export function CarCard({ car }: CarCardProps) {
 
  const router = useRouter()
  return (
- <Card onClick={() => router.push(`/cars/${car._id}`)} cursor-pointer className="group flex h-full min-h-0 flex-col overflow-hidden border-0 rounded-2xl bg-white shadow-[0_8px_30px_rgb(0,0,0,0.06)] transition-all duration-500 md:rounded-[2rem] md:shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+ <Card onClick={() => router.push(`/cars/${car._id}`)} cursor-pointer className="group flex h-full min-h-0 flex-col overflow-hidden border border-gray-200 rounded-lg bg-white shadow-none transition-all duration-300 hover:shadow-sm">
  <CardHeader className="shrink-0 p-0">
  <div className="relative h-36 overflow-hidden sm:h-40 md:h-44">
  <Image
