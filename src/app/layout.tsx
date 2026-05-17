@@ -12,8 +12,63 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "سوق سيارات المنيا | بيع وشراء سيارات ومعدات",
-  description: "أكبر سوق للسيارات والمعدات في المنيا - بيع وشراء سيارات جديدة ومستعملة وجرارات ومعدات زراعية بأفضل الأسعار",
+  title: {
+    default: "سوق سيارات المنيا | بيع وشراء سيارات ومعدات جديدة ومستعملة",
+    template: "%s | سوق سيارات المنيا"
+  },
+  description: "أكبر سوق للسيارات والمعدات الثقيلة والزراعية في محافظة المنيا. تصفح آلاف السيارات، الجرارات، والمعدات المستعملة والجديدة، وتواصل مع البائعين مباشرة مجاناً وبدون عمولة.",
+  keywords: [
+    "سيارات المنيا",
+    "سوق سيارات المنيا",
+    "بيع سيارات في المنيا",
+    "شراء سيارات في المنيا",
+    "جرارات زراعية المنيا",
+    "معدات ثقيلة المنيا",
+    "معارض سيارات المنيا",
+    "سيارات مستعملة المنيا",
+    "جرارات للبيع في مصر",
+    "سوق المعدات الزراعية"
+  ],
+  authors: [{ name: "سيارات المنيا", url: "https://car-store-sepia.vercel.app" }],
+  creator: "سيارات المنيا",
+  publisher: "سيارات المنيا",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://car-store-sepia.vercel.app'),
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    title: "سوق سيارات المنيا | بيع وشراء سيارات ومعدات جديدة ومستعملة",
+    description: "أكبر سوق للسيارات والمعدات الثقيلة والزراعية في محافظة المنيا. تصفح آلاف السيارات والجرارات وتواصل مع معارض المنيا مباشرة.",
+    url: 'https://car-store-sepia.vercel.app',
+    siteName: 'سوق سيارات المنيا',
+    locale: 'ar_EG',
+    type: 'website',
+    images: [
+      {
+        url: '/logo.png',
+        width: 800,
+        height: 600,
+        alt: 'سوق سيارات المنيا',
+      }
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: "سوق سيارات المنيا | بيع وشراء سيارات ومعدات",
+    description: "أكبر سوق للسيارات والمعدات الثقيلة والزراعية في المنيا. تواصل مع المعارض والشركات مباشرة.",
+    images: ['/logo.png'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
   icons: {
     icon: "/logo.png",
     apple: "/logo.png",
