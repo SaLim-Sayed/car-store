@@ -12,8 +12,13 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
- title: "معرض سيارات",
- description: "أفضل سوق للسيارات - بيع وشراء سيارات جديدة ومستعملة بأفضل الأسعار",
+  title: "سوق سيارات المنيا | بيع وشراء سيارات ومعدات",
+  description: "أكبر سوق للسيارات والمعدات في المنيا - بيع وشراء سيارات جديدة ومستعملة وجرارات ومعدات زراعية بأفضل الأسعار",
+  icons: {
+    icon: "/logo.png",
+    apple: "/logo.png",
+    shortcut: "/logo.png",
+  },
 };
 
 export default function RootLayout({

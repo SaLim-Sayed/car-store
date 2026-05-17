@@ -19,7 +19,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useAuthStore } from "@/lib/store/authStore";
 import { cn } from "@/lib/utils";
-import { LogOut, Menu, PlusCircle, Settings, User, X } from "lucide-react";
+import {
+  LogOut,
+  Menu,
+  PlusCircle,
+  Settings,
+  User,
+  X,
+  ChevronLeft,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -85,21 +93,26 @@ export function Navbar() {
           <div className="flex items-center gap-3 md:gap-12">
             <Link
               href="/"
-              className="flex items-center gap-3 md:gap-5 transition-all "
+              className="flex items-center gap-2 md:gap-4 transition-all"
             >
-              <div
-                className={`relative h-9 w-9 md:h-16 md:w-16 rounded-md overflow-hidden border-2 transition-all duration-500 ${logoBorderColor} shadow-none`}
-              >
+              <div className="relative hidden sm:block rounded-md overflow-hidden shrink-0">
                 <Image
-                  src="/logo-maarad-sayarat.png"
+                  src="/logo.png"
                   alt="سيارات المنيا"
-                  fill
-                  className="object-cover"
+                  width={250}
+                  height={200}
+                  priority
                 />
               </div>
-              <span className="hidden md:inline-block font-[1000] text-lg md:text-3xl tracking-tighter text-white">
-                سيارات المنيا
-              </span>
+              <div className="relative block sm:hidden rounded-md overflow-hidden shrink-0">
+                <Image
+                  src="/logo.png"
+                  alt="سيارات المنيا"
+                  width={150}
+                  height={150}
+                  priority
+                />
+              </div>
             </Link>
 
             {/* Desktop Navigation */}
@@ -132,8 +145,7 @@ export function Navbar() {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
-                    variant="ghost"
-                    className={`h-9 md:h-14 px-3 md:px-7 rounded-md gap-2 md:gap-4 font-[1000] text-sm md:text-xl transition-all duration-500 ${textColor.includes("white") ? "text-white hover:bg-white/15" : "text-foreground bg-gray-50 hover:bg-gray-100 shadow-none"}`}
+                    className={`h-9 md:h-14 px-3 md:px-7 bg-primary rounded-md gap-2 md:gap-4 font-[1000] text-sm md:text-xl transition-all duration-500 ${textColor.includes("white") ? "text-white " : "text-foreground     shadow-none"}`}
                   >
                     <div className="h-9 w-9 rounded-md bg-primary shadow-none shadow-primary/30 flex items-center justify-center">
                       <User className="h-5 w-5 text-white" />
@@ -217,121 +229,20 @@ export function Navbar() {
               </Button>
             )}
 
-            {/* Mobile Menu Drawer */}
-            <Dialog open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-              <DialogTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className={`md:hidden h-10 w-10 rounded-md transition-all duration-500 ${textColor.includes("white") ? "text-white hover:bg-white/15" : "text-foreground bg-gray-100/70 hover:bg-gray-200"}`}
-                >
-                  <Menu className="h-7 w-7" />
-                </Button>
-              </DialogTrigger>
-              <DialogContent
-                dir="rtl"
-                className="fixed top-0 left-0 h-[100svh] w-[85vw] max-w-[340px] translate-x-0 translate-y-0 rounded-none rounded-r-md border-0 shadow-[0_0_60px_rgba(0,0,0,0.2)] p-0 overflow-hidden flex flex-col bg-white/98 backdrop-blur-3xl data-open:animate-in data-open:slide-in-from-left duration-500"
-                showCloseButton={false}
-              >
-                <DialogHeader className="sr-only">
-                  <DialogTitle>قائمة التنقل</DialogTitle>
-                </DialogHeader>
-                <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
-                  <div className="flex items-center gap-4">
-                    <div className="h-12 w-12 rounded-md border-2 border-primary/20 overflow-hidden relative shadow-none">
-                      <Image
-                        src="/logo-maarad-sayarat.png"
-                        alt="Logo"
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                    <span className="font-[1000] text-lg md:text-xl tracking-tighter">
-                      سيارات المنيا
-                    </span>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="rounded-md h-10 w-10 hover:bg-gray-100"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    <X className="h-6 w-6" />
-                  </Button>
-                </div>
-
-                <div className="flex-1 overflow-y-auto px-6 py-6">
-                  <div className="mb-6">
-                    <GlobalSearch
-                      variant="navbar"
-                      onNavigate={() => setIsMobileMenuOpen(false)}
-                    />
-                  </div>
-                  <nav className="flex flex-col gap-2">
-                    {navLinks.map((link) => {
-                      const isActive = pathname === link.href;
-                      return (
-                        <Link
-                          key={link.href}
-                          href={link.href}
-                          onClick={() => setIsMobileMenuOpen(false)}
-                          className={`flex items-center justify-between px-5 py-3 md:py-4 rounded-md text-lg md:text-xl font-black transition-all ${
-                            isActive
-                              ? "bg-primary text-white shadow-none shadow-primary/25"
-                              : "text-muted-foreground hover:bg-gray-50 hover:text-foreground"
-                          }`}
-                        >
-                          {link.label}
-                          {isActive && (
-                            <div className="h-1.5 w-1.5 md:h-2 md:w-2 rounded-full bg-white" />
-                          )}
-                        </Link>
-                      );
-                    })}
-
-                    {!isAuthenticated && (
-                      <Link
-                        href="/auth/login"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        className="mt-4 flex items-center justify-center gap-3 px-5 py-3.5 rounded-md text-lg md:text-xl font-black bg-[#1A1A1A] text-white shadow-none transition-all"
-                      >
-                        <User className="h-6 w-6" />
-                        تسجيل الدخول
-                      </Link>
-                    )}
-                  </nav>
-                </div>
-
-                {isAuthenticated && (
-                  <div className="px-6 pb-8 pt-5 border-t border-gray-100 bg-gray-50/50">
-                    <div className="flex items-center gap-4 mb-6">
-                      <div className="h-14 w-14 rounded-2xl bg-primary shadow-none shadow-primary/20 flex items-center justify-center shrink-0">
-                        <User className="h-7 w-7 text-white" />
-                      </div>
-                      <div className="flex flex-col min-w-0 flex-1 text-right">
-                        <span className="text-lg font-black truncate">
-                          {user?.name}
-                        </span>
-                        <span className="text-xs text-muted-foreground font-bold opacity-70 truncate">
-                          {user?.email}
-                        </span>
-                      </div>
-                    </div>
-                    <Button
-                      variant="outline"
-                      className="w-full h-14 rounded-md text-destructive hover:text-destructive hover:bg-destructive/10 gap-3 text-lg font-black border-2 border-transparent bg-white shadow-none transition-all"
-                      onClick={() => {
-                        handleLogout();
-                        setIsMobileMenuOpen(false);
-                      }}
-                    >
-                      <LogOut className="h-6 w-6" />
-                      تسجيل الخروج
-                    </Button>
-                  </div>
-                )}
-              </DialogContent>
-            </Dialog>
+            {/* Mobile Menu Toggle Button */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className={`md:hidden h-10 w-10 rounded-md transition-all duration-500 ${textColor.includes("white") ? "text-white hover:bg-white/15" : "text-foreground bg-gray-100/70 hover:bg-gray-200"}`}
+              onClick={() => setIsMobileMenuOpen((o) => !o)}
+              aria-label="القائمة"
+            >
+              {isMobileMenuOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
+            </Button>
           </div>
         </div>
 
@@ -349,6 +260,85 @@ export function Navbar() {
           />
         </div>
       </div>
+      {isMobileMenuOpen && (
+        <nav className="md:hidden border-t border-white/10 bg-[#1B3E7A] px-4 py-4 space-y-1 text-white flex flex-col gap-2">
+          {/* Admin Dashboard Quick Access inside client mobile drawer */}
+          {isAuthenticated && user?.role === "admin" && (
+            <Link
+              href="/admin/dashboard"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="flex items-center justify-between px-5 py-3 rounded-xl text-lg font-black transition-all bg-[#E28328] text-white shadow-sm mb-2"
+            >
+              <span className="flex items-center gap-2">
+                <Settings className="h-5 w-5" />
+                لوحة التحكم
+              </span>
+              <ChevronLeft className="h-5 w-5" />
+            </Link>
+          )}
+
+          {navLinks.map((link) => {
+            const isActive = pathname === link.href;
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`flex items-center justify-between px-5 py-3 rounded-xl text-lg font-black transition-all ${
+                  isActive
+                    ? "bg-[#E28328] text-white shadow-none"
+                    : "text-white/80 hover:bg-white/10 hover:text-white"
+                }`}
+              >
+                {link.label}
+                {isActive && (
+                  <div className="h-1.5 w-1.5 md:h-2 md:w-2 rounded-full bg-white" />
+                )}
+              </Link>
+            );
+          })}
+
+          {!isAuthenticated && (
+            <Link
+              href="/auth/login"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="mt-4 flex items-center justify-center gap-3 px-5 py-3.5 rounded-xl text-lg font-black bg-[#E28328] text-white shadow-none transition-all hover:bg-[#E28328]/90"
+            >
+              <User className="h-6 w-6" />
+              تسجيل الدخول
+            </Link>
+          )}
+
+          {isAuthenticated && (
+            <div className="px-5 pb-4 pt-4 border-t border-white/10 bg-white/5 rounded-xl mt-4">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="h-12 w-12 rounded-xl bg-[#E28328] shadow-none flex items-center justify-center shrink-0">
+                  <User className="h-6 w-6 text-white" />
+                </div>
+                <div className="flex flex-col min-w-0 flex-1 text-right text-white">
+                  <span className="text-base font-black truncate">
+                    {user?.name}
+                  </span>
+                  <span className="text-xs text-white/60 font-bold truncate">
+                    {user?.email}
+                  </span>
+                </div>
+              </div>
+              <Button
+                variant="ghost"
+                className="w-full h-11 rounded-xl text-red-300 hover:text-red-200 hover:bg-white/10 gap-3 text-sm font-black bg-transparent border border-red-500/20 shadow-none transition-all"
+                onClick={() => {
+                  logout();
+                  setIsMobileMenuOpen(false);
+                }}
+              >
+                <LogOut className="h-5 w-5" />
+                تسجيل الخروج
+              </Button>
+            </div>
+          )}
+        </nav>
+      )}
     </header>
   );
 }

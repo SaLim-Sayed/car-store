@@ -75,7 +75,7 @@ export function EquipmentCard({ equipment }: EquipmentCardProps) {
  {equipment.description.replace(/<[^>]*>?/gm, "")}
  </p>
 
- <Button asChild className="mt-auto w-full h-9 shrink-0 rounded-lg bg-[#1A1A1A] text-xs font-bold shadow-none transition-all hover:bg-black hover:shadow-none md:h-10 md:rounded-xl md:text-sm md:shadow-none">
+ <Button asChild className="mt-auto w-full h-9 shrink-0 rounded-lg bg-primary text-white text-xs font-black shadow-none transition-all hover:bg-primary/90 md:h-11 md:rounded-xl md:text-sm">
  <Link href={`/equipment/${equipment._id}`}>عرض التفاصيل</Link>
  </Button>
  </CardContent>

@@ -21,6 +21,7 @@ import {
  ChevronRight as ChevronRightIcon,
 } from "lucide-react"
 import { CallButton } from "@/components/call-button"
+import { Breadcrumbs } from "@/components/breadcrumbs"
 import Link from "next/link"
 import { toast } from "sonner"
 import { getAppUrl } from "@/lib/app-url"
@@ -147,25 +148,12 @@ export default function EquipmentDetailPage() {
  <div className="min-h-screen bg-gradient-to-b from-[#faf8f4] via-[#F9F6F1] to-[#f4f1eb] pb-24">
  <main className={`${pageShell} pt-8 pb-24 lg:pt-11`}>
  <article className="mb-12 rounded-[1.75rem] border border-neutral-200/70 bg-card px-6 py-8 shadow-[0_4px_24px_-8px_rgb(26_26_26/0.12)] ring-1 ring-black/[0.03] sm:px-9 sm:py-10 lg:mb-14 lg:rounded-[2rem] lg:px-11 lg:py-11">
- <nav
- className="mb-9 flex flex-wrap items-center gap-x-2 gap-y-1 border-b border-border/50 pb-6 text-[13px] text-muted-foreground sm:text-sm"
- aria-label="مسار الصفحة"
- >
- <Link href="/" className="font-semibold hover:text-primary transition-colors">
- الرئيسية
- </Link>
- <ChevronRight className="size-4 shrink-0 rotate-180 opacity-40" aria-hidden />
- <Link href="/equipment" className="font-semibold hover:text-primary transition-colors">
- آلات ومعدات
- </Link>
- <ChevronRight className="size-4 shrink-0 rotate-180 opacity-40" aria-hidden />
- <span
- className="line-clamp-2 max-w-[min(100%,40rem)] font-semibold text-foreground"
- title={label}
- >
- {label}
- </span>
- </nav>
+  <Breadcrumbs
+    items={[
+      { label: "آلات ومعدات", href: "/equipment" },
+      { label: label },
+    ]}
+  />
 
  <header className="mb-10 flex flex-col gap-8 xl:flex-row xl:items-start xl:justify-between xl:gap-12">
  <div className="min-w-0 flex-1 space-y-5">

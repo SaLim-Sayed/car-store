@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { Navbar } from "@/components/navbar"
+import { Breadcrumbs } from "@/components/breadcrumbs"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card"
@@ -103,13 +104,13 @@ export default function NewsDetailPage() {
  
  <main className="container mx-auto px-4 pt-20 pb-16">
  <div className="max-w-4xl mx-auto space-y-8 md:space-y-12">
- {/* Back button */}
- <Button variant="ghost" asChild className="rounded-full hover:bg-white -mr-2 group">
- <Link href="/news" className="flex items-center text-muted-foreground hover:text-primary font-black text-sm md:text-base">
- <ChevronRight className="h-4 w-4 md:h-5 md:w-5 ml-1 md:ml-2 group- transition-transform" />
- العودة للأخبار
- </Link>
- </Button>
+  {/* Breadcrumbs */}
+  <Breadcrumbs
+    items={[
+      { label: "الأخبار والمقالات", href: "/news" },
+      { label: news.title },
+    ]}
+  />
 
  {/* Header */}
  <div className="space-y-5 md:space-y-8">

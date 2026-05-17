@@ -17,6 +17,7 @@ import {
   Zap,
 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { getWhatsAppUrl, WHATSAPP_MESSAGES } from "@/lib/whatsapp";
 import { WhatsAppIcon } from "@/components/whatsapp-icon";
 import { useFeaturedCars, Car as CarType } from "@/hooks/useCars";
@@ -27,6 +28,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { SwiperSlide } from "swiper/react";
 import { HomeSectionCarousel } from "@/components/home-section-carousel";
 import { NewsHomeCard, type NewsHomeItem } from "@/components/news-home-card";
+import { Footer } from "@/components/footer";
 
 export default function HomePage() {
   const { data: carsData, isLoading } = useFeaturedCars();
@@ -48,20 +50,62 @@ export default function HomePage() {
         </section>
 
         <div className="container mx-auto px-4 py-8 md:py-16 space-y-16 md:space-y-20">
-          {/* Main Services */}
-          <section className="space-y-8">
-            <div className="max-w-4xl mx-auto text-center space-y-4">
-              <h2 className="text-2xl md:text-4xl font-black tracking-tight text-foreground">
-                الخدمات <span className="text-primary">الرئيسية</span>
-              </h2>
-              <p className="text-muted-foreground text-base md:text-lg font-medium max-w-2xl mx-auto">
-                اكتشف مجموعة واسعة من السيارات والمعدات أو اعرض سيارتك للبيع بكل
-                سهولة.
-              </p>
+          {/* Services — mobile: compact links, desktop: full cards */}
+          <section className="space-y-5">
+            {/* Mobile-only: 3-col enhanced tiles */}
+            <div className="grid grid-cols-3 gap-3 md:hidden">
+              {[
+                {
+                  title: "بيع سيارتك",
+                  icon: Car,
+                  accentBg: "bg-[#1B3E7A]",
+                  link: getWhatsAppUrl(WHATSAPP_MESSAGES.sellCar),
+                  isExternal: true,
+                  label: "اعرض الآن",
+                  sub: "/cars",
+                  subLabel: "تصفح السيارات",
+                },
+                {
+                  title: "إضافة معرض",
+                  icon: PlusCircle,
+                  accentBg: "bg-amber-600",
+                  link: getWhatsAppUrl("مرحباً، أريد إضافة معرضي على سوق سيارات المنيا"),
+                  isExternal: true,
+                  label: "أضف معرضك",
+                  sub: "/showrooms",
+                  subLabel: "تصفح المعارض",
+                },
+                {
+                  title: "إضافة معدة",
+                  icon: Tractor,
+                  accentBg: "bg-emerald-600",
+                  link: getWhatsAppUrl(WHATSAPP_MESSAGES.sellEquipment),
+                  isExternal: true,
+                  label: "أضف معدة",
+                  sub: "/equipment",
+                  subLabel: "تصفح المعدات",
+                },
+              ].map((s, i) => (
+                <div key={i} className="flex flex-col items-center text-center bg-white border border-gray-200 rounded-xl p-3 gap-2">
+                  <div className={`w-11 h-11 ${s.accentBg} rounded-xl flex items-center justify-center`}>
+                    <s.icon className="w-5 h-5 text-white" />
+                  </div>
+                  <p className="text-xs font-black text-foreground leading-tight">{s.title}</p>
+                  <Link
+                    href={s.link}
+                    {...(s.isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                    className={`w-full text-[10px] font-bold py-1.5 rounded-lg text-white ${s.accentBg} hover:opacity-90 transition-opacity`}
+                  >
+                    {s.label}
+                  </Link>
+                  <Link href={s.sub} className="text-[10px] font-bold text-muted-foreground hover:text-primary transition-colors">
+                    {s.subLabel}
+                  </Link>
+                </div>
+              ))}
             </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* Service Cards */}
+            {/* Desktop-only full cards */}
+            <div className="hidden md:grid md:grid-cols-3 gap-6">
               {[
                 {
                   title: "بيع سيارتك الآن",
@@ -96,42 +140,23 @@ export default function HomePage() {
                   key={i}
                   className="border border-gray-200 rounded-xl overflow-hidden group bg-white transition-all h-full flex flex-col shadow-none hover:shadow-none"
                 >
-                  <div
-                    className={`h-32 ${service.bg} relative overflow-hidden flex items-center justify-center`}
-                  >
-                    <div
-                      className={`w-16 h-16 ${service.iconBg} rounded-xl flex items-center justify-center shadow-none relative z-10 transition-transform group-`}
-                    >
+                  <div className={`h-32 ${service.bg} relative overflow-hidden flex items-center justify-center`}>
+                    <div className={`w-16 h-16 ${service.iconBg} rounded-xl flex items-center justify-center relative z-10 transition-transform group-hover:scale-110`}>
                       <service.icon className="w-8 h-8 text-white" />
                     </div>
                   </div>
                   <CardContent className="p-6 text-center flex-1 flex flex-col justify-between space-y-4">
                     <div className="space-y-2">
-                      <h3 className="text-xl font-bold text-foreground">
-                        {service.title}
-                      </h3>
-                      <p className="text-muted-foreground text-sm font-medium leading-relaxed">
-                        {service.desc}
-                      </p>
+                      <h3 className="text-xl font-bold text-foreground">{service.title}</h3>
+                      <p className="text-muted-foreground text-sm font-medium leading-relaxed">{service.desc}</p>
                     </div>
                     <Button
                       asChild
-                      variant={
-                        service.iconBg.includes("amber")
-                          ? "secondary"
-                          : "outline"
-                      }
-                      className="w-full h-12 rounded-lg text-base font-bold group/btn"
+                      variant={service.iconBg.includes("amber") ? "secondary" : "outline"}
+                      className="w-full h-11 rounded-lg text-base font-bold group/btn"
                     >
-                      <Link
-                        href={service.link}
-                        {...(service.isExternal
-                          ? { target: "_blank", rel: "noopener noreferrer" }
-                          : {})}
-                      >
-                        {service.isExternal && (
-                          <WhatsAppIcon className="ml-2 w-4 h-4" />
-                        )}
+                      <Link href={service.link} {...(service.isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}>
+                        {service.isExternal && <WhatsAppIcon className="ml-2 w-4 h-4" />}
                         {service.action}
                         <ArrowRight className="mr-2 h-4 w-4 rotate-180 transition-transform" />
                       </Link>
@@ -143,23 +168,26 @@ export default function HomePage() {
           </section>
 
           {/* Featured Cars Section */}
-          <section className="space-y-6">
-            <div className="flex md:flex-row justify-between items-end gap-6 border-b border-gray-200 pb-4">
-              <div className="space-y-2 text-right">
+          <section className="space-y-4">
+            {/* Mobile header */}
+            <div className="flex items-center justify-between border-b border-gray-200 pb-3 md:hidden">
+              <div className="flex items-center gap-2">
+                <div className="w-1 h-5 bg-primary rounded-full" />
+                <h2 className="text-lg font-black text-foreground">أحدث السيارات للبيع</h2>
+              </div>
+              <Link href="/cars" className="text-xs font-bold text-primary hover:underline flex items-center gap-1">
+                عرض الكل <ChevronLeft className="h-3 w-3" />
+              </Link>
+            </div>
+            {/* Desktop header */}
+            <div className="hidden md:flex justify-between items-end gap-6 border-b border-gray-200 pb-4">
+              <div className="space-y-1 text-right">
                 <h2 className="text-2xl md:text-3xl font-black text-foreground">
                   أحدث السيارات <span className="text-primary">للبيع</span>
                 </h2>
               </div>
-              <Button
-                variant="outline"
-                asChild
-                size="sm"
-                className="rounded-lg bg-white text-black border-gray-200 hover:bg-gray-50 transition-all px-4 shrink-0 font-bold"
-              >
-                <Link href="/cars" className="flex items-center gap-2">
-                  عرض الكل
-                  <ChevronLeft className="h-4 w-4" />
-                </Link>
+              <Button variant="outline" asChild size="sm" className="rounded-lg bg-white text-black border-gray-200 hover:bg-gray-50 px-4 shrink-0 font-bold">
+                <Link href="/cars" className="flex items-center gap-2">عرض الكل <ChevronLeft className="h-4 w-4" /></Link>
               </Button>
             </div>
 
@@ -204,23 +232,26 @@ export default function HomePage() {
 
           {/* Equipment Section */}
           {featuredEquipment.length > 0 && (
-            <section className="space-y-6">
-              <div className="flex md:flex-row justify-between items-end gap-6 border-b border-gray-200 pb-4">
-                <div className="space-y-2 text-right">
+            <section className="space-y-4">
+              {/* Mobile header */}
+              <div className="flex items-center justify-between border-b border-gray-200 pb-3 md:hidden">
+                <div className="flex items-center gap-2">
+                  <div className="w-1 h-5 bg-emerald-600 rounded-full" />
+                  <h2 className="text-lg font-black text-foreground">معدات ثقيلة وزراعية</h2>
+                </div>
+                <Link href="/equipment" className="text-xs font-bold text-primary hover:underline flex items-center gap-1">
+                  عرض الكل <ChevronLeft className="h-3 w-3" />
+                </Link>
+              </div>
+              {/* Desktop header */}
+              <div className="hidden md:flex justify-between items-end gap-6 border-b border-gray-200 pb-4">
+                <div className="space-y-1 text-right">
                   <h2 className="text-2xl md:text-3xl font-black text-foreground">
                     معدات <span className="text-primary">ثقيلة وزراعية</span>
                   </h2>
                 </div>
-                <Button
-                  variant="outline"
-                  asChild
-                  size="sm"
-                  className="rounded-lg bg-white shrink-0 hover:bg-gray-50 transition-all font-bold"
-                >
-                  <Link href="/equipment" className="flex items-center gap-2">
-                    عرض الكل
-                    <ChevronLeft className="h-4 w-4" />
-                  </Link>
+                <Button variant="outline" asChild size="sm" className="rounded-lg bg-white shrink-0 hover:bg-gray-50 font-bold">
+                  <Link href="/equipment" className="flex items-center gap-2">عرض الكل <ChevronLeft className="h-4 w-4" /></Link>
                 </Button>
               </div>
               <div className="w-full max-w-full min-w-0 overflow-hidden pb-4">
@@ -245,23 +276,26 @@ export default function HomePage() {
             </section>
           )}
 
-          <section className="space-y-6">
-            <div className="flex  justify-between gap-6 border-b border-gray-200 pb-4 md:flex-row md:items-end">
-              <div className="space-y-2 text-right">
-                <h2 className="mx-2 truncate text-2xl font-black text-foreground md:text-3xl">
+          <section className="space-y-4">
+            {/* Mobile header */}
+            <div className="flex items-center justify-between border-b border-gray-200 pb-3 md:hidden">
+              <div className="flex items-center gap-2">
+                <div className="w-1 h-5 bg-blue-600 rounded-full" />
+                <h2 className="text-lg font-black text-foreground">أخبار السيارات</h2>
+              </div>
+              <Link href="/news" className="text-xs font-bold text-primary hover:underline flex items-center gap-1">
+                عرض الكل <ChevronLeft className="h-3 w-3" />
+              </Link>
+            </div>
+            {/* Desktop header */}
+            <div className="hidden md:flex justify-between items-end gap-6 border-b border-gray-200 pb-4">
+              <div className="space-y-1 text-right">
+                <h2 className="text-2xl md:text-3xl font-black text-foreground">
                   أخبار <span className="text-primary">السيارات</span>
                 </h2>
               </div>
-              <Button
-                variant="outline"
-                asChild
-                size="sm"
-                className="shrink-0 rounded-lg border-gray-200 bg-white text-black transition-all hover:bg-gray-50 font-bold"
-              >
-                <Link href="/news" className="flex items-center gap-2">
-                  عرض الكل
-                  <ChevronLeft className="h-4 w-4" />
-                </Link>
+              <Button variant="outline" asChild size="sm" className="shrink-0 rounded-lg border-gray-200 bg-white text-black hover:bg-gray-50 font-bold">
+                <Link href="/news" className="flex items-center gap-2">عرض الكل <ChevronLeft className="h-4 w-4" /></Link>
               </Button>
             </div>
 
@@ -310,156 +344,9 @@ export default function HomePage() {
             )}
           </section>
         </div>
-        <div className="container mx-auto max-w-7xl px-4 py-20 relative z-30 w-full">
-          <div className="w-full overflow-hidden pb-8">
-            <HomeSectionCarousel
-              navKey="hero-stats"
-              loop={false}
-              autoplayDelay={5000}
-              spaceBetween={20}
-              slidesPerView={1}
-              breakpoints={{
-                640: { slidesPerView: 2 },
-                1024: { slidesPerView: 3 },
-              }}
-            >
-              {[
-                {
-                  icon: Car,
-                  title: "أكثر من 500 سيارة",
-                  desc: "جديد ومستعمل بأفضل الحالات",
-                  color: "bg-blue-600",
-                },
-                {
-                  icon: Zap,
-                  title: "أسعار تنافسية",
-                  desc: "عروض حصرية وتسهيلات بنكية",
-                  color: "bg-amber-600",
-                },
-                {
-                  icon: Shield,
-                  title: "ضمان وموثوقية",
-                  desc: "فحص شامل وتقارير فنية معتمدة",
-                  color: "bg-emerald-600",
-                },
-              ].map((stat, idx) => (
-                <SwiperSlide key={idx} className="h-auto!">
-                  <Card className=" border-0 rounded-lg overflow-hidden group transition-all duration-500 bg-white/90 backdrop-blur-xl h-full border-t border-white/50">
-                    <CardContent className="p-6 flex items-center gap-5">
-                      <div
-                        className={`w-12 h-12 ${stat.color} rounded-lg flex items-center justify-center shrink-0 shadow-none transition-transform group-hover:scale-110`}
-                      >
-                        <stat.icon className="h-8 w-8 text-white" />
-                      </div>
-                      <div className="space-y-1 text-right">
-                        <h3 className="text-xl font-black text-[#1A1A1A]">
-                          {stat.title}
-                        </h3>
-                        <p className="text-muted-foreground text-sm font-bold leading-relaxed">
-                          {stat.desc}
-                        </p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </SwiperSlide>
-              ))}
-            </HomeSectionCarousel>
-          </div>
-        </div>
       </main>
 
-      <footer className="bg-[#1B3E7A] text-white pt-16 pb-8 border-t-4 border-accent">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
-            <div className="md:col-span-2 space-y-6">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-white rounded-lg shadow-none">
-                  <Car className="h-6 w-6 text-[#1B3E7A]" />
-                </div>
-                <span className="font-black text-2xl tracking-tighter text-white">
-                  سيارات المنيا
-                </span>
-              </div>
-              <p className="text-gray-400 text-xl max-w-md leading-relaxed font-medium">
-                المنصة الأكبر والأكثر ثقة لبيع وشراء السيارات والمعدات في محافظة
-                المنيا. نربط البائع بالمشتري بكل سهولة.
-              </p>
-            </div>
-            <div className="space-y-6">
-              <h4 className="text-xl font-black text-white">روابط سريعة</h4>
-              <ul className="space-y-4 text-gray-400 font-bold">
-                <li>
-                  <Link
-                    href="/cars"
-                    className="hover:text-primary transition-colors"
-                  >
-                    سيارات للبيع
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/equipment"
-                    className="hover:text-primary transition-colors"
-                  >
-                    معدات ثقيلة
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/showrooms"
-                    className="hover:text-primary transition-colors"
-                  >
-                    معارض السيارات
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/news"
-                    className="hover:text-primary transition-colors"
-                  >
-                    أخبار السوق
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div className="space-y-6">
-              <h4 className="text-xl font-black text-white">تواصل معنا</h4>
-              <Button
-                asChild
-                className="w-full h-16 rounded-2xl bg-[#22C55E] hover:bg-green-600 text-black font-black text-lg"
-              >
-                <a
-                  href={getWhatsAppUrl(WHATSAPP_MESSAGES.default)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <WhatsAppIcon />
-                  تواصل عبر واتساب
-                </a>
-              </Button>
-            </div>
-          </div>
-          <div className="border-t border-white/10 pt-12 flex flex-col md:flex-row justify-between items-center gap-8">
-            <p className="text-gray-500 text-sm font-bold">
-              © 2026 سوق سيارات المنيا. جميع الحقوق محفوظة.
-            </p>
-            <div className="flex gap-8 text-gray-400 font-bold text-sm">
-              <Link
-                href="/privacy"
-                className="hover:text-white transition-colors"
-              >
-                سياسة الخصوصية
-              </Link>
-              <Link
-                href="/terms"
-                className="hover:text-white transition-colors"
-              >
-                شروط الاستخدام
-              </Link>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

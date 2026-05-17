@@ -25,8 +25,8 @@ export function AuthLayout({ title, subtitle, children, footer }: AuthLayoutProp
  <div className="absolute inset-0 bg-gradient-to-br from-[#D97706]/30 via-transparent to-black/60" />
  <div className="relative z-10">
  <Link href="/" className="inline-flex items-center gap-4 transition-opacity hover:opacity-90">
- <div className="relative h-16 w-16 overflow-hidden rounded-2xl border-2 border-primary/40 shadow-none">
- <Image src="/logo-maarad-sayarat.png" alt="سيارات المنيا" fill className="object-cover" />
+ <div className="relative h-16 w-24 overflow-hidden rounded-2xl bg-white p-1 shadow-none flex items-center justify-center">
+ <Image src="/logo.png" alt="سيارات المنيا" fill className="object-contain" />
  </div>
  <div className="space-y-1 text-right">
  <p className="text-sm font-bold text-primary">معرض سيارات المنيا</p>
@@ -66,8 +66,8 @@ export function AuthLayout({ title, subtitle, children, footer }: AuthLayoutProp
  <div className="flex flex-col justify-center px-4 py-10 sm:px-8 lg:px-14">
  <div className="mx-auto w-full max-w-md space-y-8">
  <Link href="/" className="flex lg:hidden items-center justify-center gap-3">
- <div className="relative h-14 w-14 overflow-hidden rounded-xl border-2 border-primary/20 shadow-none">
- <Image src="/logo-maarad-sayarat.png" alt="سيارات المنيا" fill className="object-cover" />
+ <div className="relative h-14 w-[84px] overflow-hidden rounded-xl bg-white p-1 shadow-none flex items-center justify-center">
+ <Image src="/logo.png" alt="سيارات المنيا" fill className="object-contain" />
  </div>
  <span className="text-2xl font-[1000]">سيارات المنيا</span>
  </Link>

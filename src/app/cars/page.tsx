@@ -8,6 +8,7 @@ import { CarCard } from "@/components/car-card"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { Breadcrumbs } from "@/components/breadcrumbs"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Car as CarIcon } from "lucide-react"
 import { useCarStore } from "@/lib/store/carStore"
@@ -45,6 +46,7 @@ function CarsPageContent() {
  <div className="min-h-screen bg-background">
  
  <main className="container mx-auto px-4 py-24">
+ <Breadcrumbs items={[{ label: "سيارات للبيع" }]} />
  <div className="mb-16 space-y-4">
  <h1 className="text-5xl md:text-6xl font-[1000] tracking-tighter">جميع السيارات</h1>
  <p className="text-muted-foreground text-xl font-medium">

@@ -1,26 +1,28 @@
-"use client"
+"use client";
 
-import { usePathname } from "next/navigation"
-import { Navbar } from "@/components/navbar"
-import { WhatsAppFloat } from "@/components/whatsapp-float"
+import { usePathname } from "next/navigation";
+import { Navbar } from "@/components/navbar";
+import { WhatsAppFloat } from "@/components/whatsapp-float";
+import { Footer } from "@/components/footer";
 
 export function ClientShell({ children }: { children: React.ReactNode }) {
- const pathname = usePathname()
- const isAdmin = pathname?.startsWith("/admin")
- const isAuth = pathname?.startsWith("/auth")
+  const pathname = usePathname();
+  const isAdmin = pathname?.startsWith("/admin");
+  const isAuth = pathname?.startsWith("/auth");
 
- if (isAdmin || isAuth) {
- return <>{children}</>
- }
+  if (isAdmin || isAuth) {
+    return <>{children}</>;
+  }
 
- const isHomePage = pathname === "/"
- const contentPadding = isHomePage ? "" : "pt-[7.5rem] md:pt-[8.75rem]"
+  const isHomePage = pathname === "/";
+  const contentPadding = isHomePage ? "" : "pt-[7.5rem] md:pt-[8.75rem]";
 
- return (
- <>
- <Navbar />
- <div className={contentPadding}>{children}</div>
- <WhatsAppFloat />
- </>
- )
+  return (
+    <>
+      <Navbar />
+      <div className={contentPadding}>{children}</div>
+      <Footer />
+      <WhatsAppFloat />
+    </>
+  );
 }

@@ -26,6 +26,7 @@ import {
  ChevronRight as ChevronRightIcon,
 } from "lucide-react";
 import { CallButton } from "@/components/call-button";
+import { Breadcrumbs } from "@/components/breadcrumbs";
 import Link from "next/link";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -160,20 +161,13 @@ export default function CarDetailPage() {
  return (
  <div className="min-h-screen bg-[#F9F6F1] pb-20">
  <main className="container mx-auto px-4 pt-10 pb-24">
- {/* Breadcrumbs */}
- <div className="flex items-center gap-2 text-sm text-muted-foreground mb-6 font-bold">
- <Link href="/" className="hover:text-primary transition-colors">
- الرئيسية
- </Link>
- <ChevronRight className="h-4 w-4 rotate-180" />
- <Link href="/cars" className="hover:text-primary transition-colors">
- سيارات للبيع
- </Link>
- <ChevronRight className="h-4 w-4 rotate-180" />
- <span className="text-foreground">
- {car.brand} {car.model}
- </span>
- </div>
+  {/* Breadcrumbs */}
+  <Breadcrumbs
+    items={[
+      { label: "سيارات للبيع", href: "/cars" },
+      { label: `${car.brand} ${car.model}` },
+    ]}
+  />
 
  {/* Top Header: Title and Price */}
  <div className="flex flex-col md:flex-row justify-between items-start gap-6 mb-8">

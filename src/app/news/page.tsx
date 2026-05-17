@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Calendar, User, ArrowLeft, ChevronLeft, Tag, Search } from "lucide-react";
 import Link from "next/link";
 import { useNews } from "@/hooks/useContent"
+import { Breadcrumbs } from "@/components/breadcrumbs"
 import { FormattedDate } from "@/components/formatted-date";
 
 export default function NewsPage() {
@@ -33,6 +34,9 @@ export default function NewsPage() {
  <div className="min-h-screen bg-[#F9F6F1]">
  
  <main className="container mx-auto px-4 py-8 md:py-24">
+ <div className="max-w-4xl mx-auto">
+   <Breadcrumbs items={[{ label: "الأخبار والمقالات" }]} />
+ </div>
  <div className="max-w-4xl mx-auto space-y-12">
  <div className="text-center space-y-4">
  <h1 className="text-3xl md:text-7xl font-[1000] tracking-tighter">

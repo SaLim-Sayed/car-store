@@ -10,6 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Input } from "@/components/ui/input"
 import { MapPin, Phone, Mail, Globe, Store, CheckCircle, ChevronLeft, Search } from "lucide-react"
 import { CallPhoneLink } from "@/components/call-button"
+import { Breadcrumbs } from "@/components/breadcrumbs"
 import { formatPhoneDisplay } from "@/lib/phone"
 import Link from "next/link"
 import { useShowrooms } from "@/hooks/useContent"
@@ -34,6 +35,9 @@ function ShowroomsPageContent() {
  <div className="min-h-screen bg-[#F9F6F1]">
  
  <main className="container mx-auto px-4 py-12 md:py-24">
+    <div className="max-w-5xl mx-auto">
+      <Breadcrumbs items={[{ label: "المعارض والشركاء" }]} />
+    </div>
  <div className="max-w-5xl mx-auto space-y-10 md:space-y-16">
  <div className="text-center space-y-4 md:space-y-6">
  <h1 className="text-3xl md:text-7xl font-[1000] tracking-tighter">شركاؤنا ومعارضنا</h1>

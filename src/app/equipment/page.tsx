@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Tractor, Search } from "lucide-react"
+import { Breadcrumbs } from "@/components/breadcrumbs"
 import { useEquipment, type Equipment } from "@/hooks/useEquipment"
 
 const CATEGORIES = ["الكل", "جرار", "حفار", "شاحنة", "معدة زراعية", "معدة بناء", "أخرى"] as const
@@ -37,6 +38,7 @@ export default function EquipmentPage() {
  <Navbar />
 
  <main className="container mx-auto px-4 py-24">
+ <Breadcrumbs items={[{ label: "آلات ومعدات" }]} />
  <div className="mb-12 space-y-4">
  <h1 className="text-5xl md:text-6xl font-[1000] tracking-tighter">آلات زراعية ومعدات ثقيلة</h1>
  <p className="text-muted-foreground text-xl font-medium">
