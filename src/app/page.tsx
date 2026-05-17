@@ -1,35 +1,29 @@
 "use client";
 
-import { HeroSlider } from "@/components/hero-slider";
 import { CarCard } from "@/components/car-card";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import {
-  Car,
-  Shield,
-  PlusCircle,
-  ChevronLeft,
-  Settings,
-  Tractor,
-  ArrowRight,
-  Sparkles,
-  Zap,
-} from "lucide-react";
-import Link from "next/link";
-import Image from "next/image";
-import { getWhatsAppUrl, WHATSAPP_MESSAGES } from "@/lib/whatsapp";
-import { WhatsAppIcon } from "@/components/whatsapp-icon";
-import { useFeaturedCars, Car as CarType } from "@/hooks/useCars";
-import { useNews } from "@/hooks/useContent";
-import { useFeaturedEquipment, type Equipment } from "@/hooks/useEquipment";
 import { EquipmentCard } from "@/components/equipment-card";
-import { Skeleton } from "@/components/ui/skeleton";
-import { SwiperSlide } from "swiper/react";
+import { HeroSlider } from "@/components/hero-slider";
 import { HomeSectionCarousel } from "@/components/home-section-carousel";
 import { NewsHomeCard, type NewsHomeItem } from "@/components/news-home-card";
-import { Footer } from "@/components/footer";
 import { SupportPanel } from "@/components/support-panel";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { WhatsAppIcon } from "@/components/whatsapp-icon";
+import { Car as CarType, useFeaturedCars } from "@/hooks/useCars";
+import { useNews } from "@/hooks/useContent";
+import { useFeaturedEquipment, type Equipment } from "@/hooks/useEquipment";
+import { getWhatsAppUrl, WHATSAPP_MESSAGES } from "@/lib/whatsapp";
+import {
+  ArrowRight,
+  Car,
+  ChevronLeft,
+  PlusCircle,
+  Settings,
+  Tractor,
+} from "lucide-react";
+import Link from "next/link";
+import { SwiperSlide } from "swiper/react";
 
 export default function HomePage() {
   const { data: carsData, isLoading } = useFeaturedCars();
@@ -70,7 +64,9 @@ export default function HomePage() {
                   title: "إضافة معرض",
                   icon: PlusCircle,
                   accentBg: "bg-amber-600",
-                  link: getWhatsAppUrl("مرحباً، أريد إضافة معرضي على سوق سيارات المنيا"),
+                  link: getWhatsAppUrl(
+                    "مرحباً، أريد إضافة معرضي على سوق سيارات المنيا",
+                  ),
                   isExternal: true,
                   label: "أضف معرضك",
                   sub: "/showrooms",
@@ -87,19 +83,31 @@ export default function HomePage() {
                   subLabel: "تصفح المعدات",
                 },
               ].map((s, i) => (
-                <div key={i} className="flex flex-col items-center text-center bg-white border border-gray-200 rounded-xl p-3 gap-2">
-                  <div className={`w-11 h-11 ${s.accentBg} rounded-xl flex items-center justify-center`}>
+                <div
+                  key={i}
+                  className="flex flex-col items-center text-center bg-white border border-gray-200 rounded-xl p-3 gap-2"
+                >
+                  <div
+                    className={`w-11 h-11 ${s.accentBg} rounded-xl flex items-center justify-center`}
+                  >
                     <s.icon className="w-5 h-5 text-white" />
                   </div>
-                  <p className="text-xs font-black text-foreground leading-tight">{s.title}</p>
+                  <p className="text-xs font-black text-foreground leading-tight">
+                    {s.title}
+                  </p>
                   <Link
                     href={s.link}
-                    {...(s.isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                    {...(s.isExternal
+                      ? { target: "_blank", rel: "noopener noreferrer" }
+                      : {})}
                     className={`w-full text-[10px] font-bold py-1.5 rounded-lg text-white ${s.accentBg} hover:opacity-90 transition-opacity`}
                   >
                     {s.label}
                   </Link>
-                  <Link href={s.sub} className="text-[10px] font-bold text-muted-foreground hover:text-primary transition-colors">
+                  <Link
+                    href={s.sub}
+                    className="text-[10px] font-bold text-muted-foreground hover:text-primary transition-colors"
+                  >
                     {s.subLabel}
                   </Link>
                 </div>
@@ -141,23 +149,42 @@ export default function HomePage() {
                   key={i}
                   className="border border-gray-200 rounded-xl overflow-hidden group bg-white transition-all h-full flex flex-col shadow-none hover:shadow-none"
                 >
-                  <div className={`h-32 ${service.bg} relative overflow-hidden flex items-center justify-center`}>
-                    <div className={`w-16 h-16 ${service.iconBg} rounded-xl flex items-center justify-center relative z-10 transition-transform group-hover:scale-110`}>
+                  <div
+                    className={`h-32 ${service.bg} relative overflow-hidden flex items-center justify-center`}
+                  >
+                    <div
+                      className={`w-16 h-16 ${service.iconBg} rounded-xl flex items-center justify-center relative z-10 transition-transform group-hover:scale-110`}
+                    >
                       <service.icon className="w-8 h-8 text-white" />
                     </div>
                   </div>
                   <CardContent className="p-6 text-center flex-1 flex flex-col justify-between space-y-4">
                     <div className="space-y-2">
-                      <h3 className="text-xl font-bold text-foreground">{service.title}</h3>
-                      <p className="text-muted-foreground text-sm font-medium leading-relaxed">{service.desc}</p>
+                      <h3 className="text-xl font-bold text-foreground">
+                        {service.title}
+                      </h3>
+                      <p className="text-muted-foreground text-sm font-medium leading-relaxed">
+                        {service.desc}
+                      </p>
                     </div>
                     <Button
                       asChild
-                      variant={service.iconBg.includes("amber") ? "secondary" : "outline"}
+                      variant={
+                        service.iconBg.includes("amber")
+                          ? "secondary"
+                          : "outline"
+                      }
                       className="w-full h-11 rounded-lg text-base font-bold group/btn"
                     >
-                      <Link href={service.link} {...(service.isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}>
-                        {service.isExternal && <WhatsAppIcon className="ml-2 w-4 h-4" />}
+                      <Link
+                        href={service.link}
+                        {...(service.isExternal
+                          ? { target: "_blank", rel: "noopener noreferrer" }
+                          : {})}
+                      >
+                        {service.isExternal && (
+                          <WhatsAppIcon className="ml-2 w-4 h-4" />
+                        )}
                         {service.action}
                         <ArrowRight className="mr-2 h-4 w-4 rotate-180 transition-transform" />
                       </Link>
@@ -174,9 +201,14 @@ export default function HomePage() {
             <div className="flex items-center justify-between border-b border-gray-200 pb-3 md:hidden">
               <div className="flex items-center gap-2">
                 <div className="w-1 h-5 bg-primary rounded-full" />
-                <h2 className="text-lg font-black text-foreground">أحدث السيارات للبيع</h2>
+                <h2 className="text-lg font-black text-foreground">
+                  أحدث السيارات للبيع
+                </h2>
               </div>
-              <Link href="/cars" className="text-xs font-bold text-primary hover:underline flex items-center gap-1">
+              <Link
+                href="/cars"
+                className="text-xs font-bold text-primary hover:underline flex items-center gap-1"
+              >
                 عرض الكل <ChevronLeft className="h-3 w-3" />
               </Link>
             </div>
@@ -187,8 +219,15 @@ export default function HomePage() {
                   أحدث السيارات <span className="text-primary">للبيع</span>
                 </h2>
               </div>
-              <Button variant="outline" asChild size="sm" className="rounded-lg bg-white text-black border-gray-200 hover:bg-gray-50 px-4 shrink-0 font-bold">
-                <Link href="/cars" className="flex items-center gap-2">عرض الكل <ChevronLeft className="h-4 w-4" /></Link>
+              <Button
+                variant="outline"
+                asChild
+                size="sm"
+                className="rounded-lg bg-white text-black border-gray-200 hover:bg-gray-50 px-4 shrink-0 font-bold"
+              >
+                <Link href="/cars" className="flex items-center gap-2">
+                  عرض الكل <ChevronLeft className="h-4 w-4" />
+                </Link>
               </Button>
             </div>
 
@@ -238,9 +277,14 @@ export default function HomePage() {
               <div className="flex items-center justify-between border-b border-gray-200 pb-3 md:hidden">
                 <div className="flex items-center gap-2">
                   <div className="w-1 h-5 bg-emerald-600 rounded-full" />
-                  <h2 className="text-lg font-black text-foreground">معدات ثقيلة وزراعية</h2>
+                  <h2 className="text-lg font-black text-foreground">
+                    معدات ثقيلة وزراعية
+                  </h2>
                 </div>
-                <Link href="/equipment" className="text-xs font-bold text-primary hover:underline flex items-center gap-1">
+                <Link
+                  href="/equipment"
+                  className="text-xs font-bold text-primary hover:underline flex items-center gap-1"
+                >
                   عرض الكل <ChevronLeft className="h-3 w-3" />
                 </Link>
               </div>
@@ -251,8 +295,15 @@ export default function HomePage() {
                     معدات <span className="text-primary">ثقيلة وزراعية</span>
                   </h2>
                 </div>
-                <Button variant="outline" asChild size="sm" className="rounded-lg bg-white shrink-0 hover:bg-gray-50 font-bold">
-                  <Link href="/equipment" className="flex items-center gap-2">عرض الكل <ChevronLeft className="h-4 w-4" /></Link>
+                <Button
+                  variant="outline"
+                  asChild
+                  size="sm"
+                  className="rounded-lg bg-white shrink-0 hover:bg-gray-50 font-bold"
+                >
+                  <Link href="/equipment" className="flex items-center gap-2">
+                    عرض الكل <ChevronLeft className="h-4 w-4" />
+                  </Link>
                 </Button>
               </div>
               <div className="w-full max-w-full min-w-0 overflow-hidden pb-4">
@@ -282,9 +333,14 @@ export default function HomePage() {
             <div className="flex items-center justify-between border-b border-gray-200 pb-3 md:hidden">
               <div className="flex items-center gap-2">
                 <div className="w-1 h-5 bg-blue-600 rounded-full" />
-                <h2 className="text-lg font-black text-foreground">أخبار السيارات</h2>
+                <h2 className="text-lg font-black text-foreground">
+                  أخبار السيارات
+                </h2>
               </div>
-              <Link href="/news" className="text-xs font-bold text-primary hover:underline flex items-center gap-1">
+              <Link
+                href="/news"
+                className="text-xs font-bold text-primary hover:underline flex items-center gap-1"
+              >
                 عرض الكل <ChevronLeft className="h-3 w-3" />
               </Link>
             </div>
@@ -295,8 +351,15 @@ export default function HomePage() {
                   أخبار <span className="text-primary">السيارات</span>
                 </h2>
               </div>
-              <Button variant="outline" asChild size="sm" className="shrink-0 rounded-lg border-gray-200 bg-white text-black hover:bg-gray-50 font-bold">
-                <Link href="/news" className="flex items-center gap-2">عرض الكل <ChevronLeft className="h-4 w-4" /></Link>
+              <Button
+                variant="outline"
+                asChild
+                size="sm"
+                className="shrink-0 rounded-lg border-gray-200 bg-white text-black hover:bg-gray-50 font-bold"
+              >
+                <Link href="/news" className="flex items-center gap-2">
+                  عرض الكل <ChevronLeft className="h-4 w-4" />
+                </Link>
               </Button>
             </div>
 
@@ -348,8 +411,6 @@ export default function HomePage() {
       </main>
 
       <SupportPanel />
-
-      <Footer />
     </div>
   );
 }
