@@ -9,7 +9,7 @@ type AuthFieldProps = React.ComponentProps<typeof Input> & {
 };
 
 const fieldClassName =
- 'h-12 rounded-xl border-gray-200 bg-gray-50/50 text-base font-medium focus-visible:ring-primary/30';
+  "h-12 rounded-xl border-primary/20 bg-primary/[0.03] text-base font-medium focus:bg-white focus:border-primary/50 focus-visible:ring-primary/30 transition-all";
 
 export function AuthField({ id, label, error, className, type, ...props }: AuthFieldProps) {
  const inputClassName = cn(fieldClassName, error && 'border-red-500 focus-visible:ring-red-500/30', className);

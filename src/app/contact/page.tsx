@@ -19,6 +19,7 @@ import {
  Wrench
 } from "lucide-react"
 import { toast } from "sonner"
+import { SupportPanel } from "@/components/support-panel"
 
 const contactInfo = [
  {
@@ -331,27 +332,8 @@ export default function ContactPage() {
  </div>
  </section>
 
- {/* Emergency Contact */}
- <section className="py-16 bg-blue-600 text-white">
- <div className="container mx-auto px-4 text-center">
- <div className="max-w-4xl mx-auto">
- <h2 className="text-3xl font-bold mb-6">هل تحتاج إلى مساعدة عاجلة؟</h2>
- <p className="text-xl mb-8 text-blue-100">
- فريق الطوارئ لدينا متاح 24/7 لمساعدتك
- </p>
- <div className="flex flex-col sm:flex-row gap-4 justify-center">
- <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4">
- <Phone className="ml-2 h-5 w-5" />
- 92000 1234
- </Button>
- <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-blue-600 px-8 py-4">
- <Mail className="ml-2 h-5 w-5" />
- emergency@carstore.com.sa
- </Button>
- </div>
- </div>
- </div>
- </section>
+ {/* Support Panel */}
+ <SupportPanel />
  </div>
  )
 }

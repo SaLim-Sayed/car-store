@@ -1,101 +1,192 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Fuel, Settings, Calendar } from "lucide-react";
+import { Phone, MessageSquare, MapPin, Heart } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { getTelHref, getContactPhone } from "@/lib/phone";
+import { useState } from "react";
+import { FaWhatsapp } from "react-icons/fa";
 
 interface CarCardProps {
- car: {
- _id: string;
- brand: string;
- model: string;
- year: number;
- price: number;
- fuelType: string;
- transmission: string;
- mileage: number;
- color: string;
- description: string;
- images: string[];
- status: string;
- createdAt: string;
- };
+  car: {
+    _id: string;
+    brand: string;
+    model: string;
+    year: number;
+    price: number;
+    fuelType: string;
+    transmission: string;
+    mileage: number;
+    color: string;
+    description: string;
+    images: string[];
+    status: string;
+    createdAt: string;
+    phone?: string;
+  };
 }
 
 export function CarCard({ car }: CarCardProps) {
- const getStatusColor = (status: string) => {
- switch (status) {
- case "متاح":
- return "bg-green-500 text-white";
- case "مباع":
- return "bg-red-500 text-white";
- case "محجوز":
- return "bg-amber-500 text-white";
- default:
- return "bg-gray-500 text-white";
- }
- };
+  const router = useRouter();
+  const [isFavorite, setIsFavorite] = useState(false);
 
- const router = useRouter()
- return (
- <Card onClick={() => router.push(`/cars/${car._id}`)} cursor-pointer className="group flex h-full min-h-0 flex-col overflow-hidden border border-gray-200 rounded-lg bg-white shadow-none transition-all duration-300 hover:shadow-sm">
- <CardHeader className="shrink-0 p-0">
- <div className="relative h-36 overflow-hidden sm:h-40 md:h-44">
- <Image
- src={car.images[0] || "/placeholder-car.jpg"}
- alt={`${car.brand} ${car.model}`}
- fill
- className="object-cover group- transition-transform duration-1000"
- sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw"
- />
- <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
- <Badge
- className={`absolute top-2.5 right-2.5 md:top-4 md:right-4 px-3 py-1 md:px-4 md:py-1.5 rounded-full text-xs md:text-sm font-black border-0 shadow-none ${getStatusColor(car.status)}`}
- >
- {car.status}
- </Badge>
- </div>
- </CardHeader>
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "متاح":
+        return "bg-green-500 text-white";
+      case "مباع":
+        return "bg-red-500 text-white";
+      case "محجوز":
+        return "bg-amber-500 text-white";
+      default:
+        return "bg-slate-500 text-white";
+    }
+  };
 
- <CardContent className="flex min-h-0 flex-1 flex-col gap-2 p-3 pb-4 text-right md:gap-3 md:p-4 md:pb-4">
- <div className="space-y-2">
- <h3 className="line-clamp-2 min-h-10 text-sm font-black leading-snug text-foreground transition-colors group-hover:text-primary md:min-h-11 md:text-base">
- {car.brand} {car.model}
- </h3>
- <span className="block text-base font-[1000] text-primary md:text-xl">
- {car.price.toLocaleString()}{" "}
- <span className="text-xs font-black md:text-base">ج.م</span>
- </span>
- </div>
+  const whatsappMessage = `مرحباً، أريد الاستفسار عن سيارة ${car.brand} ${car.model} موديل ${car.year} المعروضة للبيع بسعر ${car.price.toLocaleString()} جنيه`;
+  const whatsappUrl = `https://wa.me/${getContactPhone(car.phone)}?text=${encodeURIComponent(whatsappMessage)}`;
 
- <div className="flex flex-wrap items-center justify-end gap-2 border-y border-gray-100 py-2.5 md:gap-2.5 md:py-3">
- <div className="flex items-center gap-1.5 rounded-lg bg-gray-50 px-2.5 py-1.5 text-muted-foreground md:rounded-xl md:px-3 md:py-2">
- <span className="text-xs font-black md:text-sm">{car.year}</span>
- <Calendar className="h-3.5 w-3.5 shrink-0 text-primary md:h-4 md:w-4" />
- </div>
- <div className="flex max-w-[48%] items-center gap-1.5 rounded-lg bg-gray-50 px-2.5 py-1.5 text-muted-foreground md:max-w-none md:rounded-xl md:px-3 md:py-2">
- <span className="truncate text-xs font-black md:text-sm">
- {car.transmission}
- </span>
- <Settings className="h-3.5 w-3.5 shrink-0 text-primary md:h-4 md:w-4" />
- </div>
- <div className="flex max-w-[48%] items-center gap-1.5 rounded-lg bg-gray-50 px-2.5 py-1.5 text-muted-foreground md:max-w-none md:rounded-xl md:px-3 md:py-2">
- <span className="truncate text-xs font-black md:text-sm">
- {car.fuelType}
- </span>
- <Fuel className="h-3.5 w-3.5 shrink-0 text-primary md:h-4 md:w-4" />
- </div>
- </div>
+  return (
+    <Card
+      onClick={() => router.push(`/cars/${car._id}`)}
+      className="group flex flex-col p-0 h-full min-h-0 overflow-hidden border border-slate-200/80 rounded-2xl bg-white shadow-sm hover:shadow-md hover:border-amber-500/40 transition-all duration-300 cursor-pointer"
+    >
+      <CardHeader className="shrink-0 p-0 relative">
+        <div className="relative aspect-[4/3] w-full overflow-hidden">
+          <Image
+            src={car.images[0] || "/placeholder-car.jpg"}
+            alt={`${car.brand} ${car.model}`}
+            fill
+            priority
+            className="object-cover group-hover:scale-105 transition-transform duration-700"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-black/10" />
 
- <Button
- asChild
- className="mt-auto w-full h-9 shrink-0 rounded-lg bg-primary text-white text-xs font-black shadow-none transition-all hover:bg-primary/90 md:h-11 md:rounded-xl md:text-sm"
- >
- <Link href={`/cars/${car._id}`}>عرض التفاصيل</Link>
- </Button>
- </CardContent>
- </Card>
- );
+          {/* Top Right: Turbo Tag */}
+          <div className="absolute top-3 right-3 z-10 bg-amber-600/90 text-white font-black text-[11px] px-2.5 py-1 rounded-lg flex items-center gap-1 shadow-sm select-none">
+            <span>⚡ تيربو</span>
+          </div>
+
+          {/* Top Left: Favorites Button */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsFavorite(!isFavorite);
+            }}
+            className="absolute top-3 left-3 z-10 h-8 w-8 rounded-full bg-black/35 hover:bg-black/50 text-white flex items-center justify-center transition-all"
+            aria-label="حفظ في المفضلة"
+          >
+            <Heart
+              className={`h-4.5 w-4.5 transition-colors ${
+                isFavorite ? "fill-red-500 text-red-500" : "text-white"
+              }`}
+            />
+          </button>
+
+          {/* Bottom Left: Images Counter */}
+          <div className="absolute bottom-3 left-3 z-10 bg-black/60 backdrop-blur-sm text-white font-bold text-xs px-2.5 py-1 rounded-lg select-none">
+            1 / {car.images.length || 1}
+          </div>
+
+          {/* Bottom Right: Status Badge */}
+          <Badge
+            className={`absolute bottom-3 right-3 z-10 px-3 py-1 rounded-lg text-xs font-black border-0 shadow-sm ${getStatusColor(
+              car.status,
+            )}`}
+          >
+            {car.status}
+          </Badge>
+        </div>
+      </CardHeader>
+
+      <CardContent className="flex flex-1 flex-col p-4 text-right">
+        {/* Title */}
+        <h3 className="font-[1000] text-base md:text-lg text-slate-800 transition-colors group-hover:text-primary leading-snug line-clamp-1 mb-1.5">
+          {car.brand} {car.model}
+        </h3>
+
+        {/* Technical Specs Line */}
+        <div
+          className="flex items-center justify-end gap-1.5 text-[11px] md:text-xs font-bold text-slate-500 mb-2.5"
+          dir="rtl"
+        >
+          <span>{car.year}</span>
+          <span className="text-slate-300 font-normal">|</span>
+          <span>
+            {car.mileage ? `${car.mileage.toLocaleString()} كم` : "0 كم"}
+          </span>
+          <span className="text-slate-300 font-normal">|</span>
+          <span>{car.transmission}</span>
+          <span className="text-slate-300 font-normal">|</span>
+          <span>{car.fuelType}</span>
+        </div>
+
+        {/* Price Section */}
+        <div className="flex items-baseline justify-end gap-1 mb-4 select-none">
+          <span className="text-xl md:text-2xl font-[1000] text-[#1B3E7A]">
+            {car.price.toLocaleString()}
+          </span>
+          <span className="text-[11px] md:text-xs font-black text-[#1B3E7A]/80">
+            جنيه
+          </span>
+        </div>
+
+        {/* Custom Tags Section */}
+        <div className="flex flex-wrap items-center justify-end gap-1.5 mb-5 border-t border-slate-100/80 pt-3">
+          {/* Location Tag */}
+          <span className="inline-flex items-center gap-0.5 rounded-lg bg-slate-50 px-2 py-0.5 text-[10px] font-black text-slate-500 border border-slate-100">
+            <MapPin className="h-3 w-3 text-slate-400 shrink-0" />
+            المنيا
+          </span>
+          {/* Brand Tag */}
+          <span className="rounded-lg bg-slate-50 px-2 py-0.5 text-[10px] font-black text-slate-500 border border-slate-100">
+            {car.brand}
+          </span>
+          {/* Model Tag */}
+          <span className="rounded-lg bg-slate-50 px-2.5 py-0.5 text-[10px] font-black text-slate-500 border border-slate-100">
+            {car.model}
+          </span>
+          {/* Condition Tag */}
+          <span className="rounded-lg bg-slate-50 px-2.5 py-0.5 text-[10px] font-black text-slate-500 border border-slate-100">
+            {car.mileage === 0 ? "زيرو" : "كسر زيرو"}
+          </span>
+        </div>
+
+        {/* Premium Bottom Action Bar (3 Actions) */}
+        <div
+          className="flex items-center gap-2 mt-auto w-full"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="h-10 w-40 rounded-xl bg-primary text-white flex items-center justify-center shrink-0 relative overflow-hidden p-1 shadow-inner select-none">
+            <Link href={`/cars/${car._id}`}>عرض التفاصيل</Link>
+          </div>
+          {/* Call Button */}
+          <a
+            href={getTelHref(car.phone)}
+            className="flex-1 h-10 rounded-xl bg-[#EFF6FF] text-[#1B3E7A] border border-[#BFDBFE]/60 hover:bg-[#DBEAFE] font-black text-xs flex items-center justify-center gap-1.5 transition-all shadow-sm"
+          >
+            <Phone className="h-3.5 w-3.5" />
+            <span>اتصال</span>
+          </a>
+
+          {/* WhatsApp Button */}
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="h-10 w-12 rounded-xl bg-[#ECFDF5] text-[#10B981] border border-[#A7F3D0]/60 hover:bg-[#D1FAE5] flex items-center justify-center transition-all shrink-0 shadow-sm"
+            aria-label="تواصل عبر واتساب"
+          >
+            <FaWhatsapp className="h-5 w-5 fill-current" />
+          </a>
+
+          {/* Showroom Logo / Brand Badge */}
+        </div>
+      </CardContent>
+    </Card>
+  );
 }

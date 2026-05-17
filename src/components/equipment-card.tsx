@@ -1,84 +1,178 @@
-import Image from "next/image"
-import Link from "next/link"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Calendar, MapPin, Tractor } from "lucide-react"
-import type { Equipment } from "@/hooks/useEquipment"
-import { useRouter } from "next/navigation"
+"use client";
+
+import Image from "next/image";
+import Link from "next/link";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Phone, MessageSquare, MapPin, Heart } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { getTelHref, getContactPhone } from "@/lib/phone";
+import { useState } from "react";
+import { FaWhatsapp } from "react-icons/fa";
+import type { Equipment } from "@/hooks/useEquipment";
 
 interface EquipmentCardProps {
- equipment: Equipment
+  equipment: Equipment;
 }
 
 export function EquipmentCard({ equipment }: EquipmentCardProps) {
- const statusColor =
- equipment.status === "متاح"
- ? "bg-green-500 text-white"
- : equipment.status === "مباع"
- ? "bg-red-500 text-white"
- : "bg-amber-500 text-white"
+  const router = useRouter();
+  const [isFavorite, setIsFavorite] = useState(false);
 
- const image = equipment.images?.[0] || "/placeholder-car.jpg"
- const label = equipment.title || `${equipment.brand} ${equipment.model || ""}`.trim()
- const router = useRouter()
- return (
- <Card onClick={() => router.push(`/equipment/${equipment._id}`)} cursor-pointer className="group flex h-full min-h-0 flex-col overflow-hidden border border-gray-200 rounded-lg bg-white shadow-none transition-all duration-300 hover:shadow-sm">
- <CardHeader className="shrink-0 p-0">
- <div className="relative h-36 md:h-44 overflow-hidden">
- <Image
- src={image}
- alt={label}
- fill
- className="object-cover group- transition-transform duration-1000"
- sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw"
- />
- <Badge className={`absolute top-2.5 right-2.5 md:top-4 md:right-4 px-3 py-1 md:px-4 md:py-1.5 rounded-full text-xs md:text-sm font-black border-0 shadow-none ${statusColor}`}>
- {equipment.status}
- </Badge>
- <Badge className="absolute top-2.5 left-2.5 md:top-4 md:left-4 px-2.5 py-1 md:px-3 md:py-1.5 rounded-full text-[10px] md:text-sm font-black border-0 bg-[#1A1A1A] text-[#D97706]">
- {equipment.category}
- </Badge>
- </div>
- </CardHeader>
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "متاح":
+        return "bg-green-500 text-white";
+      case "مباع":
+        return "bg-red-500 text-white";
+      case "محجوز":
+        return "bg-amber-500 text-white";
+      default:
+        return "bg-slate-500 text-white";
+    }
+  };
 
- <CardContent className="flex flex-1 flex-col gap-2 p-3 pb-4 text-right md:gap-3 md:p-4 md:pb-4">
- <div className="flex flex-col gap-2">
- <div className="flex justify-between items-start gap-4">
- <span className="text-base md:text-2xl font-[1000] text-primary shrink-0">
- {equipment.price.toLocaleString()} <span className="text-xs md:text-base">ج.م</span>
- </span>
- <h3 className="text-sm md:text-xl font-black text-foreground group-hover:text-primary transition-colors">
- {label}
- </h3>
- </div>
- </div>
+  const image = equipment.images?.[0] || "/placeholder-car.jpg";
+  const label =
+    equipment.title || `${equipment.brand} ${equipment.model || ""}`.trim();
 
- <div className="flex flex-wrap items-center justify-end gap-2 md:gap-3 py-2 md:py-3 border-y border-gray-50">
- {equipment.year && (
- <div className="flex items-center gap-1.5 md:gap-2 text-muted-foreground bg-gray-50 px-2 py-1 md:px-3 md:py-1.5 rounded-lg md:rounded-xl">
- <span className="text-xs md:text-sm font-black">{equipment.year}</span>
- <Calendar className="h-4 w-4 text-primary" />
- </div>
- )}
- <div className="flex items-center gap-1.5 md:gap-2 text-muted-foreground bg-gray-50 px-2 py-1 md:px-3 md:py-1.5 rounded-lg md:rounded-xl">
- <span className="text-xs md:text-sm font-black">{equipment.condition}</span>
- <Tractor className="h-4 w-4 text-primary" />
- </div>
- <div className="flex items-center gap-1.5 md:gap-2 text-muted-foreground bg-gray-50 px-2 py-1 md:px-3 md:py-1.5 rounded-lg md:rounded-xl">
- <span className="text-xs md:text-sm font-black">{equipment.location}</span>
- <MapPin className="h-4 w-4 text-primary" />
- </div>
- </div>
+  const whatsappMessage = `مرحباً، أريد الاستفسار عن معدة ${label} المعروضة للبيع بسعر ${equipment.price.toLocaleString()} جنيه`;
+  const whatsappUrl = `https://wa.me/${getContactPhone(equipment.phone)}?text=${encodeURIComponent(whatsappMessage)}`;
 
- <p className="text-xs md:text-sm text-muted-foreground line-clamp-2 leading-relaxed min-h-8 md:min-h-11 text-right font-medium">
- {equipment.description.replace(/<[^>]*>?/gm, "")}
- </p>
+  return (
+    <Card
+      onClick={() => router.push(`/equipment/${equipment._id}`)}
+      className="group flex flex-col h-full min-h-0 overflow-hidden border border-slate-200/80 rounded-2xl bg-white p-0  hover:border-amber-500/40 transition-all duration-300 cursor-pointer"
+    >
+      <CardHeader className="shrink-0 p-0 relative">
+        <div className="relative aspect-[4/3] w-full overflow-hidden">
+          <Image
+            src={image}
+            alt={label}
+            fill
+            priority
+            className="object-cover group-hover:scale-105 transition-transform duration-700"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-black/10" />
 
- <Button asChild className="mt-auto w-full h-9 shrink-0 rounded-lg bg-primary text-white text-xs font-black shadow-none transition-all hover:bg-primary/90 md:h-11 md:rounded-xl md:text-sm">
- <Link href={`/equipment/${equipment._id}`}>عرض التفاصيل</Link>
- </Button>
- </CardContent>
- </Card>
- )
+          {/* Top Right: Category Tag */}
+          <div className="absolute top-3 right-3 z-10 bg-amber-600/90 text-white font-black text-[11px] px-2.5 py-1 rounded-lg flex items-center gap-1 shadow-sm select-none">
+            <span>⚙️ {equipment.category}</span>
+          </div>
+
+          {/* Top Left: Favorites Button */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsFavorite(!isFavorite);
+            }}
+            className="absolute top-3 left-3 z-10 h-8 w-8 rounded-full bg-black/35 hover:bg-black/50 text-white flex items-center justify-center transition-all"
+            aria-label="حفظ في المفضلة"
+          >
+            <Heart
+              className={`h-4.5 w-4.5 transition-colors ${
+                isFavorite ? "fill-red-500 text-red-500" : "text-white"
+              }`}
+            />
+          </button>
+
+          {/* Bottom Left: Images Counter */}
+          <div className="absolute bottom-3 left-3 z-10 bg-black/60 backdrop-blur-sm text-white font-bold text-xs px-2.5 py-1 rounded-lg select-none">
+            1 / {equipment.images?.length || 1}
+          </div>
+
+          {/* Bottom Right: Status Badge */}
+          <Badge
+            className={`absolute bottom-3 right-3 z-10 px-3 py-1 rounded-lg text-xs font-black border-0 shadow-sm ${getStatusColor(
+              equipment.status,
+            )}`}
+          >
+            {equipment.status}
+          </Badge>
+        </div>
+      </CardHeader>
+
+      <CardContent className="flex flex-1 flex-col p-4 text-right">
+        {/* Title */}
+        <h3 className="font-[1000] text-base md:text-lg text-slate-800 transition-colors group-hover:text-primary leading-snug line-clamp-1 mb-1.5">
+          {label}
+        </h3>
+
+        {/* Technical Specs Line */}
+        <div
+          className="flex items-center justify-end gap-1.5 text-[11px] md:text-xs font-bold text-slate-500 mb-2.5"
+          dir="rtl"
+        >
+          <span>{equipment.year || "موديل حديث"}</span>
+          <span className="text-slate-300 font-normal">|</span>
+          <span>{equipment.condition}</span>
+          <span className="text-slate-300 font-normal">|</span>
+          <span>{equipment.location}</span>
+        </div>
+
+        {/* Price Section */}
+        <div className="flex items-baseline justify-end gap-1 mb-4 select-none">
+          <span className="text-xl md:text-2xl font-[1000] text-[#1B3E7A]">
+            {equipment.price.toLocaleString()}
+          </span>
+          <span className="text-[11px] md:text-xs font-black text-[#1B3E7A]/80">
+            جنيه
+          </span>
+        </div>
+
+        {/* Custom Tags Section */}
+        <div className="flex flex-wrap items-center justify-end gap-1.5 mb-5 border-t border-slate-100/80 pt-3">
+          {/* Location Tag */}
+          <span className="inline-flex items-center gap-0.5 rounded-lg bg-slate-50 px-2 py-0.5 text-[10px] font-black text-slate-500 border border-slate-100">
+            <MapPin className="h-3 w-3 text-slate-400 shrink-0" />
+            {equipment.location}
+          </span>
+          {/* Brand Tag */}
+          <span className="rounded-lg bg-slate-50 px-2 py-0.5 text-[10px] font-black text-slate-500 border border-slate-100">
+            {equipment.brand}
+          </span>
+          {/* Category Tag */}
+          <span className="rounded-lg bg-slate-50 px-2.5 py-0.5 text-[10px] font-black text-slate-500 border border-slate-100">
+            {equipment.category}
+          </span>
+          {/* Condition Tag */}
+          <span className="rounded-lg bg-slate-50 px-2.5 py-0.5 text-[10px] font-black text-slate-500 border border-slate-100">
+            {equipment.condition}
+          </span>
+        </div>
+
+        {/* Premium Bottom Action Bar (3 Actions) */}
+        <div
+          className="flex items-center gap-2 mt-auto w-full"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="h-10 w-40 rounded-xl bg-primary text-white flex items-center justify-center shrink-0 relative overflow-hidden p-1 shadow-inner select-none">
+            <Link href={`/equipment/${equipment._id}`}>عرض التفاصيل</Link>
+          </div>
+          {/* Call Button */}
+          <a
+            href={getTelHref(equipment.phone)}
+            className="flex-1 h-10 rounded-xl bg-[#EFF6FF] text-[#1B3E7A] border border-[#BFDBFE]/60 hover:bg-[#DBEAFE] font-black text-xs flex items-center justify-center gap-1.5 transition-all shadow-sm"
+          >
+            <Phone className="h-3.5 w-3.5" />
+            <span>اتصال</span>
+          </a>
+
+          {/* WhatsApp Button */}
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="h-10 w-12 rounded-xl bg-[#ECFDF5] text-[#10B981] border border-[#A7F3D0]/60 hover:bg-[#D1FAE5] flex items-center justify-center transition-all shrink-0 shadow-sm"
+            aria-label="تواصل عبر واتساب"
+          >
+            <FaWhatsapp className="h-5 w-5 fill-current" />
+          </a>
+
+          {/* Showroom Logo / Brand Badge */}
+        </div>
+      </CardContent>
+    </Card>
+  );
 }

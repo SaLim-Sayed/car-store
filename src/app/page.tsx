@@ -29,6 +29,7 @@ import { SwiperSlide } from "swiper/react";
 import { HomeSectionCarousel } from "@/components/home-section-carousel";
 import { NewsHomeCard, type NewsHomeItem } from "@/components/news-home-card";
 import { Footer } from "@/components/footer";
+import { SupportPanel } from "@/components/support-panel";
 
 export default function HomePage() {
   const { data: carsData, isLoading } = useFeaturedCars();
@@ -345,6 +346,8 @@ export default function HomePage() {
           </section>
         </div>
       </main>
+
+      <SupportPanel />
 
       <Footer />
     </div>

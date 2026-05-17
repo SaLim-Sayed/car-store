@@ -223,7 +223,7 @@ export function Navbar() {
                 variant="outline"
                 size="lg"
                 asChild
-                className="flex rounded-md h-10 md:h-12 px-5 md:px-8 text-sm md:text-lg font-bold transition-all duration-500 shadow-none hover:shadow-none text-white border-white/40 bg-white/10 hover:bg-white/20"
+                className="hidden sm:flex rounded-md h-10 md:h-12 px-5 md:px-8 text-sm md:text-lg font-bold transition-all duration-500 shadow-none hover:shadow-none text-white border-white/40 bg-white/10 hover:bg-white/20"
               >
                 <Link href="/auth/login">تسجيل الدخول</Link>
               </Button>
