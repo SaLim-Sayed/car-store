@@ -58,7 +58,7 @@ export function CarCard({ car }: CarCardProps) {
   return (
     <Card
       onClick={() => router.push(`/cars/${car._id}`)}
-      className="group flex flex-col p-0 h-full min-h-0 overflow-hidden border border-slate-200/80 rounded-2xl bg-white shadow-sm hover:shadow-md hover:border-amber-500/40 transition-all duration-300 cursor-pointer"
+      className="group flex flex-col p-0 h-full min-h-0 overflow-hidden border border-slate-200/80 rounded-xl sm:rounded-2xl bg-white shadow-sm hover:shadow-md hover:border-amber-500/40 transition-all duration-300 cursor-pointer"
     >
       <CardHeader className="shrink-0 p-0 relative">
         <div 
@@ -114,7 +114,7 @@ export function CarCard({ car }: CarCardProps) {
           )}
 
           {/* Top Right: Turbo Tag */}
-          <div className="absolute top-3 right-3 z-10 bg-primary/90 text-white font-black text-[11px] px-2.5 py-1 rounded-lg flex items-center gap-1 shadow-sm select-none">
+          <div className="absolute top-3 right-3 z-10 bg-primary/90 text-white font-black text-[11px] px-2.5 py-1 rounded-md sm:rounded-lg flex items-center gap-1 shadow-sm select-none">
             <span>⚡ تيربو</span>
           </div>
 
@@ -135,7 +135,7 @@ export function CarCard({ car }: CarCardProps) {
           </button>
 
           {/* Bottom Left: Images Counter */}
-          <div className="absolute bottom-3 left-3 z-10 bg-black/60 backdrop-blur-sm text-white font-bold text-xs px-2.5 py-1 rounded-lg select-none">
+          <div className="absolute bottom-3 left-3 z-10 bg-black/60 backdrop-blur-sm text-white font-bold text-xs px-2.5 py-1 rounded-md sm:rounded-lg select-none">
             {currentImageIndex + 1} / {images.length}
           </div>
 
@@ -205,19 +205,19 @@ export function CarCard({ car }: CarCardProps) {
 
         {/* Premium Bottom Action Bar (3 Actions) */}
         <div
-          className="flex items-center gap-2 mt-auto w-full"
+          className="flex items-center gap-1.5 sm:gap-2 mt-auto w-full"
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="h-10 w-40 rounded-xl bg-primary text-white flex items-center justify-center shrink-0 relative overflow-hidden p-1 shadow-inner select-none">
-            <Link href={`/cars/${car._id}`}>عرض التفاصيل</Link>
-          </div>
+          <Link href={`/cars/${car._id}`} className="flex-1 h-8 sm:h-10 rounded-lg sm:rounded-xl bg-primary text-white text-[11px] sm:text-sm font-bold flex items-center justify-center shadow-sm hover:shadow-md transition-shadow">
+            التفاصيل
+          </Link>
           {/* Call Button */}
           <a
             href={getTelHref(car.phone)}
-            className="flex-1 h-10 rounded-xl bg-[#EFF6FF] text-[#1B3E7A] border border-[#BFDBFE]/60 hover:bg-[#DBEAFE] font-black text-xs flex items-center justify-center gap-1.5 transition-all shadow-sm"
+            className="h-8 w-8 sm:h-10 sm:w-10 shrink-0 rounded-lg sm:rounded-xl bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE]/60 hover:bg-[#DBEAFE] flex items-center justify-center transition-all shadow-sm"
+            aria-label="اتصال"
           >
-            <Phone className="h-3.5 w-3.5" />
-            <span>اتصال</span>
+            <Phone className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
           </a>
 
           {/* WhatsApp Button */}
@@ -225,10 +225,10 @@ export function CarCard({ car }: CarCardProps) {
             href={whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="h-10 w-12 rounded-xl bg-[#ECFDF5] text-[#10B981] border border-[#A7F3D0]/60 hover:bg-[#D1FAE5] flex items-center justify-center transition-all shrink-0 shadow-sm"
+            className="h-8 w-8 sm:h-10 sm:w-10 shrink-0 rounded-lg sm:rounded-xl bg-[#ECFDF5] text-[#10B981] border border-[#A7F3D0]/60 hover:bg-[#D1FAE5] flex items-center justify-center transition-all shadow-sm"
             aria-label="تواصل عبر واتساب"
           >
-            <FaWhatsapp className="h-5 w-5 fill-current" />
+            <FaWhatsapp className="h-4 w-4 sm:h-5 sm:w-5 fill-current" />
           </a>
 
           {/* Showroom Logo / Brand Badge */}

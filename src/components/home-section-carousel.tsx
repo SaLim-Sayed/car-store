@@ -46,7 +46,7 @@ export function HomeSectionCarousel({
           type="button"
           className={cn(
             navBtn,
-            "absolute left-2 sm:left-0 top-1/2 z-10 -translate-y-1/2"
+            "hidden sm:flex absolute left-2 sm:left-0 top-1/2 z-10 -translate-y-1/2"
           )}
           aria-label="التالي"
         >
@@ -59,7 +59,7 @@ export function HomeSectionCarousel({
           type="button"
           className={cn(
             navBtn,
-            "absolute right-2 sm:right-0 top-1/2 z-10 -translate-y-1/2"
+            "hidden sm:flex absolute right-2 sm:right-0 top-1/2 z-10 -translate-y-1/2"
           )}
           aria-label="السابق"
         >

@@ -237,11 +237,12 @@ export default function HomePage() {
                   navKey="featured-cars"
                   loop={!isLoading && featuredCars.length > 3}
                   autoplayDelay={5500}
-                  spaceBetween={24}
-                  slidesPerView={1}
+                  spaceBetween={12}
+                  slidesPerView={1.7}
                   breakpoints={{
-                    640: { slidesPerView: 2 },
-                    1024: { slidesPerView: 3 },
+                    480: { slidesPerView: 1.7, spaceBetween: 16 },
+                    640: { slidesPerView: 2, spaceBetween: 16 },
+                    1024: { slidesPerView: 3, spaceBetween: 24 },
                   }}
                 >
                   {isLoading
@@ -311,11 +312,12 @@ export default function HomePage() {
                   navKey="featured-equipment"
                   loop={featuredEquipment.length > 3}
                   autoplayDelay={6000}
-                  spaceBetween={24}
-                  slidesPerView={1}
+                  spaceBetween={12}
+                  slidesPerView={1.7}
                   breakpoints={{
-                    640: { slidesPerView: 2 },
-                    1024: { slidesPerView: 3 },
+                    480: { slidesPerView: 1.7, spaceBetween: 16 },
+                    640: { slidesPerView: 2, spaceBetween: 16 },
+                    1024: { slidesPerView: 3, spaceBetween: 24 },
                   }}
                 >
                   {featuredEquipment.map((item: Equipment) => (
