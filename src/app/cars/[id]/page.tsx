@@ -67,6 +67,7 @@ export default function CarDetailPage() {
  const [thumbsSwiper, setThumbsSwiper] = useState<any>(null);
 
  const [galleryStripSwiper, setGalleryStripSwiper] = useState<any>(null);
+ const [mainSwiper, setMainSwiper] = useState<any>(null);
 
  useEffect(() => {
  setSelectedImage(0);
@@ -96,15 +97,21 @@ export default function CarDetailPage() {
  }, [params.id]);
 
  useEffect(() => {
- if (!galleryStripSwiper || galleryStripSwiper.destroyed) return;
- const n = Math.max(0, (car?.images?.length ?? 1) - 1);
- const i = Math.min(Math.max(0, selectedImage), n);
- try {
- galleryStripSwiper.slideTo(i, 280);
- } catch {
- /* ignore */
- }
- }, [selectedImage, galleryStripSwiper, car?.images?.length]);
+    if (!galleryStripSwiper || galleryStripSwiper.destroyed) return;
+    const n = Math.max(0, (car?.images?.length ?? 1) - 1);
+    const i = Math.min(Math.max(0, selectedImage), n);
+    try {
+      galleryStripSwiper.slideTo(i, 280);
+    } catch {
+      /* ignore */
+    }
+  }, [selectedImage, galleryStripSwiper, car?.images?.length]);
+
+  useEffect(() => {
+    if (mainSwiper && !mainSwiper.destroyed && mainSwiper.activeIndex !== selectedImage) {
+      mainSwiper.slideTo(selectedImage, 280);
+    }
+  }, [selectedImage, mainSwiper]);
 
  const getStatusColor = (status: string) => {
  switch (status) {
@@ -170,70 +177,83 @@ export default function CarDetailPage() {
   />
 
  {/* Top Header: Title and Price */}
- <div className="flex flex-col md:flex-row justify-between items-start gap-6 mb-8">
- <div className="space-y-4">
- <h1 className="text-3xl md:text-5xl font-black tracking-tight text-[#1A1A1A]">
- {car.brand} {car.model} {car.year} للبيع
- </h1>
- <div className="flex flex-wrap gap-3">
- <Badge
- variant="secondary"
- className="bg-white border-0 shadow-none px-4 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2"
- >
- <Calendar className="h-3.5 w-3.5 text-primary" />
- {car.year}
- </Badge>
- <Badge
- variant="secondary"
- className="bg-white border-0 shadow-none px-4 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2"
- >
- <Gauge className="h-3.5 w-3.5 text-primary" />
- {car.mileage.toLocaleString()} كم
- </Badge>
- <Badge
- variant="secondary"
- className="bg-white border-0 shadow-none px-4 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2"
- >
- <Settings className="h-3.5 w-3.5 text-primary" />
- {car.transmission}
- </Badge>
- <Badge
- variant="secondary"
- className="bg-white border-0 shadow-none px-4 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2"
- >
- <Fuel className="h-3.5 w-3.5 text-primary" />
- {car.fuelType}
- </Badge>
- </div>
- </div>
+ <header className="mb-10 flex flex-col gap-6 lg:gap-8">
+   <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+     <div className="min-w-0 flex-1 space-y-4 lg:space-y-5">
+       <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-primary/95">
+         إعلان سيارات
+       </p>
+       <h1 className="text-pretty font-serif text-3xl md:text-5xl font-black leading-snug tracking-tight text-[#1A1A1A]">
+         {car.brand} {car.model} {car.year}
+         <span className="mr-2 block text-xl font-semibold leading-normal text-muted-foreground sm:mr-0 sm:mt-1 sm:inline sm:text-2xl lg:text-[1.35rem]">
+           للبيع
+         </span>
+       </h1>
+       <div className="flex flex-wrap gap-2">
+         <Badge
+           variant="secondary"
+           className="bg-white border-0 shadow-none px-4 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2"
+         >
+           <Calendar className="h-3.5 w-3.5 text-primary" />
+           {car.year}
+         </Badge>
+         <Badge
+           variant="secondary"
+           className="bg-white border-0 shadow-none px-4 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2"
+         >
+           <Gauge className="h-3.5 w-3.5 text-primary" />
+           {car.mileage.toLocaleString()} كم
+         </Badge>
+         <Badge
+           variant="secondary"
+           className="bg-white border-0 shadow-none px-4 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2"
+         >
+           <Settings className="h-3.5 w-3.5 text-primary" />
+           {car.transmission}
+         </Badge>
+         <Badge
+           variant="secondary"
+           className="bg-white border-0 shadow-none px-4 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2"
+         >
+           <Fuel className="h-3.5 w-3.5 text-primary" />
+           {car.fuelType}
+         </Badge>
+       </div>
 
- <div className="flex flex-col items-end gap-3">
- <div className="flex items-center gap-3">
- <Button
- variant="outline"
- size="icon"
- className="rounded-xl border-0 shadow-none bg-white hover:bg-gray-50"
- >
- <Share2 className="h-5 w-5" />
- </Button>
- <Button
- variant="outline"
- size="icon"
- className="rounded-xl border-0 shadow-none bg-white hover:bg-gray-50"
- >
- <Heart className="h-5 w-5" />
- </Button>
- </div>
- <div className="flex items-baseline gap-2">
- <span className="text-4xl md:text-5xl font-black text-primary tracking-tighter">
- {car.price ? car.price.toLocaleString() : "حسب الطلب"}
- </span>
- <span className="text-2xl font-black text-muted-foreground">
- جنيه
- </span>
- </div>
- </div>
- </div>
+       <div className="mt-4 flex items-baseline gap-2 tabular-nums pt-2">
+         <span className="font-serif text-4xl font-black text-primary tracking-tighter md:text-5xl">
+           {car.price ? car.price.toLocaleString("ar-EG") : "حسب الطلب"}
+         </span>
+         {car.price && (
+           <span className="text-2xl font-black text-muted-foreground">
+             جنيه
+           </span>
+         )}
+       </div>
+     </div>
+
+     <div className="flex items-center gap-2 lg:flex-col shrink-0">
+       <Button
+         type="button"
+         variant="outline"
+         size="icon"
+         aria-label="مشاركة الإعلان"
+         className="size-11 rounded-xl border-neutral-200/90 bg-white shadow-none hover:bg-gray-50"
+       >
+         <Share2 className="size-5" />
+       </Button>
+       <Button
+         type="button"
+         variant="outline"
+         size="icon"
+         aria-label="المفضلة"
+         className="size-11 rounded-xl border-neutral-200/90 bg-white shadow-none hover:bg-gray-50"
+       >
+         <Heart className="size-5" />
+       </Button>
+     </div>
+   </div>
+ </header>
 
  {/* Image gallery — compact hero + smaller thumbs */}
  <div
@@ -243,22 +263,59 @@ export default function CarDetailPage() {
  : "mb-10"
  }
  >
- <div className="lg:col-span-9 lg:max-w-[min(100%,56rem)]">
- <div 
- className="relative h-[200px] w-full rounded-2xl overflow-hidden shadow-none bg-white group cursor-zoom-in sm:h-[228px] md:h-[252px] lg:h-[276px]"
- onClick={() => setIsLightboxOpen(true)}
- >
- <img
- src={car.images[selectedImage] || "/placeholder-car.jpg"}
- alt={`${car.brand} ${car.model}`}
- className="h-full w-full object-cover transition-transform duration-700 group-"
- />
- <Badge
- className={`absolute top-6 right-6 px-6 py-2 rounded-full text-xs font-black border-0 shadow-none ${getStatusColor(car.status)}`}
- >
- {car.status}
- </Badge>
- </div>
+ <div className="lg:col-span-9 lg:max-w-[min(100%,56rem)] relative isolate group/main-slider">
+   <Swiper
+     dir="rtl"
+     onSwiper={setMainSwiper}
+     onSlideChange={(swiper) => setSelectedImage(swiper.activeIndex)}
+     className="w-full h-full rounded-2xl overflow-hidden"
+     modules={[Navigation]}
+     navigation={{
+       prevEl: '.car-main-slider-prev',
+       nextEl: '.car-main-slider-next',
+     }}
+     grabCursor={true}
+   >
+     {(car.images.length ? car.images : ["/placeholder-car.jpg"]).map((img, idx) => (
+       <SwiperSlide key={idx} className="w-full h-full">
+         <div 
+           className="relative h-[200px] w-full bg-white cursor-zoom-in sm:h-[228px] md:h-[252px] lg:h-[276px] group"
+           onClick={() => setIsLightboxOpen(true)}
+         >
+           <img
+             src={img}
+             alt={`${car.brand} ${car.model} - ${idx + 1}`}
+             className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.025]"
+           />
+         </div>
+       </SwiperSlide>
+     ))}
+   </Swiper>
+   
+   <Badge
+     className={`absolute top-6 right-6 px-6 py-2 rounded-full text-xs font-black border-0 shadow-none z-20 pointer-events-none ${getStatusColor(car.status)}`}
+   >
+     {car.status}
+   </Badge>
+
+   {car.images.length > 1 && (
+     <>
+       <button
+         className="car-main-slider-next absolute right-4 top-1/2 -translate-y-1/2 z-20 h-10 w-10 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center opacity-0 group-hover/main-slider:opacity-100 transition-opacity disabled:opacity-0"
+         onClick={(e) => e.stopPropagation()}
+         aria-label="الصورة السابقة"
+       >
+         <ChevronRightIcon className="h-6 w-6" />
+       </button>
+       <button
+         className="car-main-slider-prev absolute left-4 top-1/2 -translate-y-1/2 z-20 h-10 w-10 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center opacity-0 group-hover/main-slider:opacity-100 transition-opacity disabled:opacity-0"
+         onClick={(e) => e.stopPropagation()}
+         aria-label="الصورة التالية"
+       >
+         <ChevronLeftIcon className="h-6 w-6" />
+       </button>
+     </>
+   )}
  </div>
 
  {car.images.length > 1 ? (
@@ -580,7 +637,7 @@ export default function CarDetailPage() {
  className="max-w-5xl mx-auto thumbs-swiper"
  >
  {car.images.map((image, index) => (
- <SwiperSlide key={index} className="!w-20 !h-14 md:!w-[6.75rem] md:!h-[4.125rem] cursor-pointer opacity-40 hover:opacity-100 transition-opacity swiper-slide-thumb-active:opacity-100 swiper-slide-thumb- swiper-slide-thumb-active:ring-2 swiper-slide-thumb-active:ring-primary rounded-lg overflow-hidden border-2 border-transparent">
+ <SwiperSlide key={index} className="!w-20 !h-14 md:!w-[6.75rem] md:!h-[4.125rem] cursor-pointer opacity-40 hover:opacity-100 transition-opacity swiper-slide-thumb-active:opacity-100 swiper-slide-thumb- swiper-slide-thumb-active:ring-2 swiper-slide-thumb-active:ring-[#FBBF24] rounded-lg overflow-hidden border-2 border-transparent">
  <img
  src={image}
  alt="thumbnail"

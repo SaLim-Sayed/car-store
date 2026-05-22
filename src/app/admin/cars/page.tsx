@@ -1,15 +1,14 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
-import { toast } from "sonner"
-import { Car, Edit, Trash2, Plus, Search, Settings } from "lucide-react"
-import Link from "next/link"
 import { cn } from "@/lib/utils"
+import { Car, Edit, Plus, Search, Trash2 } from "lucide-react"
+import Link from "next/link"
+import { useCallback, useEffect, useState } from "react"
+import { toast } from "sonner"
 
 interface CarDoc {
   _id: string
@@ -29,13 +28,13 @@ interface CarDoc {
 
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogClose,
 } from "@/components/ui/dialog"
 
 export default function AdminCarsPage() {

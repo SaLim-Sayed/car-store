@@ -4,11 +4,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Phone, MessageSquare, MapPin, Heart } from "lucide-react";
+import { Phone, MessageSquare, MapPin, Heart, ChevronLeft, ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { getTelHref, getContactPhone } from "@/lib/phone";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { FaWhatsapp } from "react-icons/fa";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
 
 interface CarCardProps {
   car: {
@@ -32,6 +34,8 @@ interface CarCardProps {
 export function CarCard({ car }: CarCardProps) {
   const router = useRouter();
   const [isFavorite, setIsFavorite] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const swiperRef = useRef<any>(null);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -49,22 +53,65 @@ export function CarCard({ car }: CarCardProps) {
   const whatsappMessage = `مرحباً، أريد الاستفسار عن سيارة ${car.brand} ${car.model} موديل ${car.year} المعروضة للبيع${car.price ? ` بسعر ${car.price.toLocaleString()} جنيه` : ""}`;
   const whatsappUrl = `https://wa.me/${getContactPhone(car.phone)}?text=${encodeURIComponent(whatsappMessage)}`;
 
+  const images = car.images?.length ? car.images : ["/placeholder-car.jpg"];
+
   return (
     <Card
       onClick={() => router.push(`/cars/${car._id}`)}
       className="group flex flex-col p-0 h-full min-h-0 overflow-hidden border border-slate-200/80 rounded-2xl bg-white shadow-sm hover:shadow-md hover:border-amber-500/40 transition-all duration-300 cursor-pointer"
     >
       <CardHeader className="shrink-0 p-0 relative">
-        <div className="relative aspect-[4/3] w-full overflow-hidden">
-          <Image
-            src={car.images[0] || "/placeholder-car.jpg"}
-            alt={`${car.brand} ${car.model}`}
-            fill
-            priority
-            className="object-cover group-hover:scale-105 transition-transform duration-700"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-black/10" />
+        <div 
+          className="relative aspect-[4/3] w-full overflow-hidden group/slider"
+          onClick={(e) => {
+            // Prevent navigating if the user dragged
+            if (e.defaultPrevented) return;
+          }}
+        >
+          <Swiper
+            onSwiper={(swiper) => { swiperRef.current = swiper; }}
+            nested={true}
+            className="w-full h-full"
+            dir="rtl"
+            onSlideChange={(swiper) => setCurrentImageIndex(swiper.activeIndex)}
+            grabCursor={true}
+          >
+            {images.map((img, idx) => (
+              <SwiperSlide key={idx} className="w-full h-full relative">
+                <Image
+                  src={img}
+                  alt={`${car.brand} ${car.model} - ${idx + 1}`}
+                  fill
+                  priority={idx === 0}
+                  draggable={false}
+                  className="object-cover group-hover:scale-105 transition-transform duration-700 select-none"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw"
+                />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+          
+          <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-black/10 pointer-events-none z-10" />
+
+          {/* Slider Controls */}
+          {images.length > 1 && (
+            <>
+              <button
+                onClick={(e) => { e.stopPropagation(); swiperRef.current?.slidePrev(); }}
+                className="absolute right-2 top-1/2 -translate-y-1/2 z-20 h-8 w-8 rounded-full bg-black/30 hover:bg-black/50 text-white flex items-center justify-center opacity-0 group-hover/slider:opacity-100 transition-opacity"
+                aria-label="الصورة السابقة"
+              >
+                <ChevronRight className="h-5 w-5" />
+              </button>
+              <button
+                onClick={(e) => { e.stopPropagation(); swiperRef.current?.slideNext(); }}
+                className="absolute left-2 top-1/2 -translate-y-1/2 z-20 h-8 w-8 rounded-full bg-black/30 hover:bg-black/50 text-white flex items-center justify-center opacity-0 group-hover/slider:opacity-100 transition-opacity"
+                aria-label="الصورة التالية"
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </button>
+            </>
+          )}
 
           {/* Top Right: Turbo Tag */}
           <div className="absolute top-3 right-3 z-10 bg-primary/90 text-white font-black text-[11px] px-2.5 py-1 rounded-lg flex items-center gap-1 shadow-sm select-none">
@@ -89,7 +136,7 @@ export function CarCard({ car }: CarCardProps) {
 
           {/* Bottom Left: Images Counter */}
           <div className="absolute bottom-3 left-3 z-10 bg-black/60 backdrop-blur-sm text-white font-bold text-xs px-2.5 py-1 rounded-lg select-none">
-            1 / {car.images.length || 1}
+            {currentImageIndex + 1} / {images.length}
           </div>
 
           {/* Bottom Right: Status Badge */}

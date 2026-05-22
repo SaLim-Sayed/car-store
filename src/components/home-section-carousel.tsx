@@ -25,10 +25,8 @@ export function HomeSectionCarousel({
  spaceBetween = 16,
  children,
 }: HomeSectionCarouselProps) {
- const prevLeftRef = useRef<HTMLButtonElement>(null);
- const nextLeftRef = useRef<HTMLButtonElement>(null);
- const prevRightRef = useRef<HTMLButtonElement>(null);
- const nextRightRef = useRef<HTMLButtonElement>(null);
+ const prevRef = useRef<HTMLButtonElement>(null);
+ const nextRef = useRef<HTMLButtonElement>(null);
  const [init, setInit] = useState(false);
 
  // Swiper needs a re-render to recognize the refs once they are attached to the DOM
@@ -42,63 +40,31 @@ export function HomeSectionCarousel({
  return (
  <div className="isolate w-full min-w-0">
  <div className="relative order-1 min-w-0 w-full pb-12 sm:pb-0 sm:pl-14 sm:pr-14">
- <div
- className={cn(
- "pointer-events-auto absolute bottom-2 left-2 z-10 flex flex-row gap-2",
- "sm:bottom-auto sm:left-0 sm:top-1/2 sm:-translate-y-1/2 sm:flex-col sm:gap-2",
- )}
- >
- <button
- ref={prevLeftRef}
- type="button"
- className={navBtn}
- aria-label="السابق"
- >
- <ChevronRight
- className="h-4 w-4 md:h-5 md:w-5 shrink-0"
- aria-hidden
- />
- </button>
- <button
- ref={nextLeftRef}
- type="button"
- className={navBtn}
- aria-label="التالي"
- >
- <ChevronLeft
- className="h-4 w-4 md:h-5 md:w-5 shrink-0"
- aria-hidden
- />
- </button>
- </div>
- <div
- className={cn(
- "pointer-events-auto absolute right-0 top-1/2 z-10 hidden -translate-y-1/2 flex-col gap-2 sm:flex",
- )}
- >
- <button
- ref={prevRightRef}
- type="button"
- className={navBtn}
- aria-label="السابق"
- >
- <ChevronRight
- className="h-4 w-4 md:h-5 md:w-5 shrink-0"
- aria-hidden
- />
- </button>
- <button
- ref={nextRightRef}
- type="button"
- className={navBtn}
- aria-label="التالي"
- >
- <ChevronLeft
- className="h-4 w-4 md:h-5 md:w-5 shrink-0"
- aria-hidden
- />
- </button>
- </div>
+        {/* Left Button (Next) */}
+        <button
+          ref={nextRef}
+          type="button"
+          className={cn(
+            navBtn,
+            "absolute left-2 sm:left-0 top-1/2 z-10 -translate-y-1/2"
+          )}
+          aria-label="التالي"
+        >
+          <ChevronLeft className="h-4 w-4 md:h-5 md:w-5 shrink-0" aria-hidden />
+        </button>
+
+        {/* Right Button (Prev) */}
+        <button
+          ref={prevRef}
+          type="button"
+          className={cn(
+            navBtn,
+            "absolute right-2 sm:right-0 top-1/2 z-10 -translate-y-1/2"
+          )}
+          aria-label="السابق"
+        >
+          <ChevronRight className="h-4 w-4 md:h-5 md:w-5 shrink-0" aria-hidden />
+        </button>
  <Swiper
  key={`${navKey}-${init ? "initialized" : "uninitialized"}`}
  modules={[Autoplay, Navigation]}
@@ -112,20 +78,14 @@ export function HomeSectionCarousel({
  watchOverflow
  centeredSlides={false}
  navigation={{
- prevEl: prevLeftRef.current,
- nextEl: nextLeftRef.current,
+ prevEl: prevRef.current,
+ nextEl: nextRef.current,
  }}
  onBeforeInit={(swiper) => {
- const prevEls = [prevLeftRef.current, prevRightRef.current].filter(
- Boolean,
- );
- const nextEls = [nextLeftRef.current, nextRightRef.current].filter(
- Boolean,
- );
- // @ts-expect-error Swiper supports HTMLElement[] for duplicate controls
- swiper.params.navigation.prevEl = prevEls;
- // @ts-expect-error Swiper supports HTMLElement[] for duplicate controls
- swiper.params.navigation.nextEl = nextEls;
+ // @ts-expect-error Swiper types
+ swiper.params.navigation.prevEl = prevRef.current;
+ // @ts-expect-error Swiper types
+ swiper.params.navigation.nextEl = nextRef.current;
  }}
  autoplay={{
  delay: autoplayDelay,

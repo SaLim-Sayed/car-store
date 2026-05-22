@@ -51,6 +51,7 @@ export default function EquipmentDetailPage() {
  const [isLightboxOpen, setIsLightboxOpen] = useState(false)
  const [thumbsSwiper, setThumbsSwiper] = useState<any>(null)
  const [galleryStripSwiper, setGalleryStripSwiper] = useState<any>(null)
+ const [mainSwiper, setMainSwiper] = useState<any>(null)
 
  useEffect(() => {
  setSelectedImage(0)
@@ -89,6 +90,12 @@ export default function EquipmentDetailPage() {
  /* ignore */
  }
  }, [selectedImage, galleryStripSwiper, item?.images?.length])
+
+ useEffect(() => {
+    if (mainSwiper && !mainSwiper.destroyed && mainSwiper.activeIndex !== selectedImage) {
+      mainSwiper.slideTo(selectedImage, 280)
+    }
+  }, [selectedImage, mainSwiper])
 
  if (loading) {
  return (
@@ -147,93 +154,92 @@ export default function EquipmentDetailPage() {
  return (
  <div className="min-h-screen bg-gradient-to-b from-[#faf8f4] via-[#F9F6F1] to-[#f4f1eb] pb-24">
  <main className={`${pageShell} pt-8 pb-24 lg:pt-11`}>
- <article className="mb-12 rounded-[1.75rem] border border-neutral-200/70 bg-card px-6 py-8 shadow-[0_4px_24px_-8px_rgb(26_26_26/0.12)] ring-1 ring-black/[0.03] sm:px-9 sm:py-10 lg:mb-14 lg:rounded-[2rem] lg:px-11 lg:py-11">
-  <Breadcrumbs
-    items={[
-      { label: "آلات ومعدات", href: "/equipment" },
-      { label: label },
-    ]}
-  />
+  <article className="mb-12 rounded-[1.75rem] border border-neutral-200/70 bg-card px-6 py-8 shadow-[0_4px_24px_-8px_rgb(26_26_26/0.12)] ring-1 ring-black/[0.03] sm:px-9 sm:py-10 lg:mb-14 lg:rounded-[2rem] lg:px-11 lg:py-11">
+   <Breadcrumbs
+     items={[
+       { label: "آلات ومعدات", href: "/equipment" },
+       { label: label },
+     ]}
+   />
 
- <header className="mb-10 flex flex-col gap-8 xl:flex-row xl:items-start xl:justify-between xl:gap-12">
- <div className="min-w-0 flex-1 space-y-5">
- <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-primary/95">
- إعلان معدات
- </p>
- <h1 className="text-pretty font-serif text-2xl font-bold leading-snug tracking-tight text-[#141414] sm:text-4xl lg:text-[2.25rem]">
- {label}
- <span className="mr-2 block text-xl font-semibold leading-normal text-muted-foreground sm:mr-0 sm:mt-1 sm:inline sm:text-2xl lg:text-[1.35rem]">
- للبيع
- </span>
- </h1>
- <div className="flex flex-wrap gap-2">
- <Badge
- variant="secondary"
- className="flex items-center gap-1.5 rounded-full border border-border/70 bg-muted/50 px-3 py-1 text-xs font-semibold shadow-none"
- >
- <Tractor className="size-3.5 text-primary" />
- {item.category}
- </Badge>
- <Badge
- variant="secondary"
- className="flex items-center gap-1.5 rounded-full border border-border/70 bg-muted/50 px-3 py-1 text-xs font-semibold shadow-none"
- >
- <Gauge className="size-3.5 text-primary" />
- {item.hours.toLocaleString("ar-EG")} ساعة
- </Badge>
- <Badge
- variant="secondary"
- className="flex max-w-full items-center gap-1.5 rounded-full border border-border/70 bg-muted/50 px-3 py-1 text-xs font-semibold shadow-none"
- >
- <MapPin className="size-3.5 shrink-0 text-primary" />
- <span className="truncate">{item.location}</span>
- </Badge>
- <Badge
- variant="outline"
- className="rounded-full border-primary/35 bg-primary/[0.07] px-3 py-1 text-xs font-semibold text-primary shadow-none"
- >
- {item.status}
- </Badge>
- </div>
- </div>
+  <header className="mb-10 flex flex-col gap-6 lg:gap-8">
+    <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+      <div className="min-w-0 flex-1 space-y-4 lg:space-y-5">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-primary/95">
+          إعلان معدات
+        </p>
+        <h1 className="text-pretty font-serif text-2xl font-bold leading-snug tracking-tight text-[#141414] sm:text-4xl lg:text-[2.25rem]">
+          {label}
+          <span className="mr-2 block text-xl font-semibold leading-normal text-muted-foreground sm:mr-0 sm:mt-1 sm:inline sm:text-2xl lg:text-[1.35rem]">
+            للبيع
+          </span>
+        </h1>
+        
+        <div className="flex flex-wrap gap-2">
+          <Badge
+            variant="secondary"
+            className="flex items-center gap-1.5 rounded-full border border-border/70 bg-muted/50 px-3 py-1 text-xs font-semibold shadow-none"
+          >
+            <Tractor className="size-3.5 text-primary" />
+            {item.category}
+          </Badge>
+          <Badge
+            variant="secondary"
+            className="flex items-center gap-1.5 rounded-full border border-border/70 bg-muted/50 px-3 py-1 text-xs font-semibold shadow-none"
+          >
+            <Gauge className="size-3.5 text-primary" />
+            {item.hours.toLocaleString("ar-EG")} ساعة
+          </Badge>
+          <Badge
+            variant="secondary"
+            className="flex max-w-full items-center gap-1.5 rounded-full border border-border/70 bg-muted/50 px-3 py-1 text-xs font-semibold shadow-none"
+          >
+            <MapPin className="size-3.5 shrink-0 text-primary" />
+            <span className="truncate">{item.location}</span>
+          </Badge>
+          <Badge
+            variant="outline"
+            className="rounded-full border-primary/35 bg-primary/[0.07] px-3 py-1 text-xs font-semibold text-primary shadow-none"
+          >
+            {item.status}
+          </Badge>
+        </div>
 
- <div className="flex w-full shrink-0 flex-col gap-4 rounded-2xl border border-neutral-200/80 bg-neutral-50/80 p-5 sm:max-w-md sm:self-end xl:w-[min(100%,19rem)] xl:self-stretch">
- <div className="flex items-center justify-center gap-2 sm:justify-end xl:order-2">
- <Button
- type="button"
- variant="outline"
- size="icon"
- aria-label="مشاركة الإعلان"
- onClick={() => void handleShare()}
- className="size-10 rounded-xl border-neutral-200/90 bg-background shadow-none hover:bg-muted"
- >
- <Share2 className="size-4" />
- </Button>
- <Button
- type="button"
- variant="outline"
- size="icon"
- aria-label="المفضلة"
- className="size-10 rounded-xl border-neutral-200/90 bg-background shadow-none hover:bg-muted"
- >
- <Heart className="size-4" />
- </Button>
- </div>
- <div className="text-center xl:order-1 xl:text-end">
- <p className="text-[11px] font-semibold text-muted-foreground">
- السعر المعروض
- </p>
- <div className="mt-1 flex items-baseline justify-center gap-2 tabular-nums xl:justify-end">
- <span className="font-serif text-3xl font-bold text-primary tabular-nums tracking-tight sm:text-4xl">
- {item.price ? item.price.toLocaleString("ar-EG") : "حسب الطلب"}
- </span>
- <span className="text-sm font-semibold text-muted-foreground">
- جنيه
- </span>
- </div>
- </div>
- </div>
- </header>
+        <div className="mt-4 flex items-baseline gap-2 tabular-nums pt-2">
+          <span className="font-serif text-3xl font-bold text-primary tabular-nums tracking-tight sm:text-4xl lg:text-5xl">
+            {item.price ? item.price.toLocaleString("ar-EG") : "حسب الطلب"}
+          </span>
+          {item.price && (
+            <span className="text-sm font-semibold text-muted-foreground lg:text-base">
+              جنيه
+            </span>
+          )}
+        </div>
+      </div>
+
+      <div className="flex items-center gap-2 lg:flex-col shrink-0">
+        <Button
+          type="button"
+          variant="outline"
+          size="icon"
+          aria-label="مشاركة الإعلان"
+          onClick={() => void handleShare()}
+          className="size-11 rounded-xl border-neutral-200/90 bg-background shadow-none hover:bg-muted"
+        >
+          <Share2 className="size-5" />
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          size="icon"
+          aria-label="المفضلة"
+          className="size-11 rounded-xl border-neutral-200/90 bg-background shadow-none hover:bg-muted"
+        >
+          <Heart className="size-5" />
+        </Button>
+      </div>
+    </div>
+  </header>
 
  {/* Image gallery */}
  <div
@@ -243,28 +249,61 @@ export default function EquipmentDetailPage() {
  : "block"
  }
  >
- <div className="min-w-0">
- <button
- type="button"
- onClick={() => setIsLightboxOpen(true)}
- className="group relative isolate block w-full cursor-zoom-in overflow-hidden rounded-2xl border border-neutral-200/65 bg-muted/35 text-start shadow-[inset_0_1px_0_rgb(255_255_255/0.6)] outline-none ring-primary/35 transition-[box-shadow,transform] hover:shadow-none focus-visible:ring-2 lg:rounded-[1.625rem]"
- >
- <div className="relative aspect-[16/10] max-h-[min(52vh,440px)] w-full min-h-[200px] bg-neutral-100 sm:min-h-[240px]">
- <Image
- src={images[selectedImage]}
- alt={label}
- fill
- priority
- sizes="(max-width: 1024px) 100vw, (max-width: 1536px) 68vw, 1150px"
- className="object-cover transition duration-[650ms] ease-out group-hover:scale-[1.025]"
- />
- <span className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-black/[0.05]" />
- <span className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/45 via-black/15 to-transparent" />
- <span className="pointer-events-none absolute bottom-3 inset-x-0 text-center text-[11px] font-medium text-white/85">
- اضغط للتكبير
- </span>
- </div>
- </button>
+ <div className="min-w-0 group/main-slider relative isolate w-full overflow-hidden rounded-2xl border border-neutral-200/65 bg-muted/35 shadow-[inset_0_1px_0_rgb(255_255_255/0.6)] lg:rounded-[1.625rem]">
+   <Swiper
+     dir="rtl"
+     onSwiper={setMainSwiper}
+     onSlideChange={(swiper) => setSelectedImage(swiper.activeIndex)}
+     className="w-full h-full"
+     modules={[Navigation]}
+     navigation={{
+       prevEl: '.main-slider-prev',
+       nextEl: '.main-slider-next',
+     }}
+     grabCursor={true}
+   >
+     {images.map((img, idx) => (
+       <SwiperSlide key={idx} className="w-full h-full">
+         <div 
+           className="relative aspect-[16/10] max-h-[min(52vh,440px)] w-full min-h-[200px] bg-neutral-100 sm:min-h-[240px] cursor-zoom-in group"
+           onClick={() => setIsLightboxOpen(true)}
+         >
+           <Image
+             src={img}
+             alt={`${label} - ${idx + 1}`}
+             fill
+             priority={idx === 0}
+             sizes="(max-width: 1024px) 100vw, (max-width: 1536px) 68vw, 1150px"
+             className="object-cover transition duration-[650ms] ease-out group-hover:scale-[1.025]"
+           />
+           <span className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-black/[0.05]" />
+           <span className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/45 via-black/15 to-transparent" />
+           <span className="pointer-events-none absolute bottom-3 inset-x-0 text-center text-[11px] font-medium text-white/85">
+             اضغط للتكبير
+           </span>
+         </div>
+       </SwiperSlide>
+     ))}
+   </Swiper>
+   
+   {images.length > 1 && (
+     <>
+       <button
+         className="main-slider-next absolute right-4 top-1/2 -translate-y-1/2 z-10 h-10 w-10 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center opacity-0 group-hover/main-slider:opacity-100 transition-opacity disabled:opacity-0"
+         onClick={(e) => e.stopPropagation()}
+         aria-label="الصورة السابقة"
+       >
+         <ChevronRightIcon className="h-6 w-6" />
+       </button>
+       <button
+         className="main-slider-prev absolute left-4 top-1/2 -translate-y-1/2 z-10 h-10 w-10 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center opacity-0 group-hover/main-slider:opacity-100 transition-opacity disabled:opacity-0"
+         onClick={(e) => e.stopPropagation()}
+         aria-label="الصورة التالية"
+       >
+         <ChevronLeftIcon className="h-6 w-6" />
+       </button>
+     </>
+   )}
  </div>
 
  {images.length > 1 ? (
@@ -571,7 +610,7 @@ export default function EquipmentDetailPage() {
  className="max-w-5xl mx-auto thumbs-swiper"
  >
  {images.map((image, index) => (
- <SwiperSlide key={index} className="!w-20 !h-14 md:!w-[6.75rem] md:!h-[4.125rem] cursor-pointer opacity-40 hover:opacity-100 transition-opacity swiper-slide-thumb-active:opacity-100 swiper-slide-thumb- swiper-slide-thumb-active:ring-2 swiper-slide-thumb-active:ring-primary rounded-lg overflow-hidden border-2 border-transparent">
+ <SwiperSlide key={index} className="!w-20 !h-14 md:!w-[6.75rem] md:!h-[4.125rem] cursor-pointer opacity-40 hover:opacity-100 transition-opacity swiper-slide-thumb-active:opacity-100 swiper-slide-thumb- swiper-slide-thumb-active:ring-2 swiper-slide-thumb-active:ring-[#FBBF24] rounded-lg overflow-hidden border-2 border-transparent">
  <img
  src={image}
  alt="thumbnail"
