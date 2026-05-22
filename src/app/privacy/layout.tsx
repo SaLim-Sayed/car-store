@@ -1,8 +1,8 @@
 import { buildStaticPageMetadata } from "@/lib/seo";
 
-export const metadata = buildStaticPageMetadata("equipment");
+export const metadata = buildStaticPageMetadata("privacy");
 
-export default function EquipmentLayout({
+export default function PrivacyLayout({
   children,
 }: {
   children: React.ReactNode;

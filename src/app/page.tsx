@@ -238,10 +238,10 @@ export default function HomePage() {
                   loop={!isLoading && featuredCars.length > 3}
                   autoplayDelay={5500}
                   spaceBetween={12}
-                  slidesPerView={1.7}
+                  slidesPerView={1.4}
                   breakpoints={{
-                    480: { slidesPerView: 1.7, spaceBetween: 16 },
-                    640: { slidesPerView: 2, spaceBetween: 16 },
+                    480: { slidesPerView: 1.2, spaceBetween: 16 },
+                    640: { slidesPerView: 1.4, spaceBetween: 16 },
                     1024: { slidesPerView: 3, spaceBetween: 24 },
                   }}
                 >
@@ -313,9 +313,9 @@ export default function HomePage() {
                   loop={featuredEquipment.length > 3}
                   autoplayDelay={6000}
                   spaceBetween={12}
-                  slidesPerView={1.7}
+                  slidesPerView={1.4}
                   breakpoints={{
-                    480: { slidesPerView: 1.7, spaceBetween: 16 },
+                    480: { slidesPerView: 1.5, spaceBetween: 16 },
                     640: { slidesPerView: 2, spaceBetween: 16 },
                     1024: { slidesPerView: 3, spaceBetween: 24 },
                   }}

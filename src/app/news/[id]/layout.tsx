@@ -1,63 +1,113 @@
-import { Metadata } from 'next';
-import connectDB from '@/lib/mongoose';
-import News from '@/lib/models/News';
+import { Metadata } from "next";
+import connectDB from "@/lib/mongoose";
+import News from "@/lib/models/News";
+import { JsonLd } from "@/components/seo/json-ld";
+import {
+  buildBreadcrumbJsonLd,
+  buildNewsArticleJsonLd,
+  buildPageMetadata,
+} from "@/lib/seo";
 
 interface LayoutProps {
   children: React.ReactNode;
   params: Promise<{ id: string }>;
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
   const { id } = await params;
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://car-store-sepia.vercel.app';
-
   try {
     await connectDB();
-    const article = await News.findById(id).lean() as any;
+    const article = (await News.findById(id).lean()) as {
+      title?: string;
+      excerpt?: string;
+      content?: string;
+      image?: string;
+      category?: string;
+    } | null;
 
-    if (!article) {
-      return {
-        title: 'الخبر غير موجود | سوق سيارات المنيا',
-      };
+    if (!article?.title) {
+      return buildPageMetadata({
+        title: "الخبر غير موجود",
+        description: "لم يتم العثور على الخبر المطلوب في سوق سيارات المنيا.",
+        path: `news/${id}`,
+        noIndex: true,
+      });
     }
 
-    const title = `${article.title} | أخبار سوق سيارات المنيا`;
-    const description = article.excerpt || article.content?.slice(0, 150) + '...';
-    const imageUrl = article.image || '/logo.png';
+    const description =
+      article.excerpt ||
+      `${article.content?.slice(0, 155).trim()}…` ||
+      `اقرأ ${article.title} على سوق سيارات المنيا.`;
 
-    return {
-      title,
+    return buildPageMetadata({
+      title: article.title,
       description,
-      alternates: {
-        canonical: `${baseUrl}/news/${id}`,
-      },
-      openGraph: {
-        title,
-        description,
-        url: `${baseUrl}/news/${id}`,
-        type: 'article',
-        images: [
-          {
-            url: imageUrl,
-            alt: article.title,
-          },
-        ],
-      },
-      twitter: {
-        card: 'summary_large_image',
-        title,
-        description,
-        images: [imageUrl],
-      },
-    };
+      path: `news/${id}`,
+      image: article.image || "/logo.png",
+      ogType: "article",
+      keywords: [
+        article.category ?? "أخبار السيارات",
+        "أخبار السيارات في مصر",
+        "سوق السيارات المنيا",
+      ],
+    });
   } catch (error) {
-    console.error('Error generating news metadata:', error);
-    return {
-      title: 'أخبار السيارات | سوق سيارات المنيا',
-    };
+    console.error("Error generating news metadata:", error);
+    return buildPageMetadata({
+      title: "أخبار السيارات",
+      description: "آخر أخبار سوق السيارات في المنيا.",
+      path: "news",
+    });
   }
 }
 
-export default function NewsLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+export default async function NewsArticleLayout({
+  children,
+  params,
+}: LayoutProps) {
+  const { id } = await params;
+  let jsonLd: Record<string, unknown> | null = null;
+  let breadcrumbLd: Record<string, unknown> | null = null;
+
+  try {
+    await connectDB();
+    const article = (await News.findById(id).lean()) as {
+      _id: string;
+      title: string;
+      excerpt?: string;
+      date?: string;
+      category?: string;
+      image?: string;
+    } | null;
+
+    if (article) {
+      jsonLd = buildNewsArticleJsonLd({
+        _id: String(article._id),
+        title: article.title,
+        excerpt: article.excerpt,
+        date: article.date,
+        category: article.category,
+        image: article.image,
+      });
+      breadcrumbLd = buildBreadcrumbJsonLd([
+        { name: "الرئيسية", path: "" },
+        { name: "أخبار السوق", path: "news" },
+        { name: article.title },
+      ]);
+    }
+  } catch {
+    // Metadata still works; JSON-LD is optional enhancement
+  }
+
+  return (
+    <>
+      {jsonLd ? <JsonLd data={jsonLd} /> : null}
+      {breadcrumbLd ? <JsonLd data={breadcrumbLd} /> : null}
+      {children}
+    </>
+  );
 }

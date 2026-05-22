@@ -1,18 +1,18 @@
-import { MetadataRoute } from 'next';
+import { MetadataRoute } from "next";
+import { absoluteUrl } from "@/lib/app-url";
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://car-store-sepia.vercel.app';
   return {
     rules: {
-      userAgent: '*',
-      allow: '/',
+      userAgent: "*",
+      allow: "/",
       disallow: [
-        '/admin/',
-        '/api/',
-        '/auth/',
-        '/*?*', // Disallow crawling filter query strings to prevent duplicate content indexing
+        "/admin/",
+        "/api/",
+        "/auth/",
+        "/*?*", // Avoid indexing filter query strings (duplicate content)
       ],
     },
-    sitemap: `${baseUrl}/sitemap.xml`,
+    sitemap: absoluteUrl("sitemap.xml"),
   };
 }
