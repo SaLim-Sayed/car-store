@@ -1,4 +1,203 @@
-const { MongoClient } = require('mongodb');
+const { MongoClient, ObjectId } = require('mongodb');
+
+// Showrooms Data
+const showroomId1 = new ObjectId();
+const showroomId2 = new ObjectId();
+const showroomId3 = new ObjectId();
+const showroomId4 = new ObjectId();
+const showroomId5 = new ObjectId();
+
+const showrooms = [
+  {
+    _id: showroomId1,
+    name: "معرض المنيا للسيارات الفاخرة",
+    address: "شارع طه حسين، المنيا",
+    phone: "01001234567",
+    email: "luxury@miniacars.com",
+    logo: "https://images.unsplash.com/photo-1565043666747-69f6646db940?w=400&h=400&fit=crop",
+    description: "أكبر معرض للسيارات الفاخرة والرياضية في محافظة المنيا.",
+    location: { type: 'Point', coordinates: [30.7333, 28.0833] },
+    workingHours: "من 9 صباحاً إلى 10 مساءً",
+    featured: true,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  {
+    _id: showroomId2,
+    name: "معرض النيل للمعدات الثقيلة",
+    address: "المنطقة الصناعية، المنيا",
+    phone: "01112345678",
+    email: "heavy@miniacars.com",
+    logo: "https://images.unsplash.com/photo-1581122584612-713f89dad8eb?w=400&h=400&fit=crop",
+    description: "متخصصون في بيع وشراء المعدات الثقيلة والزراعية.",
+    location: { type: 'Point', coordinates: [30.7433, 28.0933] },
+    workingHours: "من 8 صباحاً إلى 8 مساءً",
+    featured: true,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  {
+    _id: showroomId3,
+    name: "معرض الأمان للسيارات المستعملة",
+    address: "شارع سكة تلة، المنيا",
+    phone: "01234567890",
+    email: "used@miniacars.com",
+    logo: "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=400&h=400&fit=crop",
+    description: "أفضل السيارات المستعملة بأسعار تنافسية وحالة ممتازة.",
+    location: { type: 'Point', coordinates: [30.7533, 28.0733] },
+    workingHours: "من 10 صباحاً إلى 11 مساءً",
+    featured: false,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  {
+    _id: showroomId4,
+    name: "معرض النخبة للسيارات",
+    address: "شارع كورنيش النيل، المنيا",
+    phone: "01099887766",
+    email: "elite@miniacars.com",
+    logo: "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=400&h=400&fit=crop",
+    description: "معرض متخصص في سيارات الدفع الرباعي والسيارات العائلية.",
+    location: { type: 'Point', coordinates: [30.7633, 28.1033] },
+    workingHours: "من 9 صباحاً إلى 10 مساءً",
+    featured: true,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  {
+    _id: showroomId5,
+    name: "معرض التميز للمعدات",
+    address: "طريق مصر أسيوط الزراعي، المنيا",
+    phone: "01223344556",
+    email: "excellence@miniacars.com",
+    logo: "https://images.unsplash.com/photo-1581122584612-713f89dad8eb?w=400&h=400&fit=crop",
+    description: "أحدث المعدات الثقيلة والشاحنات بأفضل الأسعار.",
+    location: { type: 'Point', coordinates: [30.7733, 28.1133] },
+    workingHours: "من 8 صباحاً إلى 6 مساءً",
+    featured: false,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  }
+];
+
+// Equipments Data
+const equipments = [
+  {
+    title: "جرار زراعي جون دير 2023",
+    brand: "جون دير",
+    model: "8R 410",
+    year: 2023,
+    price: 3500000,
+    category: "معدة زراعية",
+    condition: "جديد",
+    hours: 50,
+    location: "المنيا",
+    phone: "01112345678",
+    description: "جرار زراعي قوي جداً مجهز بأحدث التقنيات الزراعية.",
+    images: [
+      "https://images.unsplash.com/photo-1592838064575-70ed626d3a0e?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1530982011905-18833645e7f1?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1589781844976-b39b5b225916?w=800&h=600&fit=crop"
+    ],
+    features: ["مكيف هواء", "نظام GPS", "إطارات مزدوجة"],
+    status: "متاح",
+    featured: true,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  {
+    title: "حفار كاتربيلر مستعمل بحالة الزيرو",
+    brand: "كاتربيلر",
+    model: "320 GC",
+    year: 2021,
+    price: 2800000,
+    category: "حفار",
+    condition: "مستعمل",
+    hours: 2500,
+    location: "المنيا",
+    phone: "01112345678",
+    description: "حفار كاتربيلر موديل 2021 استخدام خفيف وحالة الموتور ممتازة.",
+    images: [
+      "https://images.unsplash.com/photo-1578330767784-9a4fba07f909?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1581404176378-c89b33a75369?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1621213054366-419b4fb24e6a?w=800&h=600&fit=crop"
+    ],
+    features: ["كابينة مغلقة", "نظام هيدروليكي قوي", "صيانة دورية"],
+    status: "متاح",
+    featured: true,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  {
+    title: "شاحنة مرسيدس اكتروس",
+    brand: "مرسيدس",
+    model: "Actros 1845",
+    year: 2022,
+    price: 4500000,
+    category: "شاحنة",
+    condition: "مستعمل",
+    hours: 150000,
+    location: "المنيا",
+    phone: "01112345678",
+    description: "شاحنة نقل ثقيل بحالة ممتازة جاهزة للعمل فوراً.",
+    images: [
+      "https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1586864387967-d02ef85d93e8?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1519003722824-194d4455a60c?w=800&h=600&fit=crop"
+    ],
+    features: ["سرير للسائق", "نظام تعليق هوائي", "ناقل حركة أوتوماتيك"],
+    status: "متاح",
+    featured: false,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  {
+    title: "لودر حفار جي سي بي",
+    brand: "جي سي بي",
+    model: "3CX",
+    year: 2022,
+    price: 1800000,
+    category: "معدة بناء",
+    condition: "مستعمل",
+    hours: 3200,
+    location: "المنيا",
+    phone: "01223344556",
+    description: "لودر حفار بحالة ممتازة وجاهز للعمل في مواقع البناء.",
+    images: [
+      "https://images.unsplash.com/photo-1581404176378-c89b33a75369?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1621213054366-419b4fb24e6a?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1578330767784-9a4fba07f909?w=800&h=600&fit=crop"
+    ],
+    features: ["دفع رباعي", "كابينة مكيفة", "أذرع تحكم متطورة"],
+    status: "متاح",
+    featured: true,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  {
+    title: "شاحنة قلاب فولفو",
+    brand: "فولفو",
+    model: "FMX 460",
+    year: 2023,
+    price: 3200000,
+    category: "شاحنة",
+    condition: "جديد",
+    hours: 100,
+    location: "المنيا",
+    phone: "01223344556",
+    description: "شاحنة قلاب فولفو قوية للمهام الشاقة والمقاولات.",
+    images: [
+      "https://images.unsplash.com/photo-1519003722824-194d4455a60c?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1586864387967-d02ef85d93e8?w=800&h=600&fit=crop"
+    ],
+    features: ["صندوق حمولة كبير", "نظام تعليق مقوى", "محرك اقتصادي"],
+    status: "متاح",
+    featured: false,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  }
+];
 
 // Sample car data
 const cars = [
@@ -6,76 +205,253 @@ const cars = [
     brand: "تويوتا",
     model: "كامري",
     year: 2023,
-    price: 120000,
+    price: 1200000,
     fuelType: "بنزين",
     transmission: "أوتوماتيك",
     mileage: 15000,
     color: "أبيض",
     description: "سيارة تويوتا كامري 2023 بحالة ممتازة، موتور قوي واستهلاك وقود منخفض.",
-    images: ["https://images.unsplash.com/photo-1550355291-bbee04a92027?w=400&h=300&fit=crop"],
+    images: [
+      "https://images.unsplash.com/photo-1550355291-bbee04a92027?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1621007947382-bb3c3994e3fd?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1580274455191-1c62238fa333?w=800&h=600&fit=crop"
+    ],
     features: ["نظام تثبيت السرعة", "كاميرا خلفية", "مستشعر ركن سيارة", "شاشة لمس 8 بوصة"],
     status: "متاح",
-    createdAt: new Date()
+    showroom: showroomId1,
+    createdAt: new Date(),
+    updatedAt: new Date()
   },
   {
     brand: "هونداي",
     model: "سوناتا",
     year: 2022,
-    price: 95000,
+    price: 950000,
     fuelType: "بنزين",
     transmission: "أوتوماتيك",
     mileage: 25000,
     color: "أسود",
     description: "هونداي سوناتا 2022 بميزات متقدمة وتصميم عصري.",
-    images: ["https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=400&h=300&fit=crop"],
+    images: [
+      "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1606152421802-db97b9c7a11b?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=800&h=600&fit=crop"
+    ],
     features: ["بلوتوث", "مكيف أوتوماتيك", "نوافذ كهربائية", "مرايا كهربائية"],
     status: "متاح",
-    createdAt: new Date()
+    showroom: showroomId3,
+    createdAt: new Date(),
+    updatedAt: new Date()
   },
   {
     brand: "نيسان",
     model: "ألتيما",
     year: 2023,
-    price: 110000,
+    price: 1100000,
     fuelType: "بنزين",
     transmission: "أوتوماتيك",
     mileage: 8000,
     color: "فضي",
     description: "نيسان ألتيما 2023 بتقنيات أمان متقدمة وأداء ممتاز.",
-    images: ["https://images.unsplash.com/photo-1494976388539-d1058494cdd8?w=400&h=300&fit=crop"],
-    features: ["نظام ABS", "مثبت سرعة", "كاميرا 360 درجة", "مقاعد خشبية"],
+    images: [
+      "https://images.unsplash.com/photo-1494976388539-d1058494cdd8?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1502877338535-49af1a4e5ee6?w=800&h=600&fit=crop"
+    ],
+    features: ["نظام ABS", "مثبت سرعة", "كاميرا 360 درجة", "مقاعد جلدية"],
     status: "متاح",
-    createdAt: new Date()
+    showroom: showroomId1,
+    createdAt: new Date(),
+    updatedAt: new Date()
   },
   {
     brand: "مرسيدس",
     model: "C-Class",
     year: 2023,
-    price: 180000,
+    price: 2800000,
     fuelType: "بنزين",
     transmission: "أوتوماتيك",
     mileage: 5000,
     color: "فضي",
     description: "مرسيدس C-Class 2023 بفخامة وأداء استثنائي.",
-    images: ["https://images.unsplash.com/photo-1617654112369-82a9e57c8411?w=400&h=300&fit=crop"],
-    features: ["مقاعد جلد", "نظام صوتي", "شاشة عرض", "مكيف هوائي"],
+    images: [
+      "https://images.unsplash.com/photo-1617654112369-82a9e57c8411?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=800&h=600&fit=crop"
+    ],
+    features: ["مقاعد جلد", "نظام صوتي محيطي", "شاشة عرض بانورامية", "مكيف هوائي ثنائي المناطق"],
     status: "متاح",
-    createdAt: new Date()
+    showroom: showroomId1,
+    createdAt: new Date(),
+    updatedAt: new Date()
   },
   {
     brand: "بي إم دبليو",
     model: "X5",
     year: 2022,
-    price: 220000,
+    price: 3200000,
     fuelType: "ديزل",
     transmission: "أوتوماتيك",
     mileage: 12000,
     color: "أسود",
     description: "بي إم دبليو X5 2022 SUV فاخرة بأداء قوي.",
-    images: ["https://images.unsplash.com/photo-1553413077-1d3782b2b4f0?w=400&h=300&fit=crop"],
-    features: ["دفع رباعي", "نظام دفع خلفي", "سقف بانوراما", "مقاعد كهربائية"],
+    images: [
+      "https://images.unsplash.com/photo-1553413077-1d3782b2b4f0?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1556189250-72ba954cfc2b?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1607853202273-797f1c22a38e?w=800&h=600&fit=crop"
+    ],
+    features: ["دفع رباعي", "نظام ملاحة متطور", "سقف بانوراما", "مقاعد كهربائية بذاكرة"],
     status: "متاح",
-    createdAt: new Date()
+    showroom: showroomId1,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  {
+    brand: "بورش",
+    model: "911",
+    year: 2024,
+    price: 6500000,
+    fuelType: "بنزين",
+    transmission: "أوتوماتيك",
+    mileage: 1000,
+    color: "أحمر",
+    description: "بورش 911 الأيقونية بتصميم رياضي وأداء مبهر.",
+    images: [
+      "https://images.unsplash.com/photo-1503376713356-2358826d70fb?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=800&h=600&fit=crop"
+    ],
+    features: ["محرك توربو", "مكابح سيراميك", "عادم رياضي", "نظام تعليق متكيف"],
+    status: "متاح",
+    showroom: showroomId1,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  {
+    brand: "أودي",
+    model: "R8",
+    year: 2023,
+    price: 5800000,
+    fuelType: "بنزين",
+    transmission: "أوتوماتيك",
+    mileage: 3500,
+    color: "رمادي",
+    description: "أودي R8 بمحرك V10 وتصميم خاطف للأنظار.",
+    images: [
+      "https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1518623489648-a173ef7824f3?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?w=800&h=600&fit=crop"
+    ],
+    features: ["نظام كواترو", "مصابيح ليزر", "مقاعد رياضية", "مقصورة ألياف الكربون"],
+    status: "متاح",
+    showroom: showroomId1,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  {
+    brand: "لاند روفر",
+    model: "رينج روفر",
+    year: 2023,
+    price: 4900000,
+    fuelType: "هايبرد",
+    transmission: "أوتوماتيك",
+    mileage: 6000,
+    color: "أسود",
+    description: "رينج روفر الجديدة كلياً بالفخامة البريطانية الأصيلة.",
+    images: [
+      "https://images.unsplash.com/photo-1606016159991-dfe4f2746ad5?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1563720223185-11003d516935?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1563720360261-37d45e068fba?w=800&h=600&fit=crop"
+    ],
+    features: ["توجيه رباعي", "نظام ترفيه للمقاعد الخلفية", "ثلاجة صغيرة", "أبواب شفط"],
+    status: "متاح",
+    showroom: showroomId1,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  {
+    brand: "تسلا",
+    model: "موديل 3",
+    year: 2023,
+    price: 1850000,
+    fuelType: "كهرباء",
+    transmission: "أوتوماتيك",
+    mileage: 5000,
+    color: "أبيض",
+    description: "سيارة تسلا موديل 3 كهربائية بالكامل مع مدى قيادة طويل.",
+    images: [
+      "https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1536700503339-1e4b06520771?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1561580125-028ee3bd62eb?w=800&h=600&fit=crop"
+    ],
+    features: ["قيادة ذاتية", "شاشة 15 بوصة", "تحديثات عن بعد", "سقف زجاجي"],
+    status: "متاح",
+    showroom: showroomId4,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  {
+    brand: "فورد",
+    model: "موستانج",
+    year: 2022,
+    price: 2100000,
+    fuelType: "بنزين",
+    transmission: "أوتوماتيك",
+    mileage: 18000,
+    color: "أصفر",
+    description: "فورد موستانج جي تي بمحرك V8 وأداء رياضي استثنائي.",
+    images: [
+      "https://images.unsplash.com/photo-1584345604476-8ec5e12e42a5?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1547744152-14d985cb937f?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1508974239320-0a029497e820?w=800&h=600&fit=crop"
+    ],
+    features: ["عادم رياضي نشط", "مقاعد ريكارو", "نظام صوتي ممتاز"],
+    status: "متاح",
+    showroom: showroomId4,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  {
+    brand: "كيا",
+    model: "سبورتاج",
+    year: 2024,
+    price: 1600000,
+    fuelType: "بنزين",
+    transmission: "أوتوماتيك",
+    mileage: 0,
+    color: "أزرق",
+    description: "كيا سبورتاج الجديدة كلياً بتصميم عصري ومواصفات أمان عالية.",
+    images: [
+      "https://images.unsplash.com/photo-1629897048514-3dd74143fc6c?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1629897048514-3dd74143fc6c?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1629897048514-3dd74143fc6c?w=800&h=600&fit=crop"
+    ],
+    features: ["شاشة بانورامية", "شاحن لاسلكي", "حساسات أمامية وخلفية"],
+    status: "متاح",
+    showroom: showroomId3,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  {
+    brand: "تويوتا",
+    model: "لاند كروزر",
+    year: 2023,
+    price: 4500000,
+    fuelType: "بنزين",
+    transmission: "أوتوماتيك",
+    mileage: 12000,
+    color: "لؤلؤي",
+    description: "تويوتا لاند كروزر مفخرة الأرض، قوة وفخامة في كل التضاريس.",
+    images: [
+      "https://images.unsplash.com/photo-1594502220496-d4f1cd39eb9f?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1625036814271-9252327771de?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1594502220496-d4f1cd39eb9f?w=800&h=600&fit=crop"
+    ],
+    features: ["ثلاجة", "دفع رباعي مستمر", "نظام الزحف", "شاشات خلفية"],
+    status: "متاح",
+    showroom: showroomId4,
+    createdAt: new Date(),
+    updatedAt: new Date()
   }
 ];
 
@@ -88,12 +464,8 @@ const adminUser = {
 };
 
 async function seedDatabase() {
-  const uri = process.env.MONGODB_URI;
-  if (!uri) {
-    console.error('MONGODB_URI environment variable is not defined');
-    process.exit(1);
-  }
-
+  const uri = process.env.MONGODB_URI || "mongodb://localhost:27017/car_store";
+  
   const client = new MongoClient(uri);
 
   try {
@@ -102,39 +474,41 @@ async function seedDatabase() {
 
     const db = client.db();
     
-    // Insert cars
-    const carsCollection = db.collection('cars');
-    const existingCars = await carsCollection.countDocuments();
-    
-    if (existingCars === 0) {
-      console.log('Seeding cars...');
-      await carsCollection.insertMany(cars);
-      console.log(`Inserted ${cars.length} cars`);
-    } else {
-      console.log(`Cars collection already has ${existingCars} documents`);
-    }
+    // Clear existing data
+    console.log('Clearing existing data...');
+    await db.collection('cars').deleteMany({});
+    await db.collection('equipments').deleteMany({});
+    await db.collection('showrooms').deleteMany({});
+    await db.collection('users').deleteMany({});
+
+    // Insert Showrooms
+    console.log('Seeding showrooms...');
+    await db.collection('showrooms').insertMany(showrooms);
+    console.log(`Inserted ${showrooms.length} showrooms`);
+
+    // Insert Equipments
+    console.log('Seeding equipments...');
+    await db.collection('equipments').insertMany(equipments);
+    console.log(`Inserted ${equipments.length} equipments`);
+
+    // Insert Cars
+    console.log('Seeding cars...');
+    await db.collection('cars').insertMany(cars);
+    console.log(`Inserted ${cars.length} cars`);
 
     // Insert admin user
-    const usersCollection = db.collection('users');
-    const existingAdmin = await usersCollection.findOne({ email: adminUser.email });
+    console.log('Seeding admin user...');
+    const bcrypt = require('bcryptjs');
+    const hashedPassword = await bcrypt.hash(adminUser.password, 10);
     
-    if (!existingAdmin) {
-      console.log('Seeding admin user...');
-      // Hash password manually for seeding
-      const bcrypt = require('bcryptjs');
-      const hashedPassword = await bcrypt.hash(adminUser.password, 10);
-      
-      await usersCollection.insertOne({
-        ...adminUser,
-        password: hashedPassword,
-        isActive: true,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      });
-      console.log('Admin user created');
-    } else {
-      console.log('Admin user already exists');
-    }
+    await db.collection('users').insertOne({
+      ...adminUser,
+      password: hashedPassword,
+      isActive: true,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    });
+    console.log('Admin user created');
 
     console.log('Database seeded successfully!');
   } catch (error) {

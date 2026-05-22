@@ -57,7 +57,7 @@ export function EquipmentCard({ equipment }: EquipmentCardProps) {
           <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-black/10" />
 
           {/* Top Right: Category Tag */}
-          <div className="absolute top-3 right-3 z-10 bg-amber-600/90 text-white font-black text-[11px] px-2.5 py-1 rounded-lg flex items-center gap-1 shadow-sm select-none">
+          <div className="absolute top-3 right-3 z-10 bg-primary/90 text-white font-black text-[11px] px-2.5 py-1 rounded-lg flex items-center gap-1 shadow-sm select-none">
             <span>⚙️ {equipment.category}</span>
           </div>
 
@@ -127,7 +127,7 @@ export function EquipmentCard({ equipment }: EquipmentCardProps) {
         <div className="flex flex-wrap items-center justify-end gap-1.5 mb-5 border-t border-slate-100/80 pt-3">
           {/* Location Tag */}
           <span className="inline-flex items-center gap-0.5 rounded-lg bg-slate-50 px-2 py-0.5 text-[10px] font-black text-slate-500 border border-slate-100">
-            <MapPin className="h-3 w-3 text-slate-400 shrink-0" />
+            <MapPin className="h-3 w-3 text-slate-500 shrink-0" />
             {equipment.location}
           </span>
           {/* Brand Tag */}

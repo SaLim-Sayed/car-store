@@ -45,7 +45,7 @@ export function AuthLayout({
             </Link>
           </div>
 
-          <div className="relative z-10 flex flex-col gap-5 justify-start   ">
+          <div className="relative z-10 flex flex-col gapy-4 px-6 justify-start   ">
             <div className="space-y-4">
               <h2 className="text-4xl font-[1000] leading-tight tracking-tight">
                 بوابتك لعالم

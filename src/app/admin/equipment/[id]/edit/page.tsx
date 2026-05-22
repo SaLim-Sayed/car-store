@@ -61,51 +61,71 @@ export default function EditEquipmentPage() {
  }
 
  if (isLoading && !form.title) {
- return (
- <div className="min-h-screen bg-[#F9F6F1]">
- <main className="container mx-auto px-4 pb-8 max-w-4xl space-y-8">
- <Skeleton className="h-12 w-64" />
- <Skeleton className="h-96 w-full" />
- </main>
- </div>
- )
+    return (
+      <div className="min-h-screen bg-[#F8FAFC]">
+        <main className="container mx-auto px-4 py-8 max-w-5xl space-y-8">
+          <Skeleton className="h-12 w-64 rounded-xl" />
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <Skeleton className="h-[600px] w-full rounded-xl lg:col-span-2" />
+            <Skeleton className="h-[600px] w-full rounded-xl" />
+          </div>
+        </main>
+      </div>
+    )
  }
 
  return (
- <div className="min-h-screen bg-[#F9F6F1]">
- <main className="container mx-auto px-4 pb-8 max-w-4xl">
- <div className="space-y-4 mb-12">
- <Button variant="ghost" size="sm" asChild className="-mr-4">
- <Link href="/admin/equipment" className="font-black">
- <ArrowRight className="h-4 w-4 ml-2" />
- قائمة المعدات
- </Link>
- </Button>
- <h1 className="text-5xl font-[1000] tracking-tighter">تعديل معدة</h1>
- </div>
+    <div className="min-h-screen bg-[#F8FAFC]">
+      <main className="container mx-auto px-4 py-8 max-w-5xl">
+        {/* Header Section */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b border-slate-200">
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-2 text-slate-500 mb-2 font-bold text-sm">
+              <Link href="/admin/equipment" className="hover:text-primary transition-colors">المعدات</Link>
+              <ArrowRight className="h-3 w-3" />
+              <span className="text-slate-800">تعديل {form.title}</span>
+            </div>
+            <h1 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">تعديل بيانات المعدة</h1>
+            <p className="text-sm md:text-base text-slate-500 font-bold max-w-2xl">
+              تحديث بيانات المعدة الثقيلة أو الزراعية
+            </p>
+          </div>
+          <div className="flex items-center gap-3 shrink-0">
+            <Button variant="outline" asChild className="h-11 border-slate-200 text-slate-600 font-black rounded-xl hover:bg-slate-50 px-6">
+              <Link href="/admin/equipment">إلغاء الأمر</Link>
+            </Button>
+            <Button
+              onClick={onSubmit}
+              disabled={updateMutation.isPending || isUploading}
+              className="h-11 bg-primary hover:bg-primary/90 text-white font-black rounded-xl shadow-lg shadow-primary/20 transition-all hover:scale-105 active:scale-95 px-8"
+            >
+              {updateMutation.isPending ? "جاري الحفظ..." : "حفظ التحديثات"}
+            </Button>
+          </div>
+        </div>
 
- <form onSubmit={onSubmit} className="space-y-8">
- <EquipmentForm
- form={form}
- onChange={setForm}
- errors={errors}
- isUploading={isUploading}
- onUploadingChange={setIsUploading}
- />
- <div className="flex gap-4">
- <Button type="button" variant="outline" asChild className="flex-1 h-16 font-black">
- <Link href="/admin/equipment">إلغاء</Link>
- </Button>
- <Button
- type="submit"
- disabled={updateMutation.isPending || isUploading}
- className="flex-[2] h-16 font-black text-xl"
- >
- {updateMutation.isPending ? "جاري الحفظ..." : "حفظ التغييرات"}
- </Button>
- </div>
- </form>
- </main>
- </div>
+        <form onSubmit={onSubmit} className="mt-8 space-y-8">
+          <EquipmentForm
+            form={form}
+            onChange={setForm}
+            errors={errors}
+            isUploading={isUploading}
+            onUploadingChange={setIsUploading}
+          />
+          <div className="flex gap-4 pt-4 border-t border-slate-200 mt-8">
+            <Button
+              type="submit"
+              disabled={updateMutation.isPending || isUploading}
+              className="flex-1 md:flex-[0_0_auto] h-14 bg-primary hover:bg-primary/90 text-white font-black rounded-xl shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-95 px-12 text-lg"
+            >
+              {updateMutation.isPending ? "جاري الحفظ..." : "حفظ التحديثات"}
+            </Button>
+            <Button type="button" variant="outline" asChild className="flex-1 md:flex-[0_0_auto] h-14 border-slate-200 text-slate-600 hover:bg-slate-50 font-black rounded-xl px-12 text-lg">
+              <Link href="/admin/equipment">إلغاء الأمر</Link>
+            </Button>
+          </div>
+        </form>
+      </main>
+    </div>
  )
 }

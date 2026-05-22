@@ -21,7 +21,7 @@ interface NewsHomeCardProps {
 export function NewsHomeCard({ news }: NewsHomeCardProps) {
  return (
  <Card className="border border-gray-200 shadow-none rounded-lg hover:shadow-sm transition-all group bg-white overflow-hidden h-full flex flex-col">
-  <CardHeader className="p-5 pb-3 flex-1 md:p-6 md:pb-3">
+  <CardHeader className="py-4 px-6 pb-3 flex-1 md:p-6 md:pb-3">
   <div className="flex justify-between items-center mb-3">
  <Badge className="bg-primary/5 text-primary border-0 rounded-full px-4 py-1.5 font-black text-[10px] uppercase tracking-wider">
  {news.category}

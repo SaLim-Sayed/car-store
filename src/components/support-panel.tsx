@@ -18,7 +18,7 @@ export function SupportPanel() {
           {/* Card 2: Contact Sales */}
           <a
             href={getTelHref()}
-            className="flex items-center justify-between gap-4 p-5 md:p-6 bg-white border border-slate-100 rounded-2xl shadow-sm hover:shadow-md hover:border-primary/20 transition-all duration-300 group"
+            className="flex items-center justify-between gap-4 py-4 px-6 md:p-6 bg-white border border-slate-100 rounded-2xl shadow-sm hover:shadow-md hover:border-primary/20 transition-all duration-300 group"
           >
             {/* Left Side: Headset Icon */}
             <div className="flex items-center justify-center h-12 w-12 rounded-xl bg-slate-50 text-slate-600 group-hover:bg-primary/5 group-hover:text-primary transition-colors shrink-0">
@@ -30,7 +30,7 @@ export function SupportPanel() {
               <h3 className="text-base md:text-lg font-black text-slate-800 mb-1 group-hover:text-primary transition-colors">
                 اتصل بالمبيعات
               </h3>
-              <p className="text-xs md:text-sm font-bold text-slate-400">
+              <p className="text-xs md:text-sm font-bold text-slate-500">
                 تواصل مع فريق المبيعات لدينا ({SITE_PHONE_DISPLAY})
               </p>
             </div>
@@ -43,7 +43,7 @@ export function SupportPanel() {
             )}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-between gap-4 p-5 md:p-6 bg-white border border-slate-100 rounded-2xl shadow-sm hover:shadow-md hover:border-primary/20 transition-all duration-300 group"
+            className="flex items-center justify-between gap-4 py-4 px-6 md:p-6 bg-white border border-slate-100 rounded-2xl shadow-sm hover:shadow-md hover:border-primary/20 transition-all duration-300 group"
           >
             {/* Left Side: Chat Icon */}
             <div className="flex items-center justify-center h-12 w-12 rounded-xl bg-slate-50 text-[#10B981] group-hover:bg-[#ECFDF5] transition-colors shrink-0">
@@ -55,7 +55,7 @@ export function SupportPanel() {
               <h3 className="text-base md:text-lg font-black text-slate-800 mb-1 group-hover:text-[#10B981] transition-colors">
                 الدعم الفني
               </h3>
-              <p className="text-xs md:text-sm font-bold text-slate-400">
+              <p className="text-xs md:text-sm font-bold text-slate-500">
                 أرسل لنا استفساراتك وسنجيبك فوراً!
               </p>
             </div>

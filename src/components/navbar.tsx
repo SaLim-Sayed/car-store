@@ -155,7 +155,7 @@ export function Navbar() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
                   align="end"
-                  className="w-72 rounded-md p-5 border-0 shadow-none mt-5 bg-white/95 backdrop-blur-xl"
+                  className="w-72 rounded-md py-4 px-6 border-0 shadow-none mt-5 bg-white/95 backdrop-blur-xl"
                 >
                   <DropdownMenuLabel className="font-normal p-4 pt-2">
                     <div className="flex flex-col space-y-2">

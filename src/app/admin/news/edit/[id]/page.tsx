@@ -105,7 +105,7 @@ export default function EditNewsPage() {
  return (
  <div className="min-h-screen bg-[#F9F6F1]">
  <main className="container mx-auto px-4 pb-8 max-w-4xl space-y-12">
- <Skeleton className="h-16 w-64 rounded-2xl" />
+ <Skeleton className="h-16 w-64 rounded-lg" />
  <Skeleton className="h-[600px] w-full rounded-[2.5rem]" />
  </main>
  </div>
@@ -143,7 +143,7 @@ export default function EditNewsPage() {
  value={form.title}
  onChange={(e) => setForm({ ...form, title: e.target.value })}
  placeholder="اكتب عنواناً جذاباً..."
- className={`h-14 rounded-2xl border-2 px-6 font-bold ${errors.title ? "border-red-500" : "border-gray-50 focus:border-primary"}`}
+ className={`h-14 rounded-lg border-2 px-6 font-bold ${errors.title ? "border-red-500" : "border-gray-50 focus:border-primary"}`}
  />
  {errors.title && <p className="text-sm text-red-500 font-bold">{errors.title}</p>}
  </div>
@@ -156,7 +156,7 @@ export default function EditNewsPage() {
  error={errors.date}
  required
  max={todayIso()}
- inputClassName="rounded-2xl"
+ inputClassName="rounded-lg"
  />
 
  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -166,7 +166,7 @@ export default function EditNewsPage() {
  id="category"
  value={form.category}
  onChange={(e) => setForm({ ...form, category: e.target.value })}
- className="flex h-14 w-full rounded-2xl border-2 border-gray-50 bg-white px-6 py-2 text-lg font-bold focus:border-primary focus:outline-none transition-colors"
+ className="flex h-14 w-full rounded-lg border-2 border-gray-50 bg-white px-6 py-2 text-lg font-bold focus:border-primary focus:outline-none transition-colors"
  >
  <option value="أخبار السوق">أخبار السوق</option>
  <option value="جديد السيارات">جديد السيارات</option>
@@ -180,7 +180,7 @@ export default function EditNewsPage() {
  id="status"
  value={form.status}
  onChange={(e) => setForm({ ...form, status: e.target.value })}
- className="flex h-14 w-full rounded-2xl border-2 border-gray-50 bg-white px-6 py-2 text-lg font-bold focus:border-primary focus:outline-none transition-colors"
+ className="flex h-14 w-full rounded-lg border-2 border-gray-50 bg-white px-6 py-2 text-lg font-bold focus:border-primary focus:outline-none transition-colors"
  >
  <option value="نشط">نشط</option>
  <option value="مسودة">مسودة</option>
@@ -195,7 +195,7 @@ export default function EditNewsPage() {
  value={form.excerpt}
  onChange={(e) => setForm({ ...form, excerpt: e.target.value })}
  placeholder="وصف مختصر يظهر في قائمة الأخبار..."
- className={`min-h-[100px] rounded-2xl border-2 p-6 font-bold ${errors.excerpt ? "border-red-500" : "border-gray-50 focus:border-primary"}`}
+ className={`min-h-[100px] rounded-lg border-2 p-6 font-bold ${errors.excerpt ? "border-red-500" : "border-gray-50 focus:border-primary"}`}
  />
  {errors.excerpt && <p className="text-sm text-red-500 font-bold">{errors.excerpt}</p>}
  </div>
@@ -207,7 +207,7 @@ export default function EditNewsPage() {
  value={form.content}
  onChange={(e) => setForm({ ...form, content: e.target.value })}
  placeholder="اكتب المحتوى الكامل هنا..."
- className={`min-h-[300px] rounded-2xl border-2 p-6 font-bold ${errors.content ? "border-red-500" : "border-gray-50 focus:border-primary"}`}
+ className={`min-h-[300px] rounded-lg border-2 p-6 font-bold ${errors.content ? "border-red-500" : "border-gray-50 focus:border-primary"}`}
  />
  {errors.content && <p className="text-sm text-red-500 font-bold">{errors.content}</p>}
  </div>
@@ -229,13 +229,13 @@ export default function EditNewsPage() {
  </Card>
 
  <div className="flex gap-4 pt-8">
- <Button type="button" variant="outline" asChild className="flex-1 h-16 rounded-2xl text-xl font-black border-2">
+ <Button type="button" variant="outline" asChild className="flex-1 h-16 rounded-lg text-xl font-black border-2">
  <Link href="/admin/news">إلغاء</Link>
  </Button>
  <Button 
  type="submit" 
  disabled={updateMutation.isPending || isUploading} 
- className="flex-[2] h-16 rounded-2xl text-xl font-black shadow-none shadow-primary/20"
+ className="flex-[2] h-16 rounded-lg text-xl font-black shadow-none shadow-primary/20"
  >
  {updateMutation.isPending ? "جاري الحفظ..." : "حفظ التغييرات"}
  </Button>
