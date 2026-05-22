@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongoose';
 import Car from '@/lib/models/Car';
+import '@/lib/models/Showroom';
 import { handleApiError } from '@/lib/api-helpers';
 
 export async function GET(request: NextRequest) {
