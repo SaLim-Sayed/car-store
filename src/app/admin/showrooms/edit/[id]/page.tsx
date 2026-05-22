@@ -259,7 +259,7 @@ export default function EditShowroomPage() {
  <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
  <div className="space-y-4">
  <Label className="text-lg font-black">تغيير الشعار</Label>
- <div className="relative h-48 border-4 border-dashed border-gray-100 rounded-[2rem] flex flex-col items-center justify-center hover:border-primary transition-colors cursor-pointer group">
+ <div className="relative h-24 border-4 border-dashed border-gray-100 rounded-[2rem] flex flex-col items-center justify-center hover:border-primary transition-colors cursor-pointer group">
  <Input
  type="file"
  accept="image/*"
@@ -267,7 +267,7 @@ export default function EditShowroomPage() {
  disabled={isUploading}
  className="absolute inset-0 opacity-0 cursor-pointer z-10"
  />
- <Plus className="h-12 w-12 text-muted-foreground group-hover:text-primary mb-3 transition-colors" />
+ <Plus className="h-8 w-8 text-muted-foreground group-hover:text-primary mb-2 transition-colors" />
  <span className="text-muted-foreground font-black group-hover:text-primary transition-colors">
  {isUploading ? "جاري الرفع..." : "اختر شعار جديد"}
  </span>

@@ -34,6 +34,7 @@ export interface EquipmentFormData {
  features: string[]
  status: (typeof STATUSES)[number]
  featured: boolean
+  locationLink: string
 }
 
 export const emptyEquipmentForm: EquipmentFormData = {
@@ -52,6 +53,7 @@ export const emptyEquipmentForm: EquipmentFormData = {
  features: [],
  status: "متاح",
  featured: false,
+  locationLink: "",
 }
 
 interface EquipmentFormProps {
@@ -144,7 +146,7 @@ export function EquipmentForm({
 
  <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
  <div className="space-y-3">
- <Label className="text-lg font-black">السعر (ج.م) *</Label>
+ <Label htmlFor="price" className="text-lg font-black">السعر (ج.م) (اختياري)</Label>
  <Input
  type="number"
  value={form.price}
@@ -223,8 +225,19 @@ export function EquipmentForm({
  />
  </div>
 
- <div className="space-y-3">
- <Label className="text-lg font-black">رقم الهاتف للتواصل</Label>
+ 
+          <div className="space-y-3">
+            <Label className="text-lg font-black">رابط الموقع (خريطة)</Label>
+            <Input
+              value={form.locationLink}
+              onChange={(e) => set("locationLink", e.target.value)}
+              className="h-14 rounded-md border-2 border-gray-50 px-6 font-bold"
+              dir="ltr"
+            />
+          </div>
+
+          <div className="space-y-3">
+            <Label className="text-lg font-black">رقم الهاتف للتواصل</Label>
  <div className="relative">
  <Phone className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
  <Input
@@ -277,7 +290,7 @@ export function EquipmentForm({
 
  <div className="space-y-3">
  <Label className="font-black">صور إضافية</Label>
- <Input type="file" accept="image/*" onChange={addExtraImage} disabled={isUploading} />
+ <Input type="file" accept="image/*" multiple onChange={addExtraImage} disabled={isUploading} />
  </div>
 
  {form.images.length > 0 && (
@@ -346,10 +359,10 @@ export function equipmentFormToPayload(form: EquipmentFormData) {
  brand: form.brand.trim(),
  model: form.model.trim(),
  year: form.year ? Number(form.year) : undefined,
- price: Number(form.price),
+ price: form.price ? Number(form.price) : undefined,
  category: form.category,
  condition: form.condition,
- hours: Number(form.hours) || 0,
+ hours: form.hours ? Number(form.hours) : undefined,
  location: form.location.trim(),
  phone: form.phone.trim(),
  description: form.description.trim(),
@@ -357,14 +370,15 @@ export function equipmentFormToPayload(form: EquipmentFormData) {
  features: form.features,
  status: form.status,
  featured: form.featured,
- }
+    locationLink: form.locationLink.trim(),
+  }
 }
 
 export function validateEquipmentForm(form: EquipmentFormData) {
  const errors: Partial<Record<keyof EquipmentFormData, string>> = {}
  if (!form.title.trim()) errors.title = "العنوان مطلوب"
  if (!form.brand.trim()) errors.brand = "الماركة مطلوبة"
- if (!form.price || Number(form.price) <= 0) errors.price = "السعر مطلوب"
+ if (form.price && isNaN(Number(form.price))) errors.price = "يجب أن يكون السعر رقماً"
  if (!form.description.trim()) errors.description = "الوصف مطلوب"
  if (!form.images.length) errors.images = "صورة واحدة على الأقل مطلوبة"
  return errors

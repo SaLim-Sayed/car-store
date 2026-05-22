@@ -8,7 +8,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Skeleton } from "@/components/ui/skeleton"
 import { toast } from "sonner"
-import { ArrowRight, Plus, X, Phone } from "lucide-react"
+import { ArrowRight, Plus, X, Phone, MapPin, Store } from "lucide-react"
+import { useShowrooms } from "@/hooks/useContent"
 import { SITE_PHONE_DISPLAY } from "@/lib/phone"
 import Link from "next/link"
 import { RichTextEditor } from "@/components/rich-text-editor"
@@ -37,12 +38,16 @@ interface CarForm {
  images: string[]
  features: string[]
  status: Status
+  locationLink: string
+  showroom: string
 }
 
 export default function EditCarPage() {
  const router = useRouter()
  const params = useParams()
  const carId = params.id as string
+ const { data: showroomsRes } = useShowrooms()
+ const showrooms = showroomsRes?.data || []
 
  const [loadingCar, setLoadingCar] = useState(true)
  const [isLoading, setIsLoading] = useState(false)
@@ -62,9 +67,11 @@ export default function EditCarPage() {
  color: "",
  phone: "",
  description: "",
- images: [],
  features: [],
  status: "متاح",
+ locationLink: "",
+ showroom: "",
+ images: [],
  })
 
  useEffect(() => {
@@ -78,7 +85,7 @@ export default function EditCarPage() {
  brand: c.brand,
  model: c.model,
  year: String(c.year),
- price: String(c.price),
+ price: c.price ? String(c.price) : "",
  fuelType: c.fuelType,
  transmission: c.transmission,
  mileage: String(c.mileage),
@@ -88,7 +95,9 @@ export default function EditCarPage() {
  images: c.images ?? [],
  features: c.features ?? [],
  status: c.status,
- })
+          locationLink: c.locationLink ?? "",
+          showroom: c.showroom ?? "",
+        })
  } else {
  toast.error("السيارة غير موجودة")
  router.push("/admin/cars")
@@ -165,7 +174,7 @@ export default function EditCarPage() {
  if (!form.brand) newErrors.brand = "العلامة التجارية مطلوبة"
  if (!form.model) newErrors.model = "الموديل مطلوب"
  if (!form.year || isNaN(Number(form.year))) newErrors.year = "السنة مطلوبة"
- if (!form.price || isNaN(Number(form.price))) newErrors.price = "السعر مطلوب"
+ if (form.price && isNaN(Number(form.price))) newErrors.price = "يجب أن يكون السعر رقماً"
  if (!form.mileage || isNaN(Number(form.mileage))) newErrors.mileage = "المسافة مطلوبة"
  if (!form.color) newErrors.color = "اللون مطلوب"
  if (!form.description || form.description.length < 10)
@@ -184,10 +193,12 @@ export default function EditCarPage() {
  const payload = {
  ...form,
  year: Number(form.year),
- price: Number(form.price),
+ price: form.price ? Number(form.price) : undefined,
  mileage: Number(form.mileage),
  phone: form.phone.trim(),
- }
+        locationLink: form.locationLink.trim(),
+        showroom: form.showroom || undefined,
+      }
 
  const res = await fetch(`/api/cars/${carId}`, {
  method: "PUT",
@@ -281,7 +292,7 @@ export default function EditCarPage() {
  selectClassName="rounded-2xl"
  />
  <div className="space-y-3">
- <Label htmlFor="price" className="text-lg font-black">السعر (ج.م) *</Label>
+ <Label htmlFor="price" className="text-lg font-black">السعر (ج.م) (اختياري)</Label>
  <Input
  id="price"
  type="number"
@@ -361,8 +372,43 @@ export default function EditCarPage() {
  </div>
  </div>
 
- <div className="space-y-3">
- <Label htmlFor="status" className="text-lg font-black">الحالة *</Label>
+ 
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="space-y-3">
+              <Label htmlFor="locationLink" className="text-lg font-black">رابط الموقع (اختياري)</Label>
+              <div className="relative">
+                <MapPin className="absolute right-6 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <Input
+                  id="locationLink"
+                  value={form.locationLink}
+                  onChange={(e) => set("locationLink", e.target.value)}
+                  placeholder="رابط خرائط جوجل..."
+                  className="h-14 rounded-2xl border-2 pr-14 pl-6 font-bold border-gray-50 focus:border-primary"
+                  dir="ltr"
+                />
+              </div>
+            </div>
+            <div className="space-y-3">
+              <Label htmlFor="showroom" className="text-lg font-black">المعرض (اختياري)</Label>
+              <div className="relative">
+                <Store className="absolute right-6 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <select
+                  id="showroom"
+                  value={form.showroom}
+                  onChange={(e) => set("showroom", e.target.value)}
+                  className="flex h-14 w-full rounded-2xl border-2 border-gray-50 bg-white pr-14 pl-6 py-2 text-lg font-bold focus:border-primary focus:outline-none transition-colors"
+                >
+                  <option value="">لا ينتمي لمعرض</option>
+                  {showrooms.map((s: any) => (
+                    <option key={s._id} value={s._id}>{s.name}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            <Label htmlFor="status" className="text-lg font-black">الحالة *</Label>
  <select
  id="status"
  value={form.status}
@@ -400,15 +446,16 @@ export default function EditCarPage() {
  <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
  <div className="space-y-4">
  <Label className="text-lg font-black">رفع صور من جهازك</Label>
- <div className="relative h-40 border-4 border-dashed border-gray-100 rounded-[2rem] flex flex-col items-center justify-center hover:border-primary transition-colors cursor-pointer group">
+ <div className="relative h-24 border-4 border-dashed border-gray-100 rounded-[2rem] flex flex-col items-center justify-center hover:border-primary transition-colors cursor-pointer group">
  <Input
- type="file"
- accept="image/*"
- onChange={handleFileUpload}
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={handleFileUpload}
  disabled={isUploading}
  className="absolute inset-0 opacity-0 cursor-pointer z-10"
  />
- <Plus className="h-10 w-10 text-muted-foreground group-hover:text-primary mb-2 transition-colors" />
+ <Plus className="h-8 w-8 text-muted-foreground group-hover:text-primary mb-1 transition-colors" />
  <span className="text-muted-foreground font-black group-hover:text-primary transition-colors">
  {isUploading ? "جاري الرفع..." : "اختر ملفات"}
  </span>

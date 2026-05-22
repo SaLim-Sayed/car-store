@@ -15,6 +15,7 @@ export async function GET(request: NextRequest) {
  const transmission = searchParams.get('transmission');
  const minPrice = searchParams.get('minPrice');
  const maxPrice = searchParams.get('maxPrice');
+ const showroom = searchParams.get('showroom');
  
  const query: any = {};
  
@@ -33,10 +34,12 @@ export async function GET(request: NextRequest) {
  if (minPrice) query.price.$gte = parseFloat(minPrice);
  if (maxPrice) query.price.$lte = parseFloat(maxPrice);
  }
+ if (showroom) query.showroom = showroom;
  
  const skip = (page - 1) * limit;
  
  const cars = await Car.find(query)
+ .populate('showroom', 'name locationLink')
  .sort({ createdAt: -1 })
  .skip(skip)
  .limit(limit);

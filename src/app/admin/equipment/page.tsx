@@ -70,7 +70,7 @@ export default function AdminEquipmentPage() {
  </div>
  </div>
  <span className="text-2xl font-[1000] text-primary">
- {item.price.toLocaleString()} ج.م
+ {item.price ? item.price.toLocaleString() : "حسب الطلب"} {item.price ? "ج.م" : ""}
  </span>
  </div>
  </CardHeader>

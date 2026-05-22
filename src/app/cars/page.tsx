@@ -13,6 +13,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Car as CarIcon } from "lucide-react"
 import { useCarStore } from "@/lib/store/carStore"
 import { useCars, CarsFilters, Car } from "@/hooks/useCars"
+import { useShowroomById } from "@/hooks/useContent"
 
 function CarsPageContent() {
  const searchParams = useSearchParams()
@@ -31,11 +32,16 @@ function CarsPageContent() {
  transmission: filters.transmission,
  minPrice: filters.minPrice ? Number(filters.minPrice) : undefined,
  maxPrice: filters.maxPrice ? Number(filters.maxPrice) : undefined,
+ showroom: searchParams.get("showroom") || undefined,
  }
 
  const { data: carsData, isLoading, error, refetch } = useCars(page, 9, apiFilters)
  const cars = carsData?.data || []
  const pagination = carsData?.pagination
+
+ const showroomId = searchParams.get("showroom")
+ const { data: showroomData } = useShowroomById(showroomId || "")
+ const showroomInfo = showroomData?.data
 
  const handlePageChange = (newPage: number) => {
  setPage(newPage)
@@ -48,9 +54,13 @@ function CarsPageContent() {
  <main className="container mx-auto px-4 py-24">
  <Breadcrumbs items={[{ label: "سيارات للبيع" }]} />
  <div className="mb-16 space-y-4">
- <h1 className="text-5xl md:text-6xl font-[1000] tracking-tighter">جميع السيارات</h1>
+ <h1 className="text-5xl md:text-6xl font-[1000] tracking-tighter">
+ {showroomInfo ? `سيارات ${showroomInfo.name}` : "جميع السيارات"}
+ </h1>
  <p className="text-muted-foreground text-xl font-medium">
- اكتشف مجموعتنا الواسعة من السيارات الجديدة والمستعملة في المنيا
+ {showroomInfo 
+ ? `تصفح السيارات المتاحة لدى ${showroomInfo.name}`
+ : "اكتشف مجموعتنا الواسعة من السيارات الجديدة والمستعملة في المنيا"}
  </p>
  <div className="h-1.5 w-32 bg-primary rounded-full" />
  </div>

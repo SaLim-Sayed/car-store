@@ -16,7 +16,7 @@ interface CarCardProps {
     brand: string;
     model: string;
     year: number;
-    price: number;
+    price?: number;
     fuelType: string;
     transmission: string;
     mileage: number;
@@ -46,7 +46,7 @@ export function CarCard({ car }: CarCardProps) {
     }
   };
 
-  const whatsappMessage = `مرحباً، أريد الاستفسار عن سيارة ${car.brand} ${car.model} موديل ${car.year} المعروضة للبيع بسعر ${car.price.toLocaleString()} جنيه`;
+  const whatsappMessage = `مرحباً، أريد الاستفسار عن سيارة ${car.brand} ${car.model} موديل ${car.year} المعروضة للبيع${car.price ? ` بسعر ${car.price.toLocaleString()} جنيه` : ""}`;
   const whatsappUrl = `https://wa.me/${getContactPhone(car.phone)}?text=${encodeURIComponent(whatsappMessage)}`;
 
   return (
@@ -128,7 +128,7 @@ export function CarCard({ car }: CarCardProps) {
         {/* Price Section */}
         <div className="flex items-baseline justify-end gap-1 mb-4 select-none">
           <span className="text-xl md:text-2xl font-[1000] text-[#1B3E7A]">
-            {car.price.toLocaleString()}
+            {car.price ? car.price.toLocaleString() : "حسب الطلب"}
           </span>
           <span className="text-[11px] md:text-xs font-black text-[#1B3E7A]/80">
             جنيه

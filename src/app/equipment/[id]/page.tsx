@@ -225,7 +225,7 @@ export default function EquipmentDetailPage() {
  </p>
  <div className="mt-1 flex items-baseline justify-center gap-2 tabular-nums xl:justify-end">
  <span className="font-serif text-3xl font-bold text-primary tabular-nums tracking-tight sm:text-4xl">
- {item.price.toLocaleString("ar-EG")}
+ {item.price ? item.price.toLocaleString("ar-EG") : "حسب الطلب"}
  </span>
  <span className="text-sm font-semibold text-muted-foreground">
  جنيه
@@ -479,7 +479,7 @@ export default function EquipmentDetailPage() {
  <div className="flex flex-col gap-1">
  <h2 className="text-white text-xl md:text-2xl font-black">{label}</h2>
  <div className="flex items-center gap-4">
- <p className="text-primary text-2xl font-black">{item.price.toLocaleString()} ج.م</p>
+ <p className="text-primary text-2xl font-black">{item.price ? `${item.price.toLocaleString()} ج.م` : "حسب الطلب"}</p>
  <Badge variant="outline" className="border-white/20 text-white/60">{item.category}</Badge>
  </div>
  </div>

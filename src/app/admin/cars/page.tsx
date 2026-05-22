@@ -15,7 +15,7 @@ interface CarDoc {
  brand: string
  model: string
  year: number
- price: number
+ price?: number
  fuelType: string
  transmission: string
  mileage: number
@@ -190,7 +190,7 @@ export default function AdminCarsPage() {
  </td>
  <td className="py-4 px-6 bg-gray-50/50">
  <div className="text-2xl font-black text-primary">
- {car.price.toLocaleString()} <span className="text-sm">ج.م</span>
+ {car.price ? car.price.toLocaleString() : "حسب الطلب"} {car.price ? <span className="text-sm">ج.م</span> : null}
  </div>
  </td>
  <td className="py-4 px-6 bg-gray-50/50">

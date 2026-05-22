@@ -34,6 +34,11 @@ const ShowroomSchema = new mongoose.Schema({
  default: [30.7333, 28.0833], // Default Minia coordinates
  },
  },
+ locationLink: {
+ type: String,
+ trim: true,
+ default: '',
+ },
  workingHours: {
  type: String,
  },

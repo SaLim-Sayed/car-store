@@ -26,8 +26,9 @@ export default function NewShowroomPage() {
  website: "",
  description: "",
  logo: "",
- featured: false
- })
+ featured: false,
+    locationLink: ""
+  })
 
  const [errors, setErrors] = useState<Partial<Record<keyof typeof form, string>>>({})
 
@@ -197,8 +198,24 @@ export default function NewShowroomPage() {
  </div>
  </div>
 
- <div className="space-y-3">
- <Label htmlFor="description" className="text-lg font-black">وصف المعرض</Label>
+ 
+          <div className="space-y-3">
+            <Label htmlFor="locationLink" className="text-lg font-black">رابط الموقع</Label>
+            <div className="relative">
+              <MapPin className="absolute right-6 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <Input
+                id="locationLink"
+                value={form.locationLink}
+                onChange={(e) => setForm({ ...form, locationLink: e.target.value })}
+                placeholder="رابط خرائط جوجل..."
+                className="h-14 rounded-2xl border-2 pr-14 pl-6 font-bold border-gray-50 focus:border-primary"
+                dir="ltr"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            <Label htmlFor="description" className="text-lg font-black">وصف المعرض</Label>
  <Textarea
  id="description"
  value={form.description}
@@ -218,7 +235,7 @@ export default function NewShowroomPage() {
  <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
  <div className="space-y-4">
  <Label className="text-lg font-black">رفع الشعار</Label>
- <div className="relative h-48 border-4 border-dashed border-gray-100 rounded-[2rem] flex flex-col items-center justify-center hover:border-primary transition-colors cursor-pointer group">
+ <div className="relative h-24 border-4 border-dashed border-gray-100 rounded-[2rem] flex flex-col items-center justify-center hover:border-primary transition-colors cursor-pointer group">
  <Input
  type="file"
  accept="image/*"
@@ -226,9 +243,9 @@ export default function NewShowroomPage() {
  disabled={isUploading}
  className="absolute inset-0 opacity-0 cursor-pointer z-10"
  />
- <Plus className="h-12 w-12 text-muted-foreground group-hover:text-primary mb-3 transition-colors" />
+ <Plus className="h-8 w-8 text-muted-foreground group-hover:text-primary mb-2 transition-colors" />
  <span className="text-muted-foreground font-black group-hover:text-primary transition-colors">
- {isUploading ? "جاري الرفع..." : "اختر ملف الشعار"}
+ {isUploading ? "جاري الرفع..." : "اختر شعار جديد"}
  </span>
  </div>
  </div>

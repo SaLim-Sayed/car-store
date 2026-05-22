@@ -8,7 +8,7 @@ export interface Equipment {
  brand: string;
  model?: string;
  year?: number;
- price: number;
+ price?: number;
  category: string;
  condition: string;
  hours: number;

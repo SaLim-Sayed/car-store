@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     }
 
     const title = `${item.title} ${item.brand} ${item.model} في المنيا`;
-    const description = `بيع وشراء معدات ثقيلة وزراعية في المنيا: ${item.category} ${item.brand} ${item.model}. الحالة: ${item.condition}، ساعات العمل: ${item.hours} ساعة، الموقع: ${item.location}، وسعر: ${item.price.toLocaleString('ar-EG')} جنيه.`;
+    const description = `بيع وشراء معدات ثقيلة وزراعية في المنيا: ${item.category} ${item.brand} ${item.model}. الحالة: ${item.condition}، ساعات العمل: ${item.hours} ساعة، الموقع: ${item.location}${item.price ? `، وسعر: ${item.price.toLocaleString('ar-EG')} جنيه` : ""}.`;
     const imageUrl = item.images?.[0] || '/logo.png';
 
     return {

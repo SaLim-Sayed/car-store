@@ -11,7 +11,7 @@ export async function GET(
  await connectDB();
 
  const { id } = await params;
- const car = await Car.findById(id);
+ const car = await Car.findById(id).populate('showroom', 'name locationLink');
 
  if (!car) {
  return NextResponse.json(

@@ -43,7 +43,7 @@ interface CarDoc {
  brand: string;
  model: string;
  year: number;
- price: number;
+ price?: number;
  fuelType: string;
  transmission: string;
  mileage: number;
@@ -226,7 +226,7 @@ export default function CarDetailPage() {
  </div>
  <div className="flex items-baseline gap-2">
  <span className="text-4xl md:text-5xl font-black text-primary tracking-tighter">
- {car.price.toLocaleString()}
+ {car.price ? car.price.toLocaleString() : "حسب الطلب"}
  </span>
  <span className="text-2xl font-black text-muted-foreground">
  جنيه
@@ -500,7 +500,7 @@ export default function CarDetailPage() {
  <div className="flex flex-col gap-1">
  <h2 className="text-white text-xl md:text-2xl font-black">{car.brand} {car.model} {car.year}</h2>
  <div className="flex items-center gap-4">
- <p className="text-primary text-2xl font-black">{car.price.toLocaleString()} ج.م</p>
+ <p className="text-primary text-2xl font-black">{car.price ? `${car.price.toLocaleString()} ج.م` : "حسب الطلب"}</p>
  <div className="hidden md:flex gap-2">
  <Badge variant="outline" className="border-white/20 text-white/60">{car.transmission}</Badge>
  <Badge variant="outline" className="border-white/20 text-white/60">{car.fuelType}</Badge>

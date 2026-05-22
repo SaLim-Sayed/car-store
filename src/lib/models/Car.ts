@@ -19,7 +19,7 @@ const CarSchema = new mongoose.Schema({
  },
  price: {
  type: Number,
- required: true,
+ required: false,
  min: 0,
  },
  fuelType: {
@@ -65,6 +65,15 @@ const CarSchema = new mongoose.Schema({
  enum: ['متاح', 'مباع', 'محجوز'],
  default: 'متاح',
  },
+ locationLink: {
+ type: String,
+ trim: true,
+ default: '',
+ },
+ showroom: {
+ type: mongoose.Schema.Types.ObjectId,
+ ref: 'Showroom',
+ },
  createdAt: {
  type: Date,
  default: Date.now,
@@ -79,4 +88,8 @@ CarSchema.pre('save', async function() {
  this.updatedAt = new Date();
 });
 
-export default mongoose.models.Car || mongoose.model('Car', CarSchema);
+if (mongoose.models.Car) {
+ delete mongoose.models.Car;
+}
+
+export default mongoose.model('Car', CarSchema);

@@ -36,7 +36,7 @@ export function EquipmentCard({ equipment }: EquipmentCardProps) {
   const label =
     equipment.title || `${equipment.brand} ${equipment.model || ""}`.trim();
 
-  const whatsappMessage = `مرحباً، أريد الاستفسار عن معدة ${label} المعروضة للبيع بسعر ${equipment.price.toLocaleString()} جنيه`;
+  const whatsappMessage = `مرحباً، أريد الاستفسار عن معدة ${label} المعروضة للبيع${equipment.price ? ` بسعر ${equipment.price.toLocaleString()} جنيه` : ""}`;
   const whatsappUrl = `https://wa.me/${getContactPhone(equipment.phone)}?text=${encodeURIComponent(whatsappMessage)}`;
 
   return (
@@ -114,10 +114,12 @@ export function EquipmentCard({ equipment }: EquipmentCardProps) {
         {/* Price Section */}
         <div className="flex items-baseline justify-end gap-1 mb-4 select-none">
           <span className="text-xl md:text-2xl font-[1000] text-[#1B3E7A]">
-            {equipment.price.toLocaleString()}
+            {equipment.price != null && equipment.price > 0 
+              ? equipment.price.toLocaleString("ar-EG") 
+              : "حسب الطلب"}
           </span>
           <span className="text-[11px] md:text-xs font-black text-[#1B3E7A]/80">
-            جنيه
+            {equipment.price != null && equipment.price > 0 ? "جنيه" : ""}
           </span>
         </div>
 

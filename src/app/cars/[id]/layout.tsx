@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     }
 
     const title = `${car.brand} ${car.model} موديل ${car.year} للبيع في المنيا`;
-    const description = `شراء سيارة ${car.brand} ${car.model} سنة ${car.year} في المنيا. ناقل حركة ${car.transmission}، وقود ${car.fuelType}، وسعر ${car.price.toLocaleString('ar-EG')} جنيه. تصفح التفاصيل وتواصل مع البائع مباشرة.`;
+    const description = `شراء سيارة ${car.brand} ${car.model} سنة ${car.year} في المنيا. ناقل حركة ${car.transmission}، وقود ${car.fuelType}${car.price ? `، وسعر ${car.price.toLocaleString('ar-EG')} جنيه` : ""}. تصفح التفاصيل وتواصل مع البائع مباشرة.`;
     const imageUrl = car.images?.[0] || '/logo.png';
 
     return {

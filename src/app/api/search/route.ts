@@ -81,7 +81,7 @@ export async function GET(request: NextRequest) {
  type: 'car' as const,
  typeLabel: 'سيارة',
  title: `${c.brand} ${c.model}`,
- subtitle: `${c.year} · ${Number(c.price).toLocaleString('ar-EG')} ج.م`,
+ subtitle: `${c.year}${c.price ? ` · ${Number(c.price).toLocaleString('ar-EG')} ج.م` : ""}`,
  href: `/cars/${c._id}`,
  image: pickFirstImage(
  ...(Array.isArray(c.images) ? c.images : [])
@@ -101,7 +101,7 @@ export async function GET(request: NextRequest) {
  type: 'equipment' as const,
  typeLabel: 'معدة',
  title: e.title || `${e.brand} ${e.model || ''}`.trim(),
- subtitle: `${Number(e.price).toLocaleString('ar-EG')} ج.م`,
+ subtitle: e.price ? `${Number(e.price).toLocaleString('ar-EG')} ج.م` : "السعر حسب الطلب",
  href: `/equipment/${e._id}`,
  image: pickFirstImage(
  ...(Array.isArray(e.images) ? e.images : [])

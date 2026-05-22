@@ -8,7 +8,7 @@ export interface Car {
  brand: string;
  model: string;
  year: number;
- price: number;
+ price?: number;
  fuelType: string;
  transmission: string;
  mileage: number;
@@ -28,6 +28,7 @@ export interface CarsFilters {
  transmission?: string;
  minPrice?: number;
  maxPrice?: number;
+ showroom?: string;
 }
 
 export interface CarsResponse {

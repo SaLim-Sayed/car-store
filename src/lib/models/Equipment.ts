@@ -23,7 +23,7 @@ const EquipmentSchema = new mongoose.Schema({
  },
  price: {
  type: Number,
- required: [true, 'يرجى إدخال السعر'],
+ required: false,
  min: 0,
  },
  category: {
@@ -68,6 +68,11 @@ const EquipmentSchema = new mongoose.Schema({
  type: String,
  enum: ['متاح', 'مباع', 'محجوز'],
  default: 'متاح',
+ },
+ locationLink: {
+ type: String,
+ trim: true,
+ default: '',
  },
  featured: {
  type: Boolean,

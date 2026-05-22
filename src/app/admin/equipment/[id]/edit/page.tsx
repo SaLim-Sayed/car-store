@@ -33,7 +33,7 @@ export default function EditEquipmentPage() {
  brand: item.brand || "",
  model: item.model || "",
  year: item.year ? String(item.year) : "",
- price: String(item.price),
+ price: item.price ? String(item.price) : "",
  category: item.category as EquipmentFormData["category"],
  condition: item.condition as EquipmentFormData["condition"],
  hours: String(item.hours ?? 0),
@@ -44,6 +44,7 @@ export default function EditEquipmentPage() {
  features: item.features || [],
  status: item.status as EquipmentFormData["status"],
  featured: item.featured ?? false,
+ locationLink: item.locationLink || "",
  })
  }, [data])
 
