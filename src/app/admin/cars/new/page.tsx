@@ -15,8 +15,9 @@ import { RichTextEditor } from "@/components/rich-text-editor"
 import { YearPicker } from "@/components/year-picker"
 import { currentYear } from "@/lib/date-utils"
 import { cn } from "@/lib/utils"
+import { MultiImageUpload } from "@/components/multi-image-upload"
 
-const FUEL_TYPES = ["بنزين", "ديزل", "كهرباء", "هايبرد"] as const
+const FUEL_TYPES = ["بنزين", "كهرباء", "غاز طبيعي", "غاز", "سولار"] as const
 const TRANSMISSIONS = ["يدوي", "أوتوماتيك"] as const
 const STATUSES = ["متاح", "مباع", "محجوز"] as const
 
@@ -47,7 +48,6 @@ export default function NewCarPage() {
   const { data: showroomsRes } = useShowrooms()
   const showrooms = showroomsRes?.data || []
   const [isLoading, setIsLoading] = useState(false)
-  const [newImage, setNewImage] = useState("")
   const [newFeature, setNewFeature] = useState("")
 
   const [form, setForm] = useState<CarForm>({
@@ -76,48 +76,27 @@ export default function NewCarPage() {
     setErrors((prev) => ({ ...prev, [field]: undefined }))
   }
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
+  const onImagesChange = (images: string[]) => {
+    setForm((prev) => ({ ...prev, images }))
+    setErrors((prev) => ({ ...prev, images: undefined }))
+  }
 
-    setIsUploading(true)
-    try {
-      const formData = new FormData()
-      formData.append('file', file)
-
-      const res = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      })
-
-      const data = await res.json()
-
-      if (data.success) {
-        setForm((prev) => ({ ...prev, images: [...prev.images, data.url] }))
-        toast.success("تم رفع الصورة بنجاح")
-      } else {
-        toast.error(data.error || "فشل رفع الصورة")
-      }
-    } catch {
-      toast.error("حدث خطأ أثناء رفع الصورة")
-    } finally {
-      setIsUploading(false)
-      e.target.value = ''
+  const handleShowroomChange = (nextId: string) => {
+    if (!nextId) {
+      set("showroom", "")
+      return
     }
-  }
 
-  const addImage = () => {
-    const url = newImage.trim()
-    if (!url) return
-    setForm((prev) => ({ ...prev, images: [...prev.images, url] }))
-    setNewImage("")
-  }
+    const sr = showrooms.find((s: any) => String(s._id) === String(nextId))
 
-  const removeImage = (idx: number) => {
     setForm((prev) => ({
       ...prev,
-      images: prev.images.filter((_, i) => i !== idx),
+      showroom: nextId,
+      // Fill from showroom (user can still edit after)
+      phone: sr?.phone ?? prev.phone,
+      locationLink: sr?.locationLink ?? prev.locationLink,
     }))
+    setErrors((prev) => ({ ...prev, showroom: undefined, phone: undefined, locationLink: undefined }))
   }
 
   const addFeature = () => {
@@ -423,67 +402,15 @@ export default function NewCarPage() {
                     الصور <span className="text-rose-500">*</span>
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="py-2.5 px-4 space-y-6">
-                  <div className="space-y-3">
-                    <div className="relative h-28 border-2 border-dashed border-slate-200 bg-slate-50 rounded-lg flex flex-col items-center justify-center hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer group">
-                      <Input
-                        type="file"
-                        accept="image/*"
-                        multiple
-                        onChange={handleFileUpload}
-                        disabled={isUploading}
-                        className="absolute inset-0 opacity-0 cursor-pointer z-10"
-                      />
-                      <ImagePlus className="h-6 w-6 text-slate-500 group-hover:text-primary mb-2 transition-colors" />
-                      <span className="text-xs text-slate-500 font-bold group-hover:text-primary transition-colors">
-                        {isUploading ? "جاري الرفع..." : "اضغط لرفع صور من جهازك"}
-                      </span>
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-3">
-                    <Label className="text-xs font-black text-slate-500">أو إضافة برابط مباشر</Label>
-                    <div className="flex gap-2">
-                      <Input
-                        value={newImage}
-                        onChange={(e) => setNewImage(e.target.value)}
-                        placeholder="https://..."
-                        className="h-10 rounded-xl border-slate-200 bg-slate-50 px-4 font-bold text-sm"
-                        onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addImage())}
-                        dir="ltr"
-                      />
-                      <Button type="button" onClick={addImage} size="icon" className="h-10 w-10 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 shrink-0">
-                        <Plus className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-
-                  {errors.images && (
-                    <p className="text-xs text-rose-500 font-bold">{errors.images}</p>
-                  )}
-                  
-                  {form.images.length > 0 && (
-                    <div className="grid grid-cols-3 gap-2">
-                      {form.images.map((img, idx) => (
-                        <div key={idx} className="relative aspect-square group rounded-xl overflow-hidden border border-slate-200">
-                          <img
-                            src={img}
-                            alt={`صورة ${idx + 1}`}
-                            className="w-full h-full object-cover transition-transform duration-500"
-                          />
-                          <div className="absolute inset-0 bg-black/50 opacity-100 flex items-center justify-center">
-                            <button
-                              type="button"
-                              onClick={() => removeImage(idx)}
-                              className="w-8 h-8 bg-rose-500 text-white rounded-full flex items-center justify-center hover:bg-rose-600 transition-colors"
-                            >
-                              <X className="h-4 w-4" />
-                            </button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                <CardContent className="py-2.5 px-4">
+                  <MultiImageUpload
+                    value={form.images}
+                    onChange={onImagesChange}
+                    error={errors.images}
+                    onUploadingChange={setIsUploading}
+                    max={12}
+                    label="الصور"
+                  />
                 </CardContent>
               </Card>
 
@@ -529,7 +456,7 @@ export default function NewCarPage() {
                       <select
                         id="showroom"
                         value={form.showroom}
-                        onChange={(e) => set("showroom", e.target.value)}
+                        onChange={(e) => handleShowroomChange(e.target.value)}
                         className="flex h-12 w-full rounded-xl border border-slate-200 bg-slate-50 pr-10 pl-4 py-2 text-sm font-bold focus:border-rose-500 focus:outline-none focus:ring-1 focus:ring-rose-500 transition-colors appearance-none"
                       >
                         <option value="">لا ينتمي لمعرض</option>

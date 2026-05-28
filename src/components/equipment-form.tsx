@@ -5,8 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { ImageUpload } from "@/components/image-upload"
-import { uploadImageFile } from "@/lib/client-image-upload"
+import { MultiImageUpload } from "@/components/multi-image-upload"
 import { YearPicker } from "@/components/year-picker"
 import { currentYear } from "@/lib/date-utils"
 import { toast } from "sonner"
@@ -15,7 +14,7 @@ import { SITE_PHONE_DISPLAY } from "@/lib/phone"
 import { RichTextEditor } from "@/components/rich-text-editor"
 import { cn } from "@/lib/utils"
 
-const CATEGORIES = ["جرار", "حفار", "شاحنة", "معدة زراعية", "معدة بناء", "أخرى"] as const
+const CATEGORIES = ["جرار", "حفار", "شاحنة", "معدة زراعية", "معدة بناء", "دراجات نارية", "أخرى"] as const
 const CONDITIONS = ["جديد", "مستعمل"] as const
 const STATUSES = ["متاح", "مباع", "محجوز"] as const
 
@@ -73,46 +72,13 @@ export function EquipmentForm({
   onUploadingChange,
 }: EquipmentFormProps) {
   const [newFeature, setNewFeature] = useState("")
-  const [coverImage, setCoverImage] = useState(form.images[0] || "")
-  const [newImage, setNewImage] = useState("")
 
   const set = <K extends keyof EquipmentFormData>(key: K, value: EquipmentFormData[K]) => {
     onChange({ ...form, [key]: value })
   }
 
-  const setCover = (url: string) => {
-    setCoverImage(url)
-    const rest = form.images.filter((img) => img !== url)
-    onChange({ ...form, images: url ? [url, ...rest] : rest })
-  }
-
-  const addExtraImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-    onUploadingChange(true)
-    try {
-      const url = await uploadImageFile(file)
-      onChange({ ...form, images: [...form.images, url] })
-      toast.success("تم رفع الصورة")
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "فشل رفع الصورة")
-    } finally {
-      onUploadingChange(false)
-      e.target.value = ""
-    }
-  }
-
-  const addImageUrl = () => {
-    const url = newImage.trim()
-    if (!url) return
-    onChange({ ...form, images: [...form.images, url] })
-    setNewImage("")
-  }
-
-  const removeImage = (url: string) => {
-    const next = form.images.filter((img) => img !== url)
-    onChange({ ...form, images: next })
-    if (coverImage === url) setCoverImage(next[0] || "")
+  const onImagesChange = (images: string[]) => {
+    onChange({ ...form, images })
   }
 
   const addFeature = () => {
@@ -317,67 +283,15 @@ export function EquipmentForm({
               الصور <span className="text-rose-500">*</span>
             </CardTitle>
           </CardHeader>
-          <CardContent className="py-4 px-6 space-y-6">
-            <div className="space-y-3">
-              <div className="relative h-28 border-2 border-dashed border-slate-200 bg-slate-50 rounded-2xl flex flex-col items-center justify-center hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer group">
-                <Input
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  onChange={addExtraImage}
-                  disabled={isUploading}
-                  className="absolute inset-0 opacity-0 cursor-pointer z-10"
-                />
-                <ImagePlus className="h-6 w-6 text-slate-500 group-hover:text-primary mb-2 transition-colors" />
-                <span className="text-xs text-slate-500 font-bold group-hover:text-primary transition-colors">
-                  {isUploading ? "جاري الرفع..." : "اضغط لرفع صور من جهازك"}
-                </span>
-              </div>
-            </div>
-            
-            <div className="space-y-3">
-              <Label className="text-xs font-black text-slate-500">أو إضافة برابط مباشر</Label>
-              <div className="flex gap-2">
-                <Input
-                  value={newImage}
-                  onChange={(e) => setNewImage(e.target.value)}
-                  placeholder="https://..."
-                  className="h-10 rounded-xl border-slate-200 bg-slate-50 px-4 font-bold text-sm"
-                  onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addImageUrl())}
-                  dir="ltr"
-                />
-                <Button type="button" onClick={addImageUrl} size="icon" className="h-10 w-10 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 shrink-0">
-                  <Plus className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-
-            {errors.images && (
-              <p className="text-xs text-rose-500 font-bold">{errors.images}</p>
-            )}
-            
-            {form.images.length > 0 && (
-              <div className="grid grid-cols-3 gap-2">
-                {form.images.map((img, idx) => (
-                  <div key={idx} className="relative aspect-square group rounded-xl overflow-hidden border border-slate-200">
-                    <img
-                      src={img}
-                      alt={`صورة ${idx + 1}`}
-                      className="w-full h-full object-cover transition-transform duration-500"
-                    />
-                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                      <button
-                        type="button"
-                        onClick={() => removeImage(img)}
-                        className="w-8 h-8 bg-rose-500 text-white rounded-full flex items-center justify-center hover:bg-rose-600 transition-colors"
-                      >
-                        <X className="h-4 w-4" />
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
+          <CardContent className="py-4 px-6">
+            <MultiImageUpload
+              value={form.images}
+              onChange={onImagesChange}
+              error={errors.images}
+              onUploadingChange={onUploadingChange}
+              max={12}
+              label="الصور"
+            />
           </CardContent>
         </Card>
 

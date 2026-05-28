@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import mongoose from "mongoose";
 import connectDB from "@/lib/mongoose";
 import Car from "@/lib/models/Car";
+import "@/lib/models/Showroom";
 import ClientPage from "./client-page";
 import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/seo/json-ld";
@@ -27,6 +28,8 @@ interface CarDoc {
   images: string[];
   features: string[];
   status: string;
+  locationLink?: string;
+  showroom?: any;
   createdAt: string;
 }
 
@@ -39,7 +42,7 @@ async function getCar(id: string): Promise<CarDoc | null> {
 
   try {
     await connectDB();
-    const car = await Car.findById(id).lean();
+    const car = await Car.findById(id).populate("showroom").lean();
     if (!car) return null;
     
     return {
@@ -57,6 +60,8 @@ async function getCar(id: string): Promise<CarDoc | null> {
       images: car.images || [],
       features: car.features || [],
       status: car.status,
+      locationLink: car.locationLink,
+      showroom: car.showroom,
       createdAt: car.createdAt ? car.createdAt.toISOString() : new Date().toISOString()
     } as CarDoc;
   } catch (error) {

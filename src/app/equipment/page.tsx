@@ -11,7 +11,7 @@ import { Tractor, Search } from "lucide-react"
 import { Breadcrumbs } from "@/components/breadcrumbs"
 import { useEquipment, type Equipment } from "@/hooks/useEquipment"
 
-const CATEGORIES = ["الكل", "جرار", "حفار", "شاحنة", "معدة زراعية", "معدة بناء", "أخرى"] as const
+const CATEGORIES = ["الكل", "جرار", "حفار", "شاحنة", "معدة زراعية", "معدة بناء", "دراجات نارية", "أخرى"] as const
 
 export default function EquipmentPage() {
  const [page, setPage] = useState(1)

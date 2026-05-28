@@ -13,6 +13,7 @@ export interface Equipment {
  condition: string;
  hours: number;
  location: string;
+ locationLink?: string;
  phone?: string;
  description: string;
  images: string[];

@@ -24,6 +24,7 @@ import {
   Share2,
   X
 } from "lucide-react";
+import { MapEmbed } from "@/components/map-embed";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FreeMode, Navigation, Thumbs } from "swiper/modules";
@@ -50,6 +51,8 @@ interface CarDoc {
  images: string[];
  features: string[];
  status: string;
+ locationLink?: string;
+ showroom?: any;
  createdAt: string;
 }
 
@@ -474,12 +477,21 @@ export default function ClientPage({ initialCar }: { initialCar: CarDoc }) {
  </div>
  <div className="space-y-1">
  <h3 className="text-2xl font-black">
- معرض المنيا للسيارات
+ {car.showroom?.name || "معرض المنيا للسيارات"}
  </h3>
  <div className="flex items-center justify-center gap-1.5 text-muted-foreground font-bold text-sm">
  <MapPin className="h-4 w-4 text-primary" />
- المنيا، المنيا الجديدة
+ {car.showroom?.address || "المنيا، المنيا الجديدة"}
  </div>
+ {car.showroom && (
+ <Button 
+   variant="link" 
+   className="mt-2 text-primary font-bold w-full"
+   onClick={() => router.push(`/showrooms`)}
+ >
+   عرض تفاصيل المعرض
+ </Button>
+ )}
  </div>
  </div>
  </div>
@@ -506,6 +518,15 @@ export default function ClientPage({ initialCar }: { initialCar: CarDoc }) {
  <ChevronRight className="mr-2 h-4 w-4 rotate-180" />
  </Button>
  </div>
+ </CardContent>
+ </Card>
+
+ <Card className="border-0 shadow-none rounded-3xl overflow-hidden bg-white">
+ <CardContent className="p-6">
+ <MapEmbed
+   url={car.locationLink || car.showroom?.locationLink}
+   title="الموقع على الخريطة"
+ />
  </CardContent>
  </Card>
 

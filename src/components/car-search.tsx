@@ -73,9 +73,10 @@ export function CarSearch() {
  <SelectContent className="rounded-xl border-0 shadow-none">
  <SelectItem value="null">الكل</SelectItem>
  <SelectItem value="بنزين">بنزين</SelectItem>
- <SelectItem value="ديزل">ديزل</SelectItem>
  <SelectItem value="كهرباء">كهرباء</SelectItem>
- <SelectItem value="هايبرد">هايبرد</SelectItem>
+ <SelectItem value="غاز طبيعي">غاز طبيعي</SelectItem>
+ <SelectItem value="غاز">غاز</SelectItem>
+ <SelectItem value="سولار">سولار</SelectItem>
  </SelectContent>
  </Select>
  </div>

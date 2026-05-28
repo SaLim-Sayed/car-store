@@ -18,6 +18,7 @@ export interface Car {
  images: string[];
  features: string[];
  status: string;
+ locationLink?: string;
  createdAt: string;
  updatedAt: string;
 }

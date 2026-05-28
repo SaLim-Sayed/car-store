@@ -5,7 +5,7 @@ export const carSchema = z.object({
  model: z.string().min(1, 'الموديل مطلوب'),
  year: z.number().min(1900, 'السنة يجب أن تكون 1900 أو أكبر').max(new Date().getFullYear() + 1, 'السنة غير صالحة'),
  price: z.number().min(0, 'السعر يجب أن يكون رقمًا موجبًا'),
- fuelType: z.enum(['بنزين', 'ديزل', 'كهرباء', 'هايبرد'], {
+ fuelType: z.enum(['بنزين', 'كهرباء', 'غاز طبيعي', 'غاز', 'سولار'], {
  message: 'نوع الوقود مطلوب',
  }),
  transmission: z.enum(['يدوي', 'أوتوماتيك'], {
@@ -22,7 +22,7 @@ export const carSchema = z.object({
 
 export const carFilterSchema = z.object({
  search: z.string().optional(),
- fuelType: z.enum(['بنزين', 'ديزل', 'كهرباء', 'هايبرد']).optional(),
+ fuelType: z.enum(['بنزين', 'كهرباء', 'غاز طبيعي', 'غاز', 'سولار']).optional(),
  transmission: z.enum(['يدوي', 'أوتوماتيك']).optional(),
  minPrice: z.string().optional(),
  maxPrice: z.string().optional(),

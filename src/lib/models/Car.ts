@@ -24,7 +24,7 @@ const CarSchema = new mongoose.Schema({
  },
  fuelType: {
  type: String,
- enum: ['بنزين', 'ديزل', 'كهرباء', 'هايبرد'],
+ enum: ['بنزين', 'كهرباء', 'غاز طبيعي', 'غاز', 'سولار'],
  required: true,
  },
  transmission: {

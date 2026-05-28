@@ -124,8 +124,8 @@ function ShowroomsPageContent() {
  </div>
 
  <Button asChild className="w-full h-12 md:h-16 rounded-xl md:rounded-[1.5rem] text-base md:text-lg font-black shadow-none shadow-primary/10 group/btn">
- <Link href={`/cars?showroom=${showroom._id}`} className="flex items-center justify-center">
- عرض السيارات المتاحة
+ <Link href={`/showrooms/${showroom._id}`} className="flex items-center justify-center">
+ تفاصيل المعرض
  <ChevronLeft className="mr-2 h-6 w-6 transition-transform" />
  </Link>
  </Button>

@@ -28,6 +28,7 @@ import { getAppUrl } from "@/lib/app-url"
 import { getWhatsAppUrl } from "@/lib/whatsapp"
 import type { Equipment } from "@/hooks/useEquipment"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
+import { MapEmbed } from "@/components/map-embed"
 import { Swiper, SwiperSlide } from "swiper/react"
 import { Navigation, Thumbs, FreeMode } from "swiper/modules"
 
@@ -526,6 +527,14 @@ export default function EquipmentDetailPage({
  </div>
  </CardContent>
  </Card>
+
+ {item.locationLink ? (
+   <Card className="overflow-hidden rounded-2xl border border-border/65 bg-card shadow-[0_12px_40px_-24px_rgb(26_26_26/0.18)] ring-1 ring-black/[0.04]">
+     <CardContent className="p-7 sm:p-8">
+       <MapEmbed url={item.locationLink} title="الموقع على الخريطة" />
+     </CardContent>
+   </Card>
+ ) : null}
 
  <div className="rounded-xl border border-amber-200/65 bg-gradient-to-br from-amber-50 via-amber-50/95 to-orange-50/30 p-5">
  <p className="text-xs font-semibold uppercase tracking-wide text-amber-950">

@@ -23,6 +23,7 @@ interface EquipmentDoc {
   condition: string;
   hours: number;
   location: string;
+  locationLink?: string;
   description: string;
   images: string[];
   features: string[];
@@ -56,6 +57,7 @@ async function getEquipment(id: string): Promise<EquipmentDoc | null> {
       condition: equipment.condition,
       hours: equipment.hours,
       location: equipment.location,
+      locationLink: equipment.locationLink,
       description: equipment.description,
       images: equipment.images || [],
       features: equipment.features || [],

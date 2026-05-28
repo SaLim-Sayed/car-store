@@ -28,7 +28,7 @@ const EquipmentSchema = new mongoose.Schema({
  },
  category: {
  type: String,
- enum: ['جرار', 'حفار', 'شاحنة', 'معدة زراعية', 'معدة بناء', 'أخرى'],
+ enum: ['جرار', 'حفار', 'شاحنة', 'معدة زراعية', 'معدة بناء', 'دراجات نارية', 'أخرى'],
  default: 'معدة زراعية',
  },
  condition: {
