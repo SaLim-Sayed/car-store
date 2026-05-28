@@ -46,6 +46,7 @@ interface CarDoc {
  transmission: string;
  mileage: number;
  color: string;
+ location?: string;
  phone?: string;
  description: string;
  images: string[];
@@ -481,7 +482,7 @@ export default function ClientPage({ initialCar }: { initialCar: CarDoc }) {
  </h3>
  <div className="flex items-center justify-center gap-1.5 text-muted-foreground font-bold text-sm">
  <MapPin className="h-4 w-4 text-primary" />
- {car.showroom?.address || "المنيا، المنيا الجديدة"}
+ {car.location || car.showroom?.address || "المنيا، المنيا الجديدة"}
  </div>
  {car.showroom && (
  <Button 

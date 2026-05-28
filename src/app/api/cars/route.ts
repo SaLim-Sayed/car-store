@@ -24,7 +24,8 @@ export async function GET(request: NextRequest) {
  query.$or = [
  { brand: { $regex: search, $options: 'i' } },
  { model: { $regex: search, $options: 'i' } },
- { description: { $regex: search, $options: 'i' } }
+ { description: { $regex: search, $options: 'i' } },
+ { location: { $regex: search, $options: 'i' } }
  ];
  }
  

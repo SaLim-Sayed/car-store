@@ -23,6 +23,7 @@ interface CarDoc {
   transmission: string;
   mileage: number;
   color: string;
+  location?: string;
   phone?: string;
   description: string;
   images: string[];
@@ -55,6 +56,7 @@ async function getCar(id: string): Promise<CarDoc | null> {
       transmission: car.transmission,
       mileage: car.mileage,
       color: car.color,
+      location: car.location,
       phone: car.phone,
       description: car.description,
       images: car.images || [],

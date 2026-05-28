@@ -13,11 +13,13 @@ export const carSchema = z.object({
  }),
  mileage: z.number().min(0, 'المسافة المقطوعة يجب أن تكون رقمًا موجبًا'),
  color: z.string().min(1, 'اللون مطلوب'),
+  location: z.string().trim().min(1, 'الموقع مطلوب').default('المنيا'),
  phone: z.string().trim().optional(),
  description: z.string().min(10, 'الوصف يجب أن يكون 10 أحرف على الأقل'),
  images: z.array(z.string().url('رابط الصورة غير صالح')).min(1, 'صورة واحدة على الأقل مطلوبة'),
  features: z.array(z.string()).optional(),
  status: z.enum(['متاح', 'مباع', 'محجوز']).default('متاح'),
+  locationLink: z.string().trim().optional(),
 });
 
 export const carFilterSchema = z.object({

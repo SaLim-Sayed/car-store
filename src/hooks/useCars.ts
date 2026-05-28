@@ -13,6 +13,7 @@ export interface Car {
  transmission: string;
  mileage: number;
  color: string;
+ location?: string;
  phone?: string;
  description: string;
  images: string[];

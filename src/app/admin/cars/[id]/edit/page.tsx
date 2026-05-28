@@ -35,6 +35,7 @@ interface CarForm {
   transmission: Transmission
   mileage: string
   color: string
+  location: string
   phone: string
   description: string
   images: string[]
@@ -66,6 +67,7 @@ export default function EditCarPage() {
     transmission: "أوتوماتيك",
     mileage: "",
     color: "",
+    location: "المنيا",
     phone: "",
     description: "",
     features: [],
@@ -91,6 +93,7 @@ export default function EditCarPage() {
             transmission: c.transmission,
             mileage: String(c.mileage),
             color: c.color,
+            location: c.location ?? "المنيا",
             phone: c.phone ?? "",
             description: c.description,
             images: c.images ?? [],
@@ -159,6 +162,7 @@ export default function EditCarPage() {
     if (form.price && isNaN(Number(form.price))) newErrors.price = "يجب أن يكون رقماً"
     if (!form.mileage || isNaN(Number(form.mileage))) newErrors.mileage = "مطلوب"
     if (!form.color) newErrors.color = "مطلوب"
+    if (!form.location?.trim()) newErrors.location = "مطلوب"
     if (!form.description || form.description.length < 10)
       newErrors.description = "يجب أن يكون 10 أحرف على الأقل"
     if (form.images.length === 0) newErrors.images = "صورة واحدة على الأقل مطلوبة"
@@ -181,6 +185,7 @@ export default function EditCarPage() {
         price: form.price ? Number(form.price) : undefined,
         mileage: Number(form.mileage),
         phone: form.phone.trim(),
+        location: form.location.trim(),
         locationLink: form.locationLink.trim(),
         showroom: form.showroom || undefined,
       }
@@ -536,6 +541,26 @@ export default function EditCarPage() {
                     <p className="text-[10px] text-slate-500 font-bold leading-relaxed">
                       إذا تركته فارغاً، سيعرض رقم المنصة ({SITE_PHONE_DISPLAY})
                     </p>
+                  </div>
+
+                  <div className="space-y-2.5">
+                    <Label htmlFor="location" className="text-sm font-black text-slate-700">
+                      العنوان / المنطقة <span className="text-rose-500">*</span>
+                    </Label>
+                    <div className="relative">
+                      <MapPin className="absolute right-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
+                      <Input
+                        id="location"
+                        value={form.location}
+                        onChange={(e) => set("location", e.target.value)}
+                        placeholder="مثال: المنيا الجديدة"
+                        className={cn(
+                          "h-12 rounded-xl border-slate-200 bg-slate-50 pr-10 pl-4 font-bold text-sm focus-visible:ring-rose-500",
+                          errors.location && "border-rose-500 focus-visible:ring-rose-500",
+                        )}
+                      />
+                    </div>
+                    {errors.location && <p className="text-xs text-rose-500 font-bold">{errors.location}</p>}
                   </div>
 
                   <div className="space-y-2.5">

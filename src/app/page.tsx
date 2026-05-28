@@ -12,7 +12,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { WhatsAppIcon } from "@/components/whatsapp-icon";
 import { Car as CarType, useFeaturedCars } from "@/hooks/useCars";
 import { useNews } from "@/hooks/useContent";
-import { useFeaturedEquipment, type Equipment } from "@/hooks/useEquipment";
+import { useEquipment, useFeaturedEquipment, type Equipment } from "@/hooks/useEquipment";
 import { getWhatsAppUrl, WHATSAPP_MESSAGES } from "@/lib/whatsapp";
 import {
   ArrowRight,
@@ -29,10 +29,14 @@ export default function HomePage() {
   const { data: carsData, isLoading } = useFeaturedCars();
   const { data: newsData, isLoading: newsLoading } = useNews(6);
   const { data: equipmentData } = useFeaturedEquipment(6);
+  const { data: bikesData } = useEquipment(1, 8, {
+    category: "دراجات نارية",
+  });
 
   const featuredCars = carsData?.data || [];
   const newsItems = newsData?.data || [];
   const featuredEquipment = equipmentData?.data || [];
+  const bikesItems = bikesData?.data || [];
 
   return (
     <div className="min-h-screen bg-background">
@@ -321,6 +325,69 @@ export default function HomePage() {
                   }}
                 >
                   {featuredEquipment.map((item: Equipment) => (
+                    <SwiperSlide key={item._id} className="h-auto!">
+                      <EquipmentCard equipment={item} />
+                    </SwiperSlide>
+                  ))}
+                </HomeSectionCarousel>
+              </div>
+            </section>
+          )}
+
+          {/* Bikes / TukTuk / Tricycle Section */}
+          {bikesItems.length > 0 && (
+            <section className="space-y-4">
+              {/* Mobile header */}
+              <div className="flex items-center justify-between border-b border-gray-200 pb-3 md:hidden">
+                <div className="flex items-center gap-2">
+                  <div className="w-1 h-5 bg-violet-600 rounded-full" />
+                  <h2 className="text-lg font-black text-foreground">دراجات بخارية</h2>
+                </div>
+                <Link
+                  href="/equipment?category=%D8%AF%D8%B1%D8%A7%D8%AC%D8%A7%D8%AA%20%D9%86%D8%A7%D8%B1%D9%8A%D8%A9"
+                  className="text-xs font-bold text-primary hover:underline flex items-center gap-1"
+                >
+                  عرض الكل <ChevronLeft className="h-3 w-3" />
+                </Link>
+              </div>
+              {/* Desktop header */}
+              <div className="hidden md:flex justify-between items-end gap-6 border-b border-gray-200 pb-4">
+                <div className="space-y-1 text-right">
+                  <h2 className="text-2xl md:text-3xl font-black text-foreground">
+                    دراجات <span className="text-primary">بخارية</span>
+                  </h2>
+                  <p className="text-sm font-bold text-muted-foreground">
+                    يشمل موتوسيكل، توكتوك، تروسيكل
+                  </p>
+                </div>
+                <Button
+                  variant="outline"
+                  asChild
+                  size="sm"
+                  className="rounded-lg bg-white shrink-0 hover:bg-gray-50 font-bold"
+                >
+                  <Link
+                    href="/equipment?category=%D8%AF%D8%B1%D8%A7%D8%AC%D8%A7%D8%AA%20%D9%86%D8%A7%D8%B1%D9%8A%D8%A9"
+                    className="flex items-center gap-2"
+                  >
+                    عرض الكل <ChevronLeft className="h-4 w-4" />
+                  </Link>
+                </Button>
+              </div>
+              <div className="w-full max-w-full min-w-0 overflow-hidden pb-4">
+                <HomeSectionCarousel
+                  navKey="bikes-category"
+                  loop={bikesItems.length > 3}
+                  autoplayDelay={6500}
+                  spaceBetween={12}
+                  slidesPerView={1.4}
+                  breakpoints={{
+                    480: { slidesPerView: 1.5, spaceBetween: 16 },
+                    640: { slidesPerView: 2, spaceBetween: 16 },
+                    1024: { slidesPerView: 3, spaceBetween: 24 },
+                  }}
+                >
+                  {bikesItems.map((item: Equipment) => (
                     <SwiperSlide key={item._id} className="h-auto!">
                       <EquipmentCard equipment={item} />
                     </SwiperSlide>

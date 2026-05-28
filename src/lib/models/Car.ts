@@ -65,6 +65,11 @@ const CarSchema = new mongoose.Schema({
  enum: ['متاح', 'مباع', 'محجوز'],
  default: 'متاح',
  },
+  location: {
+   type: String,
+   trim: true,
+   default: 'المنيا',
+  },
  locationLink: {
  type: String,
  trim: true,
