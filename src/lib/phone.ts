@@ -1,7 +1,7 @@
 /** Egypt site line — same as WhatsApp */
-export const SITE_PHONE_E164 = '201014001708';
+export const SITE_PHONE_E164 = '201099039480';
 
-export const SITE_PHONE_DISPLAY = '+20 10 14001708';
+export const SITE_PHONE_DISPLAY = '+20 109 903 9480';
 
 export function normalizePhoneDigits(phone?: string | null): string | null {
  if (!phone?.trim()) return null;

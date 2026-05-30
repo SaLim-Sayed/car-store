@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { Navbar } from "@/components/navbar"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { SITE_PHONE_DISPLAY, getTelHref } from "@/lib/phone"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -283,7 +284,7 @@ export default function FinancePage() {
  <CardContent className="p-8">
  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
  <div>
- <Label htmlFor="loanAmount">مبلغ القرض (ريال)</Label>
+ <Label htmlFor="loanAmount">مبلغ القرض (جنيه)</Label>
  <Input
  id="loanAmount"
  type="number"
@@ -323,7 +324,7 @@ export default function FinancePage() {
  {monthlyPayment && (
  <div className="bg-blue-50 rounded-lg p-6 text-center">
  <div className="text-3xl font-bold text-blue-600 mb-2">
- {monthlyPayment.toLocaleString()} ريال
+ {monthlyPayment.toLocaleString()} جنيه
  </div>
  <p className="text-gray-600">القسط الشهري التقريبي</p>
  </div>
@@ -424,7 +425,7 @@ export default function FinancePage() {
  required
  value={formData.phone}
  onChange={handleInputChange}
- placeholder="+966 5X XXX XXXX"
+ placeholder="+20 10X XXX XXXX"
  />
  </div>
  <div>
@@ -536,9 +537,11 @@ export default function FinancePage() {
  فريقنا جاهز لمساعدتك في الحصول على أفضل خيارات التمويل
  </p>
  <div className="flex flex-col sm:flex-row gap-4 justify-center">
- <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4">
+ <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4" asChild>
+ <a href={getTelHref()}>
  <Phone className="ml-2 h-5 w-5" />
- 92000 1234
+ {SITE_PHONE_DISPLAY}
+ </a>
  </Button>
  <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-blue-600 px-8 py-4" asChild>
  <a href="/contact">تواصل معنا</a>

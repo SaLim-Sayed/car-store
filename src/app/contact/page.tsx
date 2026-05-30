@@ -20,6 +20,7 @@ import {
 } from "lucide-react"
 import { toast } from "sonner"
 import { SupportPanel } from "@/components/support-panel"
+import { SITE_PHONE_DISPLAY } from "@/lib/phone"
 
 const contactInfo = [
  {
@@ -35,18 +36,17 @@ const contactInfo = [
  icon: Phone,
  title: "الهاتف",
  details: [
- "+20 100 123 4567",
- "+20 86 234 5678",
- "خدمة العملاء: 19999"
+ SITE_PHONE_DISPLAY,
+ "تواصل عبر واتساب متاح 24/7"
  ]
  },
  {
  icon: Mail,
  title: "البريد الإلكتروني",
  details: [
- "info@miniacars.com.eg",
- "sales@miniacars.com.eg",
- "support@miniacars.com.eg"
+ "info@sooqsayaratalminya.com",
+ "sales@sooqsayaratalminya.com",
+ "support@sooqsayaratalminya.com"
  ]
  },
  {
@@ -208,7 +208,7 @@ export default function ContactPage() {
  required
  value={formData.phone}
  onChange={handleInputChange}
- placeholder="+966 5X XXX XXXX"
+ placeholder="+20 10X XXX XXXX"
  />
  </div>
  <div>
@@ -309,7 +309,7 @@ export default function ContactPage() {
  <CardContent>
  <div className="relative h-64 bg-gray-200 rounded-lg overflow-hidden">
  <iframe
- src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3624.1234567890!2d46.7219!3d24.7136!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNMKwNDInMDguNyJTIDQ2wrC0zJc3LjgiRQ!5e0!3m2!1sen!2ssa!4v1234567890"
+ src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d111283.47352325985!2d30.722510255395514!3d28.087223961559864!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x145a2789139369f9%3A0xe54ebde30d4bd7f8!2sMinya%2C%20Al%20Minya%20First%2C%20Minya%20Governorate%2C%20Egypt!5e0!3m2!1sen!2seg!4v1700000000000"
  width="100%"
  height="100%"
  style={{ border: 0 }}
@@ -322,7 +322,7 @@ export default function ContactPage() {
  <div className="mt-4 text-center">
  <Badge variant="secondary" className="text-sm">
  <MapPin className="ml-1 h-3 w-3" />
- الرياض، المملكة العربية السعودية
+ المنيا، جمهورية مصر العربية
  </Badge>
  </div>
  </CardContent>

@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { Navbar } from "@/components/navbar"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { SITE_PHONE_DISPLAY, getTelHref } from "@/lib/phone"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
@@ -277,30 +278,32 @@ export default function FAQPage() {
  فريق خدمة العملاء لدينا جاهز لمساعدتك
  </p>
  <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
- <Card className="border-0 shadow-none">
- <CardContent className="p-6 text-center">
- <Phone className="h-12 w-12 text-blue-600 mx-auto mb-4" />
- <h3 className="text-lg font-semibold mb-2">اتصل بنا</h3>
- <p className="text-gray-600 mb-4">92000 1234</p>
- <p className="text-sm text-gray-500">خدمة عملاء 24/7</p>
- </CardContent>
- </Card>
- <Card className="border-0 shadow-none">
- <CardContent className="p-6 text-center">
- <HelpCircle className="h-12 w-12 text-blue-600 mx-auto mb-4" />
- <h3 className="text-lg font-semibold mb-2">دردشة مباشرة</h3>
- <p className="text-gray-600 mb-4">متاحة الآن</p>
- <p className="text-sm text-gray-500">استجابة فورية</p>
- </CardContent>
- </Card>
- <Card className="border-0 shadow-none">
- <CardContent className="p-6 text-center">
- <Users className="h-12 w-12 text-blue-600 mx-auto mb-4" />
- <h3 className="text-lg font-semibold mb-2">زيارة الفرع</h3>
- <p className="text-gray-600 mb-4">الرياض، جدة</p>
- <p className="text-sm text-gray-500">8 ص - 8 م</p>
- </CardContent>
- </Card>
+  <Card className="border-0 shadow-none">
+  <CardContent className="p-6 text-center">
+  <a href={getTelHref()} className="block group">
+  <Phone className="h-12 w-12 text-blue-600 mx-auto mb-4 group-hover:scale-110 transition-transform" />
+  <h3 className="text-lg font-semibold mb-2 group-hover:text-blue-600 transition-colors">اتصل بنا</h3>
+  <p className="text-gray-600 mb-4">{SITE_PHONE_DISPLAY}</p>
+  <p className="text-sm text-gray-500">خدمة عملاء 24/7</p>
+  </a>
+  </CardContent>
+  </Card>
+  <Card className="border-0 shadow-none">
+  <CardContent className="p-6 text-center">
+  <HelpCircle className="h-12 w-12 text-blue-600 mx-auto mb-4" />
+  <h3 className="text-lg font-semibold mb-2">دردشة مباشرة</h3>
+  <p className="text-gray-600 mb-4">متاحة الآن</p>
+  <p className="text-sm text-gray-500">استجابة فورية</p>
+  </CardContent>
+  </Card>
+  <Card className="border-0 shadow-none">
+  <CardContent className="p-6 text-center">
+  <Users className="h-12 w-12 text-blue-600 mx-auto mb-4" />
+  <h3 className="text-lg font-semibold mb-2">زيارة الفرع</h3>
+  <p className="text-gray-600 mb-4">المنيا، مصر</p>
+  <p className="text-sm text-gray-500">8 ص - 8 م</p>
+  </CardContent>
+  </Card>
  </div>
  <div className="flex flex-col sm:flex-row gap-4 justify-center">
  <Button size="lg" className="px-8 py-4" asChild>

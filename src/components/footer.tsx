@@ -4,14 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { Phone, MapPin, ArrowUp, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
-const WHATSAPP_MESSAGES = {
-  default: "مرحباً، أريد الاستفسار عن خدمات سوق سيارات المنيا",
-};
-
-export function getWhatsAppUrl(text: string) {
-  return `https://wa.me/201099645934?text=${encodeURIComponent(text)}`;
-}
+import { getWhatsAppUrl, WHATSAPP_MESSAGES } from "@/lib/whatsapp";
+import { SITE_PHONE_DISPLAY } from "@/lib/phone";
 
 // Custom SVG components for brand social icons
 const FacebookIcon = ({ className }: { className?: string }) => (
@@ -75,7 +69,9 @@ export function Footer() {
             {/* Social Icons */}
             <div className="flex items-center gap-3 pt-2">
               <a
-                href="#"
+                href="https://www.facebook.com/share/1GWZAJfyKL/"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="h-10 w-10 rounded-xl bg-white/10 hover:bg-[#E28328] text-white flex items-center justify-center transition-all duration-300 transform hover:-translate-y-1"
                 aria-label="فيسبوك"
               >
@@ -206,7 +202,7 @@ export function Footer() {
                 <div className="h-9 w-9 rounded-lg bg-white/10 flex items-center justify-center shrink-0">
                   <Phone className="h-4.5 w-4.5 text-[#E28328]" />
                 </div>
-                <span dir="ltr">+20 109 964 5934</span>
+                <span dir="ltr">{SITE_PHONE_DISPLAY}</span>
               </div>
             </div>
 

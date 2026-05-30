@@ -2,6 +2,7 @@
 
 import { Navbar } from "@/components/navbar"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { SITE_PHONE_DISPLAY } from "@/lib/phone"
 import { Button } from "@/components/ui/button"
 import { 
  Shield,
@@ -108,7 +109,7 @@ const privacySections = [
  " - التقييد: تقييد معالجة بياناتك في حالات معينة",
  " - النقل: نقل بياناتك إلى مزود خدمة آخر",
  " - الاعتراض: الاعتراض على معالجة بياناتك لأغراض التسويق",
- "لممارسة هذه الحقوق، يرجى التواصل معنا عبر البريد الإلكتروني: privacy@carstore.com.sa"
+ "لممارسة هذه الحقوق، يرجى التواصل معنا عبر البريد الإلكتروني: privacy@sooqsayaratalminya.com"
  ]
  },
  {
@@ -245,13 +246,13 @@ export default function PrivacyPage() {
  <h3 className="text-xl font-semibold mb-4 text-center">تواصل معنا بشأن الخصوصية</h3>
  <div className="text-center space-y-2">
  <p className="text-gray-600">
- <strong>البريد الإلكتروني للخصوصية:</strong> privacy@carstore.com.sa
+ <strong>البريد الإلكتروني للخصوصية:</strong> privacy@sooqsayaratalminya.com
  </p>
  <p className="text-gray-600">
- <strong>هاتف الخصوصية:</strong> +966 11 234 5678
+ <strong>هاتف الخصوصية:</strong> {SITE_PHONE_DISPLAY}
  </p>
  <p className="text-gray-600">
- <strong>العنوان:</strong> الرياض، المملكة العربية السعودية
+ <strong>العنوان:</strong> المنيا، جمهورية مصر العربية
  </p>
  </div>
  </div>

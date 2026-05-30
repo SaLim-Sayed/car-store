@@ -279,7 +279,7 @@ export default function AdminDashboard() {
                 <div className="p-4 bg-white/5 rounded-lg border border-white/10 space-y-3 backdrop-blur-sm">
                   <div className="flex justify-between text-xs items-center">
                     <span className="text-primary-foreground/80 font-bold">حساب الإدارة:</span>
-                    <code className="bg-black/20 px-2 py-1 rounded text-white font-mono">admin@carstore.com</code>
+                    <code className="bg-black/20 px-2 py-1 rounded text-white font-mono">admin@sooqsayaratalminya.com</code>
                   </div>
                   <div className="flex justify-between text-xs items-center">
                     <span className="text-primary-foreground/80 font-bold">كلمة المرور:</span>
