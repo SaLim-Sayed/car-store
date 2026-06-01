@@ -1,263 +1,242 @@
-"use client"
+"use client";
 
-import { Navbar } from "@/components/navbar"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { 
- Users, 
- Award, 
- Target, 
- Heart, 
- Shield, 
- Zap,
- MapPin,
- Phone,
- Mail,
- Clock
-} from "lucide-react"
-import Image from "next/image"
-
-const teamMembers = [
- {
- name: "أحمد محمد",
- position: "المدير التنفيذي",
- image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face",
- bio: "خبير في صناعة السيارات بخبرة تزيد عن 15 عاماً في السوق المصري"
- },
- {
- name: "سارة عبدالله",
- position: "مديرة المبيعات",
- image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=200&h=200&fit=crop&crop=face",
- bio: "متخصصة في توفير أفضل الحلول للعملاء مع خبرة في خدمة العملاء"
- },
- {
- name: "خالد السعيد",
- position: "مدير الخدمة الفنية",
- image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face",
- bio: "مهندس سيارات معتمد يضمن أعلى معايير الجودة والصيانة"
- },
- {
- name: "نورة العلي",
- position: "مديرة التسويق",
- image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop&crop=face",
- bio: "مبتكرة في استراتيجيات التسويق الرقمي وتطوير العلامة التجارية"
- }
-]
-
-const stats = [
- {
- icon: Users,
- value: "10,000+",
- label: "عميل راضٍ",
- description: "عملاء سعداء يثقون في خدماتنا"
- },
- {
- icon: Award,
- value: "15+",
- label: "سنة خبرة",
- description: "سنوات من التميز في السوق"
- },
- {
- icon: Shield,
- value: "100%",
- label: "ضمان الجودة",
- description: "جميع سياراتنا مضمونة"
- },
- {
- icon: Zap,
- value: "24/7",
- label: "دعم فوري",
- description: "خدمة عملاء على مدار الساعة"
- }
-]
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+  Users,
+  MapPin,
+  Coins,
+  TrendingUp,
+  Handshake,
+  ArrowLeft,
+  Info,
+} from "lucide-react";
+import Link from "next/link";
+import Image from "next/image";
 
 const values = [
- {
- icon: Heart,
- title: "النزاهة",
- description: "نلتزم بأعلى معايير الأمانة والشفافية في جميع تعاملاتنا"
- },
- {
- icon: Target,
- title: "التميز",
- description: "نسعى دائماً لتقديم أفضل الخدمات والمنتجات لعملائنا"
- },
- {
- icon: Users,
- title: "العميل أولاً",
- description: "رضا العملاء هو أولويتنا القصوى في كل ما نفعله"
- }
-]
+  {
+    icon: MapPin,
+    title: "سوق متكامل لكل أرجاء المنيا",
+    description:
+      "نحن سوق بمعنى الكلمة، ليس على أرض معينة فقط وإنما في كل أرجاء محافظة المنيا نصل إليك أينما كنت.",
+  },
+  {
+    icon: Coins,
+    title: "منصة مجانية بالكامل",
+    description:
+      "نحن لا نشارككم في الربح ولا في البيع والشراء؛ الأمر متروك خالصاً لكم. دورنا يقتصر على العرض والانتشار وتسهيل التواصل بينكم.",
+  },
+  {
+    icon: TrendingUp,
+    title: "الارتقاء بالمهنة",
+    description:
+      "نريد الارتقاء بقطاع تجارة السيارات والمعدات من خلال تقديم الخدمات دون النظر للمقابل، ولا نحمل أصحاب المهن أي أعباء إضافية تثقل كاهلهم.",
+  },
+  {
+    icon: Users,
+    title: "منكم وإليكم",
+    description:
+      "نحن منكم وبينكم؛ لسنا تجاراً ولا مستثمرين ولا سماسرة. إنما نحن أبناء المنيا نحاول جاهدين تسهيل العمل والبيع والشراء وتوسيع دائرة الانتشار للجميع.",
+  },
+  {
+    icon: Handshake,
+    title: "شراكة وتكامل رقمي",
+    description:
+      "يمكنكم استغلال هذا السوق لبناء شراكات وتحقيق التكامل بينكم. وكأنكم جميعاً أصحاب المعارض تفتحون معرضاً واحداً ضخماً على موقعنا الإلكتروني يجمعكم معاً.",
+  },
+];
 
 export default function AboutPage() {
- return (
- <div className="min-h-screen">
- 
- {/* Hero Section */}
- <section className="relative bg-gradient-to-r from-blue-600 to-purple-600 text-white py-20">
- <div className="container mx-auto px-4">
- <div className="max-w-4xl mx-auto text-center">
- <h1 className="text-4xl md:text-6xl font-bold mb-6">
- من نحن
- </h1>
- <p className="text-xl md:text-2xl text-blue-100 mb-8">
- رائداً في عالم السيارات في قلب صعيد مصر - المنيا
- </p>
- <p className="text-lg text-gray-200 leading-relaxed">
- منذ تأسيسنا ونحن نسعى لتقديم أفضل تجربة شراء سيارات لعملائنا، مع التركيز على الجودة والثقة والخدمة الممتازة
- </p>
- </div>
- </div>
- </section>
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-[#faf8f4] via-[#F9F6F1] to-[#f4f1eb]">
+      {/* Hero Section */}
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#1B3E7A] to-[#0E2042] text-white py-20 lg:py-28">
+        {/* Ambient Decorative Background */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(226,131,40,0.1),transparent_50%)] pointer-events-none" />
+        <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-[#E28328] via-white/20 to-[#E28328]" />
 
- {/* Stats Section */}
- <section className="py-16 bg-gray-50">
- <div className="container mx-auto px-4">
- <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
- {stats.map((stat, index) => (
- <Card key={index} className="text-center border-0 shadow-none hover:shadow-none transition-shadow">
- <CardContent className="p-8">
- <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
- <stat.icon className="h-8 w-8 text-blue-600" />
- </div>
- <div className="text-3xl font-bold text-gray-900 mb-2">{stat.value}</div>
- <div className="text-lg font-semibold text-gray-700 mb-2">{stat.label}</div>
- <p className="text-gray-600 text-sm">{stat.description}</p>
- </CardContent>
- </Card>
- ))}
- </div>
- </div>
- </section>
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="max-w-4xl mx-auto text-center space-y-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-[#E28328] font-bold text-sm mb-2">
+              <Info className="h-4 w-4" />
+              سوق سيارات المنيا
+            </div>
+            <h1 className="text-4xl md:text-6xl font-[1000] tracking-tight leading-none">
+              من نحن
+            </h1>
+            <p className="text-lg md:text-2xl text-blue-100/90 font-bold leading-relaxed max-w-3xl mx-auto pt-4 border-t border-white/10">
+              نحن نقدم للجميع البائع والمشترى وصاحب المعرض خدمة قيمة من خلال
+              إتاحة العرض للجميع وتوفير عناء الانتقالات والبحث الشاق من مكان إلى
+              آخر.
+            </p>
+          </div>
+        </div>
+      </section>
 
- {/* Story Section */}
- <section className="py-20">
- <div className="container mx-auto px-4">
- <div className="max-w-5xl mx-auto">
- <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
- <div>
- <h2 className="text-3xl md:text-4xl font-bold mb-6">
- قصتنا تبدأ بالشغف
- </h2>
- <div className="space-y-4 text-gray-600 leading-relaxed">
- <p>
- تأسس معرضنا في عام 2009 بشغف عميق بالسيارات ورغبة في تقديم تجربة شراء فريدة للعملاء.
- </p>
- <p>
- بدأنا كفريق صغير من الخبراء المتحمسين، واليوم نحن فريق من أكثر من 50 محترفاً مكرسون لتقديم أفضل الخدمات في صناعة السيارات.
- </p>
- <p>
- نؤمن بأن كل عميل يستخدم تجربة شخصية ومخصصة، ولهذا السبب نأخذ الوقت الكافي لفهم احتياجاتك وتقديم الحلول المثالية التي تناسب ميزانيتك وأسلوب حياتك.
- </p>
- </div>
- </div>
- <div className="relative h-96 rounded-2xl overflow-hidden">
- <Image
- src="https://images.unsplash.com/photo-1550355291-bbee04a92027?w=800&h=600&fit=crop"
- alt="معرض السيارات"
- fill
- className="object-cover"
- sizes="(max-width: 768px) 100vw, 50vw"
- />
- </div>
- </div>
- </div>
- </div>
- </section>
+      {/* Values & Principles Section */}
+      <section className="py-20 lg:py-28 relative">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <div className="text-center mb-16 space-y-4">
+            <h2 className="text-3xl md:text-4xl font-black text-slate-900">
+              رؤيتنا ومبادئنا
+            </h2>
+            <p className="text-sm md:text-base text-slate-500 font-bold max-w-xl mx-auto">
+              نهجنا البسيط والأمين في تسهيل حركة السوق لأهالي المنيا الكرام
+            </p>
+          </div>
 
- {/* Values Section */}
- <section className="py-20 bg-gray-50">
- <div className="container mx-auto px-4">
- <div className="text-center mb-12">
- <h2 className="text-3xl md:text-4xl font-bold mb-4">
- قيمنا الأساسية
- </h2>
- <p className="text-xl text-gray-600 max-w-3xl mx-auto">
- المبادئ التي توجه كل قرار نتخذه وكل خدمة نقدمها
- </p>
- </div>
- <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
- {values.map((value, index) => (
- <Card key={index} className="border-0 shadow-none hover:shadow-none transition-shadow">
- <CardHeader className="text-center">
- <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
- <value.icon className="h-8 w-8 text-blue-600" />
- </div>
- <CardTitle className="text-xl">{value.title}</CardTitle>
- </CardHeader>
- <CardContent>
- <p className="text-gray-600 text-center leading-relaxed">
- {value.description}
- </p>
- </CardContent>
- </Card>
- ))}
- </div>
- </div>
- </section>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {values.slice(0, 3).map((val, idx) => (
+              <Card
+                key={idx}
+                className="group border border-slate-200/80 bg-white hover:border-[#E28328]/40 hover:shadow-xl hover:shadow-slate-100/50 transition-all duration-300 rounded-2xl overflow-hidden shadow-none flex flex-col h-full"
+              >
+                <CardContent className="p-8 flex flex-col gap-6 flex-1">
+                  <div className="w-14 h-14 bg-gradient-to-br from-[#1B3E7A]/5 to-[#1B3E7A]/10 text-[#1B3E7A] rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:from-[#E28328]/10 group-hover:to-[#E28328]/20 group-hover:text-[#E28328]">
+                    <val.icon className="h-7 w-7" />
+                  </div>
+                  <div className="space-y-3">
+                    <h3 className="text-xl font-bold text-slate-900 group-hover:text-[#1B3E7A] transition-colors">
+                      {val.title}
+                    </h3>
+                    <p className="text-slate-600 text-sm leading-relaxed font-semibold">
+                      {val.description}
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
 
- {/* Team Section */}
- <section className="py-20">
- <div className="container mx-auto px-4">
- <div className="text-center mb-12">
- <h2 className="text-3xl md:text-4xl font-bold mb-4">
- فريق العمل
- </h2>
- <p className="text-xl text-gray-600 max-w-3xl mx-auto">
- نلتقي بالخبراء الذين يجعلون كل شيء ممكناً
- </p>
- </div>
- <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-5xl mx-auto">
- {teamMembers.map((member, index) => (
- <Card key={index} className="border-0 shadow-none hover:shadow-none transition-all ">
- <CardHeader className="text-center pb-4">
- <div className="relative w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden">
- <Image
- src={member.image}
- alt={member.name}
- fill
- className="object-cover"
- sizes="128px"
- />
- </div>
- <CardTitle className="text-xl">{member.name}</CardTitle>
- <Badge variant="secondary" className="w-fit mx-auto">
- {member.position}
- </Badge>
- </CardHeader>
- <CardContent>
- <p className="text-gray-600 text-center text-sm leading-relaxed">
- {member.bio}
- </p>
- </CardContent>
- </Card>
- ))}
- </div>
- </div>
- </section>
+          {/* Centered remaining 2 values */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto mt-8">
+            {values.slice(3).map((val, idx) => (
+              <Card
+                key={idx}
+                className="group border border-slate-200/80 bg-white hover:border-[#E28328]/40 hover:shadow-xl hover:shadow-slate-100/50 transition-all duration-300 rounded-2xl overflow-hidden shadow-none flex flex-col h-full"
+              >
+                <CardContent className="p-8 flex flex-col gap-6 flex-1">
+                  <div className="w-14 h-14 bg-gradient-to-br from-[#1B3E7A]/5 to-[#1B3E7A]/10 text-[#1B3E7A] rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:from-[#E28328]/10 group-hover:to-[#E28328]/20 group-hover:text-[#E28328]">
+                    <val.icon className="h-7 w-7" />
+                  </div>
+                  <div className="space-y-3">
+                    <h3 className="text-xl font-bold text-slate-900 group-hover:text-[#1B3E7A] transition-colors">
+                      {val.title}
+                    </h3>
+                    <p className="text-slate-600 text-sm leading-relaxed font-semibold">
+                      {val.description}
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
 
- {/* CTA Section */}
- <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
- <div className="container mx-auto px-4 text-center">
- <div className="max-w-3xl mx-auto">
- <h2 className="text-3xl md:text-4xl font-bold mb-6">
- انضم إلى عائلتنا من العملاء الراضين
- </h2>
- <p className="text-xl mb-8 text-blue-100">
- اكتشف لماذا نحن الخيار الأول لآلاف العملاء في المملكة
- </p>
- <div className="flex flex-col sm:flex-row gap-4 justify-center">
- <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4" asChild>
- <a href="/cars">استعرض السيارات</a>
- </Button>
- <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-blue-600 px-8 py-4" asChild>
- <a href="/contact">تواصل معنا</a>
- </Button>
- </div>
- </div>
- </div>
- </section>
- </div>
- )
+      {/* Management Section */}
+      <section className="pb-20 lg:pb-28">
+        <div className="container mx-auto px-4 max-w-4xl">
+          <div className="text-center mb-12 space-y-4">
+            <h2 className="text-3xl md:text-4xl font-black text-slate-900">
+              إدارة المنصة
+            </h2>
+            <p className="text-sm md:text-base text-slate-500 font-bold max-w-xl mx-auto">
+              نعمل معاً لخدمة أهالي المنيا وتسهيل التواصل التجاري
+            </p>
+          </div>
+
+          <Card className="border border-slate-200/80 bg-white shadow-lg shadow-slate-100/50 rounded-[2rem] overflow-hidden p-6 md:p-8">
+            <div className="flex flex-col md:flex-row items-center gap-8 md:gap-10">
+              <div className="relative w-48 h-48 md:w-56 md:h-56 shrink-0 rounded-[1.75rem] overflow-hidden border-4 border-slate-100/80 shadow-md">
+                <Image
+                  src="/elbadry.jpeg"
+                  alt="محمد البدري - مدير السوق"
+                  fill
+                  className="object-center"
+                  sizes="(max-width: 768px) 192px, 224px"
+                  priority
+                />
+              </div>
+              <div className="space-y-4 text-center md:text-right">
+                <div className="space-y-1">
+                  <h3 className="text-2xl md:text-3xl font-black text-slate-900">
+                    محمد البدري
+                  </h3>
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E28328]/10 text-[#E28328] font-bold text-xs">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#E28328]" />
+                    مدير السوق
+                  </div>
+                </div>
+                <p className="text-slate-600 text-base font-semibold leading-relaxed">
+                  مؤسس ومدير سوق سيارات المنياومعارض المنيا. نسعى من خلال هذه
+                  المنصة إلى تسهيل حركة التجارة والبيع والشراء بين أبناء محافظة
+                  المنيا الكرام، وتقديم حلول رقمية مبتكرة تختصر عناء البحث
+                  والمسافات مجاناً بالكامل ودون أي عمولات.
+                </p>
+              </div>
+            </div>
+          </Card>
+        </div>
+      </section>
+
+      {/* Showcase Integration section */}
+      <section className="pb-24 lg:pb-32">
+        <div className="container mx-auto px-4 max-w-5xl">
+          <div className="bg-gradient-to-br from-[#1B3E7A] to-[#0E2042] text-white rounded-[2.5rem] p-8 md:p-14 relative overflow-hidden shadow-2xl shadow-blue-950/20 border border-white/10">
+            {/* Background pattern */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_100%_100%,rgba(226,131,40,0.15),transparent_60%)] pointer-events-none" />
+
+            <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+              <div className="lg:col-span-8 space-y-6 text-right">
+                <h3 className="text-2xl md:text-4xl font-black leading-tight">
+                  معرض واحد يجمعنا جميعاً
+                </h3>
+                <p className="text-blue-100/90 text-base md:text-lg font-semibold leading-relaxed">
+                  موقعنا الإلكتروني بمثابة ساحة عرض كبرى ومفتوحة تجمع أصحاب
+                  المعارض والسيارات والمشترين من كل أرجاء المنيا تحت سقف رقمي
+                  واحد، لتسهيل عمليات البيع وتوسيع انتشار أعمالكم بأمان وسرعة
+                  ودون أي عمولات.
+                </p>
+                <div className="flex flex-wrap gap-4 pt-4">
+                  <Button
+                    size="lg"
+                    className="h-14 rounded-xl bg-[#E28328] hover:bg-[#c9701d] text-white font-black px-8 text-base shadow-lg shadow-amber-950/20 hover:scale-[1.03] transition-all"
+                    asChild
+                  >
+                    <Link href="/cars" className="flex items-center gap-2">
+                      تصفح السيارات
+                      <ArrowLeft className="h-4.5 w-4.5" />
+                    </Link>
+                  </Button>
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="h-14 rounded-xl border-white/20 hover:bg-white/10 text-white font-black px-8 text-base hover:text-white"
+                    asChild
+                  >
+                    <Link href="/contact">تواصل معنا مباشرة</Link>
+                  </Button>
+                </div>
+              </div>
+              <div className="lg:col-span-4 flex justify-center lg:justify-end">
+                <div className="relative w-48 h-48 md:w-56 md:h-56 bg-gradient-to-br from-white/10 to-white/5 rounded-[2rem] border border-white/15 flex items-center justify-center backdrop-blur-md">
+                  <div className="text-center space-y-2 p-6">
+                    <span className="text-4xl md:text-5xl">🚗</span>
+                    <h4 className="text-lg font-black pt-2">
+                      سوق المنيا الموحد
+                    </h4>
+                    <p className="text-xs text-blue-200/70 font-semibold">
+                      بكل حب لأهل المنيا
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
 }

@@ -29,6 +29,7 @@ interface CarCardProps {
     status: string;
     createdAt: string;
     phone?: string;
+    location?: string;
   };
 }
 
@@ -188,7 +189,7 @@ export function CarCard({ car }: CarCardProps) {
           {/* Location Tag */}
           <span className="inline-flex items-center gap-0.5 rounded-lg bg-slate-50 px-2 py-0.5 text-[10px] font-black text-slate-500 border border-slate-100">
             <MapPin className="h-3 w-3 text-slate-500 shrink-0" />
-            المنيا
+            {car.location || "مدينة المنيا. ميدان الحميات"}
           </span>
           {/* Date Added Tag */}
           {car.createdAt && (

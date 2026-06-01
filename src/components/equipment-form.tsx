@@ -46,7 +46,7 @@ export const emptyEquipmentForm: EquipmentFormData = {
   category: "معدة زراعية",
   condition: "مستعمل",
   hours: "0",
-  location: "المنيا",
+  location: "مدينة المنيا. ميدان الحميات",
   phone: "",
   description: "",
   images: [],
@@ -350,7 +350,7 @@ export function EquipmentForm({
               <Input
                 value={form.location}
                 onChange={(e) => set("location", e.target.value)}
-                placeholder="المنيا"
+                placeholder="مدينة المنيا. ميدان الحميات"
                 className="h-12 rounded-xl border-slate-200 bg-slate-50 px-4 font-bold text-sm focus-visible:ring-rose-500"
               />
             </div>

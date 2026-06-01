@@ -165,7 +165,7 @@ export function Footer() {
                   اتصل بنا
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link
                   href="/faq"
                   className="hover:text-white hover:mr-1 transition-all flex items-center gap-2"
@@ -182,7 +182,7 @@ export function Footer() {
                   <span className="h-1.5 w-1.5 rounded-full bg-[#E28328]" />
                   سياسة الخصوصية
                 </Link>
-              </li>
+              </li> */}
             </ul>
           </div>
 
@@ -196,7 +196,7 @@ export function Footer() {
                 <div className="h-9 w-9 rounded-lg bg-white/10 flex items-center justify-center shrink-0">
                   <MapPin className="h-4.5 w-4.5 text-[#E28328]" />
                 </div>
-                <span>المنيا، المنيا الجديدة، مصر</span>
+                <span>مدينة المنيا. ميدان الحميات، مصر</span>
               </div>
               <div className="flex items-center gap-3">
                 <div className="h-9 w-9 rounded-lg bg-white/10 flex items-center justify-center shrink-0">

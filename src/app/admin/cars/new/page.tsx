@@ -60,7 +60,7 @@ export default function NewCarPage() {
     transmission: "أوتوماتيك",
     mileage: "",
     color: "",
-    location: "المنيا",
+    location: "مدينة المنيا. ميدان الحميات",
     phone: "",
     description: "",
     features: [],
@@ -500,7 +500,7 @@ export default function NewCarPage() {
                         id="location"
                         value={form.location}
                         onChange={(e) => set("location", e.target.value)}
-                        placeholder="مثال: المنيا الجديدة"
+                        placeholder="مثال: مدينة المنيا. ميدان الحميات"
                         className={cn(
                           "h-12 rounded-xl border-slate-200 bg-slate-50 pr-10 pl-4 font-bold text-sm focus-visible:ring-rose-500",
                           errors.location && "border-rose-500 focus-visible:ring-rose-500",

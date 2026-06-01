@@ -502,7 +502,7 @@ export default function EquipmentDetailPage({
  </h3>
  <div className="flex flex-wrap justify-center gap-1 text-sm font-medium text-muted-foreground">
  <MapPin className="size-4 shrink-0 text-primary" aria-hidden />
- محافظة المنيا
+ {item.location || "مدينة المنيا. ميدان الحميات"}
  </div>
  </div>
  </div>

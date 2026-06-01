@@ -67,7 +67,7 @@ export default function EditCarPage() {
     transmission: "أوتوماتيك",
     mileage: "",
     color: "",
-    location: "المنيا",
+    location: "مدينة المنيا. ميدان الحميات",
     phone: "",
     description: "",
     features: [],
@@ -93,7 +93,7 @@ export default function EditCarPage() {
             transmission: c.transmission,
             mileage: c.mileage !== undefined && c.mileage !== null ? String(c.mileage) : "",
             color: c.color,
-            location: c.location ?? "المنيا",
+            location: c.location ?? "مدينة المنيا. ميدان الحميات",
             phone: c.phone ?? "",
             description: c.description,
             images: c.images ?? [],
@@ -553,7 +553,7 @@ export default function EditCarPage() {
                         id="location"
                         value={form.location}
                         onChange={(e) => set("location", e.target.value)}
-                        placeholder="مثال: المنيا الجديدة"
+                        placeholder="مثال: مدينة المنيا. ميدان الحميات"
                         className={cn(
                           "h-12 rounded-xl border-slate-200 bg-slate-50 pr-10 pl-4 font-bold text-sm focus-visible:ring-rose-500",
                           errors.location && "border-rose-500 focus-visible:ring-rose-500",

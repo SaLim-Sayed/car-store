@@ -44,7 +44,7 @@ const EquipmentSchema = new mongoose.Schema({
  location: {
  type: String,
  trim: true,
- default: 'المنيا',
+ default: 'مدينة المنيا. ميدان الحميات',
  },
  phone: {
  type: String,

@@ -37,7 +37,7 @@ export default function EditEquipmentPage() {
  category: item.category as EquipmentFormData["category"],
  condition: item.condition as EquipmentFormData["condition"],
  hours: String(item.hours ?? 0),
- location: item.location || "المنيا",
+ location: item.location || "مدينة المنيا. ميدان الحميات",
  phone: item.phone ?? "",
  description: item.description || "",
  images: item.images || [],
