@@ -4,13 +4,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Phone, MessageSquare, MapPin, Heart, ChevronLeft, ChevronRight } from "lucide-react";
+import { Phone, MessageSquare, MapPin, Heart, ChevronLeft, ChevronRight, Calendar } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { getTelHref, getContactPhone } from "@/lib/phone";
 import { useState, useRef } from "react";
 import { FaWhatsapp } from "react-icons/fa";
 import type { Equipment } from "@/hooks/useEquipment";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { FormattedDate } from "@/components/formatted-date";
 import "swiper/css";
 
 interface EquipmentCardProps {
@@ -175,6 +176,13 @@ export function EquipmentCard({ equipment }: EquipmentCardProps) {
             <MapPin className="h-3 w-3 text-slate-500 shrink-0" />
             {equipment.location}
           </span>
+          {/* Date Added Tag */}
+          {equipment.createdAt && (
+            <span className="inline-flex items-center gap-1 rounded-lg bg-slate-50 px-2.5 py-0.5 text-[10px] font-black text-slate-500 border border-slate-100">
+              <Calendar className="h-3 w-3 text-slate-400 shrink-0" />
+              <FormattedDate value={equipment.createdAt} />
+            </span>
+          )}
           {/* Brand Tag */}
           <span className="rounded-lg bg-slate-50 px-2 py-0.5 text-[10px] font-black text-slate-500 border border-slate-100">
             {equipment.brand}

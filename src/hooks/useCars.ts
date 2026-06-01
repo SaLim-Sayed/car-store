@@ -31,6 +31,7 @@ export interface CarsFilters {
  minPrice?: number;
  maxPrice?: number;
  showroom?: string;
+ sortBy?: string;
 }
 
 export interface CarsResponse {

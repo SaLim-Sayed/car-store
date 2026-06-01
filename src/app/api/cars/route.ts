@@ -17,6 +17,7 @@ export async function GET(request: NextRequest) {
  const minPrice = searchParams.get('minPrice');
  const maxPrice = searchParams.get('maxPrice');
  const showroom = searchParams.get('showroom');
+ const sortBy = searchParams.get('sortBy') || 'newest';
  
  const query: any = {};
  
@@ -39,10 +40,12 @@ export async function GET(request: NextRequest) {
  if (showroom) query.showroom = showroom;
  
  const skip = (page - 1) * limit;
+
+ const sortOrder = sortBy === 'oldest' ? 1 : -1;
  
  const cars = await Car.find(query)
  .populate('showroom', 'name locationLink')
- .sort({ createdAt: -1 })
+ .sort({ createdAt: sortOrder })
  .skip(skip)
  .limit(limit);
  

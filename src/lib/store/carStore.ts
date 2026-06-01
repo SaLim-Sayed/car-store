@@ -28,6 +28,7 @@ interface CarState {
  transmission: string;
  minPrice: string;
  maxPrice: string;
+ sortBy: string;
  };
  setCars: (cars: Car[]) => void;
  addCar: (car: Car) => void;
@@ -49,6 +50,7 @@ export const useCarStore = create<CarState>((set, get) => ({
  transmission: '',
  minPrice: '',
  maxPrice: '',
+ sortBy: 'newest',
  },
  setCars: (cars) => set({ cars }),
  addCar: (car) => set((state) => ({ cars: [car, ...state.cars] })),
@@ -76,6 +78,7 @@ export const useCarStore = create<CarState>((set, get) => ({
  transmission: '',
  minPrice: '',
  maxPrice: '',
+ sortBy: 'newest',
  },
  }),
 }));

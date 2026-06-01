@@ -21,6 +21,7 @@ export async function GET(request: NextRequest) {
  const featured = searchParams.get('featured');
  const minPrice = searchParams.get('minPrice');
  const maxPrice = searchParams.get('maxPrice');
+ const sortBy = searchParams.get('sortBy') || 'newest';
 
  const query: Record<string, unknown> = {};
 
@@ -45,8 +46,10 @@ export async function GET(request: NextRequest) {
 
  const skip = (page - 1) * limit;
 
+ const sortOrder = sortBy === 'oldest' ? 1 : -1;
+
  const [items, total] = await Promise.all([
- Equipment.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit),
+ Equipment.find(query).sort({ createdAt: sortOrder }).skip(skip).limit(limit),
  Equipment.countDocuments(query),
  ]);
 

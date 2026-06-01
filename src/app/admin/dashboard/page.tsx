@@ -118,9 +118,9 @@ export default function AdminDashboard() {
               asChild
               className="h-11 border-slate-200 text-slate-700 font-black rounded-xl hover:bg-slate-50 px-5"
             >
-              <Link href="/admin/equipment/new?category=%D8%AF%D8%B1%D8%A7%D8%AC%D8%A7%D8%AA%20%D9%86%D8%A7%D8%B1%D9%8A%D8%A9">
+              <Link href="/admin/equipment/new?category=دراجات نارية - توك توك - تروسيكل">
                 <Sparkles className="h-5 w-5 ml-2" />
-                إضافة دراجات بخارية
+                إضافة دراجات نارية - توك توك - تروسيكل
               </Link>
             </Button>
             <Button asChild className="h-11 bg-primary hover:bg-primary/90 text-white font-black rounded-xl shadow-lg shadow-primary/20 transition-all hover:scale-105 active:scale-95 px-6">
@@ -181,8 +181,8 @@ export default function AdminDashboard() {
                 { label: "إدارة المعارض الشريكة", href: "/admin/showrooms", icon: Store, count: stats?.totalShowrooms },
                 { label: "إدارة المعدات الثقيلة", href: "/admin/equipment", icon: Tractor, count: stats?.totalEquipment },
                 {
-                  label: "إضافة دراجات بخارية (موتوسيكل/توكتوك/تروسيكل)",
-                  href: "/admin/equipment/new?category=%D8%AF%D8%B1%D8%A7%D8%AC%D8%A7%D8%AA%20%D9%86%D8%A7%D8%B1%D9%8A%D8%A9",
+                  label: "إضافة دراجات نارية - توك توك - تروسيكل",
+                  href: "/admin/equipment/new?category=دراجات نارية - توك توك - تروسيكل",
                   icon: Sparkles,
                 },
                 { label: "إدارة المقالات والأخبار", href: "/admin/news", icon: Newspaper, count: stats?.totalNews },

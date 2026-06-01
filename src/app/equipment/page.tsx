@@ -10,18 +10,21 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Tractor, Search } from "lucide-react"
 import { Breadcrumbs } from "@/components/breadcrumbs"
 import { useEquipment, type Equipment } from "@/hooks/useEquipment"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
-const CATEGORIES = ["الكل", "جرار", "حفار", "شاحنة", "معدة زراعية", "معدة بناء", "دراجات نارية", "أخرى"] as const
+const CATEGORIES = ["الكل", "جرار", "حفار", "شاحنة", "معدة زراعية", "معدة بناء", "دراجات نارية - توك توك - تروسيكل", "أخرى"] as const
 
 export default function EquipmentPage() {
  const [page, setPage] = useState(1)
  const [search, setSearch] = useState("")
  const [searchInput, setSearchInput] = useState("")
  const [category, setCategory] = useState<string>("الكل")
+ const [sortBy, setSortBy] = useState<string>("newest")
 
  const { data, isLoading, error, refetch } = useEquipment(page, 9, {
  search: search || undefined,
  category: category === "الكل" ? undefined : category,
+ sortBy: sortBy,
  })
 
  const items = data?.data || []
@@ -62,7 +65,8 @@ export default function EquipmentPage() {
  </Button>
  </form>
 
- <div className="flex flex-wrap gap-3 mb-12">
+ <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-12">
+ <div className="flex flex-wrap gap-3">
  {CATEGORIES.map((cat) => (
  <Button
  key={cat}
@@ -77,6 +81,26 @@ export default function EquipmentPage() {
  {cat}
  </Button>
  ))}
+ </div>
+ 
+ <div className="flex items-center gap-2 shrink-0 w-full sm:w-auto self-end md:self-auto">
+ <span className="text-sm font-bold text-muted-foreground whitespace-nowrap">ترتيب حسب:</span>
+ <Select
+ value={sortBy}
+ onValueChange={(val) => {
+ setSortBy(val)
+ setPage(1)
+ }}
+ >
+ <SelectTrigger className="w-[160px] h-10 rounded-xl border-2 border-gray-100 bg-white font-bold text-sm">
+ <SelectValue placeholder="الترتيب" />
+ </SelectTrigger>
+ <SelectContent className="rounded-xl border-0 shadow-lg bg-white">
+ <SelectItem value="newest">الأحدث أولاً</SelectItem>
+ <SelectItem value="oldest">الأقدم أولاً</SelectItem>
+ </SelectContent>
+ </Select>
+ </div>
  </div>
 
  {isLoading ? (

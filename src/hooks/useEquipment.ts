@@ -30,6 +30,7 @@ export interface EquipmentFilters {
  featured?: boolean;
  minPrice?: number;
  maxPrice?: number;
+ sortBy?: string;
 }
 
 export function useEquipment(page = 1, limit = 12, filters: EquipmentFilters = {}) {

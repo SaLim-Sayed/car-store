@@ -14,6 +14,7 @@ import { Car as CarIcon } from "lucide-react"
 import { useCarStore } from "@/lib/store/carStore"
 import { useCars, CarsFilters, Car } from "@/hooks/useCars"
 import { useShowroomById } from "@/hooks/useContent"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 function CarsPageContent() {
  const searchParams = useSearchParams()
@@ -33,6 +34,7 @@ function CarsPageContent() {
  minPrice: filters.minPrice ? Number(filters.minPrice) : undefined,
  maxPrice: filters.maxPrice ? Number(filters.maxPrice) : undefined,
  showroom: searchParams.get("showroom") || undefined,
+ sortBy: filters.sortBy || undefined,
  }
 
  const { data: carsData, isLoading, error, refetch } = useCars(page, 9, apiFilters)
@@ -107,9 +109,24 @@ function CarsPageContent() {
  </Card>
  ) : (
  <div className="space-y-16">
- <div className="flex justify-between items-center">
+ <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
  <div className="text-lg font-bold text-muted-foreground">
  تم العثور على <span className="text-foreground">{pagination?.total ?? cars.length}</span> سيارة
+ </div>
+ <div className="flex items-center gap-2">
+ <span className="text-sm font-bold text-muted-foreground whitespace-nowrap">ترتيب حسب:</span>
+ <Select
+ value={filters.sortBy || 'newest'}
+ onValueChange={(val) => setFilters({ sortBy: val })}
+ >
+ <SelectTrigger className="w-[160px] h-10 rounded-xl border-2 border-gray-100 bg-white font-bold text-sm">
+ <SelectValue placeholder="الترتيب" />
+ </SelectTrigger>
+ <SelectContent className="rounded-xl border-0 shadow-lg bg-white">
+ <SelectItem value="newest">الأحدث أولاً</SelectItem>
+ <SelectItem value="oldest">الأقدم أولاً</SelectItem>
+ </SelectContent>
+ </Select>
  </div>
  </div>
 

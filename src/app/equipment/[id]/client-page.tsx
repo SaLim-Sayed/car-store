@@ -417,6 +417,7 @@ export default function EquipmentDetailPage({
  { k: "الماركة", v: item.brand },
  { k: "الموديل", v: item.model || "—" },
  { k: "الحالة", v: item.condition },
+ { k: "تاريخ النشر", v: item.createdAt ? new Date(item.createdAt).toLocaleDateString("ar-EG") : "—" },
  ].map((row) => (
  <div key={row.k} className="grid grid-cols-[minmax(6.5rem,34%)_1fr] gap-2 px-4 py-3.5 sm:px-5">
  <dt className="text-sm font-medium text-muted-foreground">{row.k}</dt>
