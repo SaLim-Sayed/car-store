@@ -30,7 +30,7 @@ export default function HomePage() {
   const { data: newsData, isLoading: newsLoading } = useNews(6);
   const { data: equipmentData } = useFeaturedEquipment(6);
   const { data: bikesData } = useEquipment(1, 8, {
-    category: "دراجات نارية - توك توك - تروسيكل",
+    type: "bikes",
   });
 
   const featuredCars = carsData?.data || [];
@@ -341,10 +341,10 @@ export default function HomePage() {
               <div className="flex items-center justify-between border-b border-gray-200 pb-3 md:hidden">
                 <div className="flex items-center gap-2">
                   <div className="w-1 h-5 bg-violet-600 rounded-full" />
-                  <h2 className="text-lg font-black text-foreground">دراجات نارية - توك توك - تروسيكل</h2>
+                  <h2 className="text-lg font-black text-foreground">دراجات نارية وتوك توك</h2>
                 </div>
                 <Link
-                  href="/equipment?category=دراجات نارية - توك توك - تروسيكل"
+                  href="/bikes"
                   className="text-xs font-bold text-primary hover:underline flex items-center gap-1"
                 >
                   عرض الكل <ChevronLeft className="h-3 w-3" />
@@ -354,7 +354,7 @@ export default function HomePage() {
               <div className="hidden md:flex justify-between items-end gap-6 border-b border-gray-200 pb-4">
                 <div className="space-y-1 text-right">
                   <h2 className="text-2xl md:text-3xl font-black text-foreground">
-                    دراجات نارية <span className="text-primary">- توك توك - تروسيكل</span>
+                    دراجات نارية <span className="text-primary">وتوك توك</span>
                   </h2>
                   <p className="text-sm font-bold text-muted-foreground">
                     يشمل موتوسيكل، توكتوك، تروسيكل
@@ -367,7 +367,7 @@ export default function HomePage() {
                   className="rounded-lg bg-white shrink-0 hover:bg-gray-50 font-bold"
                 >
                   <Link
-                    href="/equipment?category=دراجات نارية - توك توك - تروسيكل"
+                    href="/bikes"
                     className="flex items-center gap-2"
                   >
                     عرض الكل <ChevronLeft className="h-4 w-4" />

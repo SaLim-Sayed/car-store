@@ -12,7 +12,7 @@ import { Breadcrumbs } from "@/components/breadcrumbs"
 import { useEquipment, type Equipment } from "@/hooks/useEquipment"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
-const CATEGORIES = ["الكل", "جرار", "حفار", "شاحنة", "معدة زراعية", "معدة بناء", "دراجات نارية - توك توك - تروسيكل", "أخرى"] as const
+const CATEGORIES = ["الكل", "جرار", "حفار", "شاحنة", "معدة زراعية", "معدة بناء", "أخرى"] as const
 
 export default function EquipmentPage() {
  const [page, setPage] = useState(1)
@@ -25,6 +25,7 @@ export default function EquipmentPage() {
  search: search || undefined,
  category: category === "الكل" ? undefined : category,
  sortBy: sortBy,
+ type: "equipment",
  })
 
  const items = data?.data || []

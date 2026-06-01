@@ -31,6 +31,7 @@ export interface EquipmentFilters {
  minPrice?: number;
  maxPrice?: number;
  sortBy?: string;
+ type?: 'bikes' | 'equipment';
 }
 
 export function useEquipment(page = 1, limit = 12, filters: EquipmentFilters = {}) {

@@ -73,6 +73,7 @@ export const carsApi = {
  transmission?: string;
  minPrice?: number;
  maxPrice?: number;
+ sortBy?: string;
  }) => 
  apiClient.get('/cars', { params }).then(res => res.data),
 
@@ -133,6 +134,8 @@ export const equipmentApi = {
  featured?: boolean;
  minPrice?: number;
  maxPrice?: number;
+ sortBy?: string;
+ type?: 'bikes' | 'equipment';
  }) => apiClient.get('/equipment', { params }).then((res) => res.data),
 
  getEquipmentById: (id: string) =>

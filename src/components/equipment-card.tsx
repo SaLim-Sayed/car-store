@@ -44,9 +44,12 @@ export function EquipmentCard({ equipment }: EquipmentCardProps) {
   const whatsappMessage = `مرحباً، أريد الاستفسار عن معدة ${label} المعروضة للبيع${equipment.price ? ` بسعر ${equipment.price.toLocaleString()} جنيه` : ""}`;
   const whatsappUrl = `https://wa.me/${getContactPhone(equipment.phone)}?text=${encodeURIComponent(whatsappMessage)}`;
 
+  const isBike = ['موتوسيكل', 'توك توك', 'تروسيكل'].includes(equipment.category);
+  const detailsUrl = isBike ? `/bikes/${equipment._id}` : `/equipment/${equipment._id}`;
+
   return (
     <Card
-      onClick={() => router.push(`/equipment/${equipment._id}`)}
+      onClick={() => router.push(detailsUrl)}
       className="group flex flex-col h-full min-h-0 overflow-hidden border border-slate-200/80 rounded-xl sm:rounded-2xl bg-white p-0  hover:border-amber-500/40 transition-all duration-300 cursor-pointer"
     >
       <CardHeader className="shrink-0 p-0 relative">
@@ -202,7 +205,7 @@ export function EquipmentCard({ equipment }: EquipmentCardProps) {
           className="flex items-center gap-1.5 sm:gap-2 mt-auto w-full"
           onClick={(e) => e.stopPropagation()}
         >
-          <Link href={`/equipment/${equipment._id}`} className="flex-1 h-8 sm:h-10 rounded-lg sm:rounded-xl bg-primary text-white text-[11px] sm:text-sm font-bold flex items-center justify-center shadow-sm hover:shadow-md transition-shadow">
+          <Link href={detailsUrl} className="flex-1 h-8 sm:h-10 rounded-lg sm:rounded-xl bg-primary text-white text-[11px] sm:text-sm font-bold flex items-center justify-center shadow-sm hover:shadow-md transition-shadow">
             التفاصيل
           </Link>
           {/* Call Button */}

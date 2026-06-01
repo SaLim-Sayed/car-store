@@ -22,7 +22,9 @@ function coerceCategory(raw?: string): EquipmentFormData["category"] | undefined
     "شاحنة",
     "معدة زراعية",
     "معدة بناء",
-    "دراجات نارية - توك توك - تروسيكل",
+    "موتوسيكل",
+    "توك توك",
+    "تروسيكل",
     "أخرى",
   ]
   return allowed.includes(raw as EquipmentFormData["category"])
@@ -67,7 +69,7 @@ export default function NewEquipmentClient({ initialCategory }: { initialCategor
               إضافة معدة جديدة
             </h1>
             <p className="text-sm md:text-base text-slate-500 font-bold max-w-2xl">
-              آلات زراعية أو معدات ثقيلة أو دراجات نارية - توك توك - تروسيكل
+              آلات زراعية أو معدات ثقيلة أو موتوسيكلات وتوك توك وتروسيكلات
             </p>
           </div>
           <div className="flex items-center gap-3 shrink-0">

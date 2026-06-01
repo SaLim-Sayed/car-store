@@ -14,7 +14,7 @@ import { SITE_PHONE_DISPLAY } from "@/lib/phone"
 import { RichTextEditor } from "@/components/rich-text-editor"
 import { cn } from "@/lib/utils"
 
-const CATEGORIES = ["جرار", "حفار", "شاحنة", "معدة زراعية", "معدة بناء", "دراجات نارية - توك توك - تروسيكل", "أخرى"] as const
+const CATEGORIES = ["جرار", "حفار", "شاحنة", "معدة زراعية", "معدة بناء", "موتوسيكل", "توك توك", "تروسيكل", "أخرى"] as const
 const CONDITIONS = ["جديد", "مستعمل"] as const
 const STATUSES = ["متاح", "مباع", "محجوز"] as const
 

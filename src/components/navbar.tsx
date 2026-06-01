@@ -67,6 +67,7 @@ export function Navbar() {
     { href: "/cars", label: "السيارات" },
     { href: "/showrooms", label: "المعارض" },
     { href: "/equipment", label: "المعدات الثقيلة" },
+    { href: "/bikes", label: "الدراجات النارية" },
     { href: "/news", label: "الأخبار" },
   ];
 

@@ -22,8 +22,9 @@ export async function GET(request: NextRequest) {
  const minPrice = searchParams.get('minPrice');
  const maxPrice = searchParams.get('maxPrice');
  const sortBy = searchParams.get('sortBy') || 'newest';
+ const type = searchParams.get('type');
 
- const query: Record<string, unknown> = {};
+ const query: Record<string, any> = {};
 
  if (search) {
  query.$or = [
@@ -35,7 +36,14 @@ export async function GET(request: NextRequest) {
  ];
  }
 
- if (category) query.category = category;
+ if (category) {
+ query.category = category;
+ } else if (type === 'bikes') {
+ query.category = { $in: ['موتوسيكل', 'توك توك', 'تروسيكل'] };
+ } else if (type === 'equipment') {
+ query.category = { $nin: ['موتوسيكل', 'توك توك', 'تروسيكل'] };
+ }
+
  if (featured === 'true') query.featured = true;
 
  if (minPrice || maxPrice) {

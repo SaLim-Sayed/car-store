@@ -118,9 +118,9 @@ export default function AdminDashboard() {
               asChild
               className="h-11 border-slate-200 text-slate-700 font-black rounded-xl hover:bg-slate-50 px-5"
             >
-              <Link href="/admin/equipment/new?category=دراجات نارية - توك توك - تروسيكل">
+              <Link href="/admin/equipment/new?category=موتوسيكل">
                 <Sparkles className="h-5 w-5 ml-2" />
-                إضافة دراجات نارية - توك توك - تروسيكل
+                إضافة دراجات وتوك توك
               </Link>
             </Button>
             <Button asChild className="h-11 bg-primary hover:bg-primary/90 text-white font-black rounded-xl shadow-lg shadow-primary/20 transition-all hover:scale-105 active:scale-95 px-6">
@@ -181,8 +181,8 @@ export default function AdminDashboard() {
                 { label: "إدارة المعارض الشريكة", href: "/admin/showrooms", icon: Store, count: stats?.totalShowrooms },
                 { label: "إدارة المعدات الثقيلة", href: "/admin/equipment", icon: Tractor, count: stats?.totalEquipment },
                 {
-                  label: "إضافة دراجات نارية - توك توك - تروسيكل",
-                  href: "/admin/equipment/new?category=دراجات نارية - توك توك - تروسيكل",
+                  label: "إضافة دراجات وتوك توك",
+                  href: "/admin/equipment/new?category=موتوسيكل",
                   icon: Sparkles,
                 },
                 { label: "إدارة المقالات والأخبار", href: "/admin/news", icon: Newspaper, count: stats?.totalNews },

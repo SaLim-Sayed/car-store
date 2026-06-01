@@ -28,7 +28,7 @@ const EquipmentSchema = new mongoose.Schema({
  },
  category: {
  type: String,
- enum: ['جرار', 'حفار', 'شاحنة', 'معدة زراعية', 'معدة بناء', 'دراجات نارية - توك توك - تروسيكل', 'أخرى'],
+ enum: ['جرار', 'حفار', 'شاحنة', 'معدة زراعية', 'معدة بناء', 'موتوسيكل', 'توك توك', 'تروسيكل', 'أخرى'],
  default: 'معدة زراعية',
  },
  condition: {
@@ -82,4 +82,8 @@ const EquipmentSchema = new mongoose.Schema({
  timestamps: true,
 });
 
-export default mongoose.models.Equipment || mongoose.model('Equipment', EquipmentSchema);
+if (mongoose.models.Equipment) {
+  delete mongoose.models.Equipment;
+}
+
+export default mongoose.model('Equipment', EquipmentSchema);
