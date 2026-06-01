@@ -12,7 +12,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { WhatsAppIcon } from "@/components/whatsapp-icon";
 import { Car as CarType, useFeaturedCars } from "@/hooks/useCars";
 import { useNews } from "@/hooks/useContent";
-import { useEquipment, useFeaturedEquipment, type Equipment } from "@/hooks/useEquipment";
+import { useEquipment, type Equipment } from "@/hooks/useEquipment";
 import { getWhatsAppUrl, WHATSAPP_MESSAGES } from "@/lib/whatsapp";
 import {
   ArrowRight,
@@ -28,14 +28,16 @@ import { SwiperSlide } from "swiper/react";
 export default function HomePage() {
   const { data: carsData, isLoading } = useFeaturedCars();
   const { data: newsData, isLoading: newsLoading } = useNews(6);
-  const { data: equipmentData } = useFeaturedEquipment(6);
+  const { data: equipmentData } = useEquipment(1, 8, {
+    type: "equipment",
+  });
   const { data: bikesData } = useEquipment(1, 8, {
     type: "bikes",
   });
 
   const featuredCars = carsData?.data || [];
   const newsItems = newsData?.data || [];
-  const featuredEquipment = equipmentData?.data || [];
+  const equipmentItems = equipmentData?.data || [];
   const bikesItems = bikesData?.data || [];
 
   return (
@@ -276,7 +278,7 @@ export default function HomePage() {
           </section>
 
           {/* Equipment Section */}
-          {featuredEquipment.length > 0 && (
+          {equipmentItems.length > 0 && (
             <section className="space-y-4">
               {/* Mobile header */}
               <div className="flex items-center justify-between border-b border-gray-200 pb-3 md:hidden">
@@ -314,7 +316,7 @@ export default function HomePage() {
               <div className="w-full max-w-full min-w-0 overflow-hidden pb-4">
                 <HomeSectionCarousel
                   navKey="featured-equipment"
-                  loop={featuredEquipment.length > 3}
+                  loop={equipmentItems.length > 3}
                   autoplayDelay={6000}
                   spaceBetween={12}
                   slidesPerView={1.4}
@@ -324,7 +326,7 @@ export default function HomePage() {
                     1024: { slidesPerView: 3, spaceBetween: 24 },
                   }}
                 >
-                  {featuredEquipment.map((item: Equipment) => (
+                  {equipmentItems.map((item: Equipment) => (
                     <SwiperSlide key={item._id} className="h-auto!">
                       <EquipmentCard equipment={item} />
                     </SwiperSlide>
