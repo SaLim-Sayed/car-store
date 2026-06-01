@@ -154,7 +154,7 @@ export default function AboutPage() {
                   src="/elbadry.jpeg"
                   alt="محمد البدري - مدير السوق"
                   fill
-                  className="object-center"
+                  className="object-cover"
                   sizes="(max-width: 768px) 192px, 224px"
                   priority
                 />

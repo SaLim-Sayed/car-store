@@ -2,32 +2,9 @@
 
 import { GlobalSearch } from "@/components/global-search";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { useAuthStore } from "@/lib/store/authStore";
 import { cn } from "@/lib/utils";
-import {
-  LogOut,
-  Menu,
-  PlusCircle,
-  Settings,
-  User,
-  X,
-  ChevronLeft,
-} from "lucide-react";
+import { ChevronLeft, Menu, Settings, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -90,39 +67,41 @@ export function Navbar() {
   return (
     <header className="fixed top-0 z-[50] w-full overflow-visible transition-all duration-500 bg-[#1B3E7A] text-white shadow-none">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-12 md:h-16">
-          <div className="flex items-center gap-3 md:gap-12">
+        <div className="flex items-center justify-between h-12 lg:h-16">
+          <div className="flex items-center gap-3 lg:gap-6 min-w-0">
             <Link
               href="/"
-              className="flex items-center gap-2 md:gap-4 transition-all"
+              className="flex items-center gap-2 lg:gap-3 transition-all shrink-0"
             >
-              <div className="relative hidden sm:block rounded-md overflow-hidden shrink-0">
+              <div className="relative hidden lg:block rounded-md overflow-hidden shrink-0 w-[150px] xl:w-[240px]">
                 <Image
                   src="/logo.png"
                   alt="سيارات المنيا"
-                  width={250}
-                  height={200}
+                  width={240}
+                  height={192}
                   priority
+                  className="w-full h-auto object-contain"
                 />
               </div>
-              <div className="relative block sm:hidden rounded-md overflow-hidden shrink-0">
+              <div className="relative block lg:hidden rounded-md overflow-hidden shrink-0 w-[120px] sm:w-[150px]">
                 <Image
                   src="/logo.png"
                   alt="سيارات المنيا"
                   width={150}
-                  height={150}
+                  height={120}
                   priority
+                  className="w-full h-auto object-contain"
                 />
               </div>
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center gap-10 mr-12">
+            <nav className="hidden lg:flex items-center lg:gap-3 xl:gap-8 lg:mr-4 xl:mr-10 shrink-0">
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`text-xl font-bold transition-all duration-500 relative group py-2 ${
+                  className={`text-sm lg:text-sm xl:text-lg font-black transition-all duration-500 relative group py-2 ${
                     pathname === link.href
                       ? "text-white"
                       : "text-white/80 hover:text-white"
@@ -137,21 +116,21 @@ export function Navbar() {
             </nav>
           </div>
 
-          <div className="flex items-center gap-2 md:gap-4">
-            {/* <div className="hidden md:block">
+          <div className="flex items-center gap-2 lg:gap-4 shrink-0">
+            {/* <div className="hidden lg:block">
               <ThemeToggle />
             </div> */}
 
-            {isAuthenticated ? (
+            {/* {isAuthenticated ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
-                    className={`h-9 md:h-14 px-3 md:px-7 bg-primary rounded-md gap-2 md:gap-4 font-[1000] text-sm md:text-xl transition-all duration-500 ${textColor.includes("white") ? "text-white " : "text-foreground     shadow-none"}`}
+                    className={`h-9 lg:h-9 xl:h-11 px-3 lg:px-4 xl:px-5 bg-primary rounded-md gap-2 font-black text-sm lg:text-sm xl:text-base transition-all duration-500 ${textColor.includes("white") ? "text-white " : "text-foreground shadow-none"}`}
                   >
-                    <div className="h-9 w-9 rounded-md bg-primary shadow-none shadow-primary/30 flex items-center justify-center">
-                      <User className="h-5 w-5 text-white" />
+                    <div className="h-7 w-7 rounded-md bg-primary/20 flex items-center justify-center">
+                      <User className="h-4.5 w-4.5 text-white" />
                     </div>
-                    <span className="hidden lg:inline-block">{user?.name}</span>
+                    <span className="hidden xl:inline-block">{user?.name}</span>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
@@ -224,17 +203,17 @@ export function Navbar() {
                 variant="outline"
                 size="lg"
                 asChild
-                className="hidden sm:flex rounded-md h-10 md:h-12 px-5 md:px-8 text-sm md:text-lg font-bold transition-all duration-500 shadow-none hover:shadow-none text-white border-white/40 bg-white/10 hover:bg-white/20"
+                className="hidden lg:flex rounded-md lg:h-9 lg:px-3 xl:h-10 xl:px-6 text-xs xl:text-sm font-black transition-all duration-500 shadow-none hover:shadow-none text-white border-white/40 bg-white/10 hover:bg-white/20"
               >
                 <Link href="/auth/login">تسجيل الدخول</Link>
               </Button>
-            )}
+            )} */}
 
             {/* Mobile Menu Toggle Button */}
             <Button
               variant="ghost"
               size="icon"
-              className={`md:hidden h-10 w-10 rounded-md transition-all duration-500 ${textColor.includes("white") ? "text-white hover:bg-white/15" : "text-foreground bg-gray-100/70 hover:bg-gray-200"}`}
+              className={`lg:hidden h-10 w-10 rounded-md transition-all duration-500 ${textColor.includes("white") ? "text-white hover:bg-white/15" : "text-foreground bg-gray-100/70 hover:bg-gray-200"}`}
               onClick={() => setIsMobileMenuOpen((o) => !o)}
               aria-label="القائمة"
             >
@@ -249,7 +228,7 @@ export function Navbar() {
 
         <div
           className={cn(
-            "hidden md:block overflow-hidden transition-[max-height,opacity,padding] duration-300",
+            "hidden lg:block overflow-hidden transition-[max-height,opacity,padding] duration-300",
             showNavbarSearch
               ? "max-h-20 opacity-100 pb-3 pt-1"
               : "max-h-0 opacity-0 pb-0 pt-0 pointer-events-none",
@@ -262,7 +241,7 @@ export function Navbar() {
         </div>
       </div>
       {isMobileMenuOpen && (
-        <nav className="md:hidden border-t border-white/10 bg-[#1B3E7A] px-4 py-4 space-y-1 text-white flex flex-col gap-2">
+        <nav className="lg:hidden border-t border-white/10 bg-[#1B3E7A] px-4 py-4 space-y-1 text-white flex flex-col gap-2">
           {/* Admin Dashboard Quick Access inside client mobile drawer */}
           {isAuthenticated && user?.role === "admin" && (
             <Link
@@ -293,12 +272,12 @@ export function Navbar() {
               >
                 {link.label}
                 {isActive && (
-                  <div className="h-1.5 w-1.5 md:h-2 md:w-2 rounded-full bg-white" />
+                  <div className="h-1.5 w-1.5 lg:h-2 lg:w-2 rounded-full bg-white" />
                 )}
               </Link>
             );
           })}
-
+          {/* 
           {!isAuthenticated && (
             <Link
               href="/auth/login"
@@ -337,7 +316,7 @@ export function Navbar() {
                 تسجيل الخروج
               </Button>
             </div>
-          )}
+          )} */}
         </nav>
       )}
     </header>
