@@ -34,7 +34,7 @@ const CarSchema = new mongoose.Schema({
  },
  mileage: {
  type: Number,
- required: true,
+ required: false,
  min: 0,
  },
  color: {

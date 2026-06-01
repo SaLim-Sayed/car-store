@@ -18,7 +18,7 @@ interface CarDoc {
   price?: number
   fuelType: string
   transmission: string
-  mileage: number
+  mileage?: number
   color: string
   description: string
   images: string[]
@@ -200,7 +200,7 @@ export default function AdminCarsPage() {
                         <td className="py-2.5 px-4 text-slate-500 text-xs font-bold">
                           <div className="flex flex-col gap-1">
                             <span>{car.transmission === "manual" ? "يدوي" : "أوتوماتيك"} • {car.fuelType === "gasoline" ? "بنزين" : car.fuelType === "diesel" ? "ديزل" : car.fuelType}</span>
-                            <span className="text-slate-500">{car.mileage.toLocaleString()} كم</span>
+                            <span className="text-slate-500">{car.mileage !== undefined && car.mileage !== null ? `${car.mileage.toLocaleString()} كم` : "غير محدد"}</span>
                           </div>
                         </td>
                         <td className="py-2.5 px-4">

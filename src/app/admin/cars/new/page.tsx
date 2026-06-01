@@ -121,7 +121,7 @@ export default function NewCarPage() {
     if (!form.model) newErrors.model = "مطلوب"
     if (!form.year || isNaN(Number(form.year))) newErrors.year = "مطلوب"
     if (form.price && isNaN(Number(form.price))) newErrors.price = "يجب أن يكون رقماً"
-    if (!form.mileage || isNaN(Number(form.mileage))) newErrors.mileage = "مطلوب"
+    if (form.mileage && isNaN(Number(form.mileage))) newErrors.mileage = "يجب أن يكون رقماً"
     if (!form.color) newErrors.color = "مطلوب"
     if (!form.location?.trim()) newErrors.location = "مطلوب"
     if (!form.description || form.description.length < 10)
@@ -144,7 +144,7 @@ export default function NewCarPage() {
         ...form,
         year: Number(form.year),
         price: form.price ? Number(form.price) : undefined,
-        mileage: Number(form.mileage),
+        mileage: form.mileage ? Number(form.mileage) : undefined,
         phone: form.phone.trim(),
         location: form.location.trim(),
         locationLink: form.locationLink.trim(),
@@ -272,7 +272,7 @@ export default function NewCarPage() {
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2.5">
-                      <Label htmlFor="mileage" className="text-sm font-black text-slate-700">المسافة (كم) <span className="text-rose-500">*</span></Label>
+                      <Label htmlFor="mileage" className="text-sm font-black text-slate-700">المسافة (كم) <span className="text-slate-500 font-medium">(اختياري)</span></Label>
                       <Input
                         id="mileage"
                         type="number"

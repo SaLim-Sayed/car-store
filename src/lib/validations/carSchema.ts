@@ -4,14 +4,14 @@ export const carSchema = z.object({
  brand: z.string().min(1, 'العلامة التجارية مطلوبة'),
  model: z.string().min(1, 'الموديل مطلوب'),
  year: z.number().min(1900, 'السنة يجب أن تكون 1900 أو أكبر').max(new Date().getFullYear() + 1, 'السنة غير صالحة'),
- price: z.number().min(0, 'السعر يجب أن يكون رقمًا موجبًا'),
+ price: z.number().min(0, 'السعر يجب أن يكون رقمًا موجبًا').optional(),
  fuelType: z.enum(['بنزين', 'كهرباء', 'غاز طبيعي', 'غاز', 'سولار'], {
  message: 'نوع الوقود مطلوب',
  }),
  transmission: z.enum(['يدوي', 'أوتوماتيك'], {
  message: 'نوع ناقل الحركة مطلوب',
  }),
- mileage: z.number().min(0, 'المسافة المقطوعة يجب أن تكون رقمًا موجبًا'),
+ mileage: z.number().min(0, 'المسافة المقطوعة يجب أن تكون رقمًا موجبًا').optional(),
  color: z.string().min(1, 'اللون مطلوب'),
   location: z.string().trim().min(1, 'الموقع مطلوب').default('المنيا'),
  phone: z.string().trim().optional(),

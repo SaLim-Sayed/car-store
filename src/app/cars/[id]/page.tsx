@@ -21,7 +21,7 @@ interface CarDoc {
   price?: number;
   fuelType: string;
   transmission: string;
-  mileage: number;
+  mileage?: number;
   color: string;
   location?: string;
   phone?: string;
@@ -88,7 +88,7 @@ export async function generateMetadata({
   }
 
   const title = `${car.brand} ${car.model} ${car.year} للبيع في المنيا`;
-  const description = `${car.brand} ${car.model} موديل ${car.year} للبيع في المنيا. ${car.price ? `السعر ${car.price.toLocaleString("ar-EG")} جنيه مصري.` : "السعر حسب الطلب."} ${car.transmission}، ${car.fuelType}، ${car.mileage.toLocaleString("ar-EG")} كم. ${car.status} — تواصل مع البائع مباشرة.`;
+  const description = `${car.brand} ${car.model} موديل ${car.year} للبيع في المنيا. ${car.price ? `السعر ${car.price.toLocaleString("ar-EG")} جنيه مصري.` : "السعر حسب الطلب."} ${car.transmission}، ${car.fuelType}، ${car.mileage !== undefined && car.mileage !== null ? `${car.mileage.toLocaleString("ar-EG")} كم.` : "المسافة غير محددة."} ${car.status} — تواصل مع البائع مباشرة.`;
 
   return buildPageMetadata({
     title,

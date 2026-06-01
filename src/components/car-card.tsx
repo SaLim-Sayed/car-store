@@ -21,7 +21,7 @@ interface CarCardProps {
     price?: number;
     fuelType: string;
     transmission: string;
-    mileage: number;
+    mileage?: number;
     color: string;
     description: string;
     images: string[];
@@ -164,7 +164,7 @@ export function CarCard({ car }: CarCardProps) {
           <span>{car.year}</span>
           <span className="text-slate-300 font-normal">|</span>
           <span>
-            {car.mileage ? `${car.mileage.toLocaleString()} كم` : "0 كم"}
+            {car.mileage !== undefined && car.mileage !== null ? `${car.mileage.toLocaleString()} كم` : "غير محدد"}
           </span>
           <span className="text-slate-300 font-normal">|</span>
           <span>{car.transmission}</span>
@@ -198,9 +198,11 @@ export function CarCard({ car }: CarCardProps) {
             {car.model}
           </span>
           {/* Condition Tag */}
-          <span className="rounded-lg bg-slate-50 px-2.5 py-0.5 text-[10px] font-black text-slate-500 border border-slate-100">
-            {car.mileage === 0 ? "زيرو" : "كسر زيرو"}
-          </span>
+          {car.mileage !== undefined && car.mileage !== null && (
+            <span className="rounded-lg bg-slate-50 px-2.5 py-0.5 text-[10px] font-black text-slate-500 border border-slate-100">
+              {car.mileage === 0 ? "زيرو" : "كسر زيرو"}
+            </span>
+          )}
         </div>
 
         {/* Premium Bottom Action Bar (3 Actions) */}

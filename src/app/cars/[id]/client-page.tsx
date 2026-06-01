@@ -44,7 +44,7 @@ interface CarDoc {
  price?: number;
  fuelType: string;
  transmission: string;
- mileage: number;
+ mileage?: number;
  color: string;
  location?: string;
  phone?: string;
@@ -177,13 +177,13 @@ export default function ClientPage({ initialCar }: { initialCar: CarDoc }) {
            <Calendar className="h-3.5 w-3.5 text-primary" />
            {car.year}
          </Badge>
-         <Badge
-           variant="secondary"
-           className="bg-white border-0 shadow-none px-4 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2"
-         >
-           <Gauge className="h-3.5 w-3.5 text-primary" />
-           {car.mileage.toLocaleString()} كم
-         </Badge>
+          <Badge
+            variant="secondary"
+            className="bg-white border-0 shadow-none px-4 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2"
+          >
+            <Gauge className="h-3.5 w-3.5 text-primary" />
+            {car.mileage !== undefined && car.mileage !== null ? `${car.mileage.toLocaleString()} كم` : "غير محدد"}
+          </Badge>
          <Badge
            variant="secondary"
            className="bg-white border-0 shadow-none px-4 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2"
@@ -399,7 +399,7 @@ export default function ClientPage({ initialCar }: { initialCar: CarDoc }) {
  المسافة
  </div>
  <div className="p-4 font-black">
- {car.mileage.toLocaleString()} كم
+ {car.mileage !== undefined && car.mileage !== null ? `${car.mileage.toLocaleString()} كم` : "غير محدد"}
  </div>
  </div>
  <div className="grid grid-cols-2 divide-x divide-gray-50 rtl:divide-x-reverse border-t border-gray-50">

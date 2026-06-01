@@ -11,7 +11,7 @@ export interface Car {
  price?: number;
  fuelType: string;
  transmission: string;
- mileage: number;
+ mileage?: number;
  color: string;
  location?: string;
  phone?: string;
