@@ -172,4 +172,8 @@ export const adminApi = {
  // Seed database
  seedDatabase: () => 
  apiClient.post('/admin/seed').then(res => res.data),
+
+ // Clear database (keep users)
+ clearDatabase: () => 
+ apiClient.delete('/admin/seed').then(res => res.data),
 };

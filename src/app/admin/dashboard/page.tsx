@@ -19,16 +19,18 @@ import {
   Activity,
   ArrowUpRight,
   Calendar,
-  Sparkles
+  Sparkles,
+  Trash2
 } from "lucide-react";
 import Link from "next/link";
-import { useAdminStats, useSeedDatabase } from "@/hooks/useAdmin";
+import { useAdminStats, useSeedDatabase, useClearDatabase } from "@/hooks/useAdmin";
 import { useCars } from "@/hooks/useCars";
 import { cn } from "@/lib/utils";
 
 export default function AdminDashboard() {
   const { data: statsData, isLoading, error } = useAdminStats();
   const { mutate: seedDatabase, isPending: seeding } = useSeedDatabase();
+  const { mutate: clearDatabase, isPending: clearing } = useClearDatabase();
   
   // Fetch recently added cars (Page 1, limit 5)
   const { data: carsData, isLoading: carsLoading } = useCars(1, 5);
@@ -38,6 +40,12 @@ export default function AdminDashboard() {
 
   const handleSeed = () => {
     seedDatabase();
+  };
+
+  const handleClear = () => {
+    if (confirm("هل أنت متأكد من مسح جميع البيانات؟ سيتم مسح كافة السيارات والمعدات والمعارض والمقالات، ولن يتم مسح حسابات المسؤولين والمستخدمين.")) {
+      clearDatabase();
+    }
   };
 
   const statCards = stats
@@ -287,23 +295,42 @@ export default function AdminDashboard() {
                   </div>
                 </div>
               </div>
-              <Button
-                className="w-full h-12 bg-white hover:bg-slate-100 text-primary font-black text-sm rounded-xl shadow-lg shadow-black/10 transition-all hover:scale-[1.02]"
-                onClick={handleSeed}
-                disabled={seeding}
-              >
-                {seeding ? (
-                  <>
-                    <Activity className="h-5 w-5 ml-2 animate-spin" />
-                    جاري التهيئة...
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="h-5 w-5 ml-2" />
-                    تعبئة بيانات تجريبية
-                  </>
-                )}
-              </Button>
+              <div className="flex flex-col gap-3">
+                <Button
+                  className="w-full h-12 bg-white hover:bg-slate-100 text-primary font-black text-sm rounded-xl shadow-lg shadow-black/10 transition-all hover:scale-[1.02]"
+                  onClick={handleSeed}
+                  disabled={seeding || clearing}
+                >
+                  {seeding ? (
+                    <>
+                      <Activity className="h-5 w-5 ml-2 animate-spin" />
+                      جاري الاستعادة...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="h-5 w-5 ml-2" />
+                      استعادة البيانات التجريبية
+                    </>
+                  )}
+                </Button>
+                <Button
+                  className="w-full h-12 bg-red-600 hover:bg-red-700 text-white font-black text-sm rounded-xl shadow-lg shadow-black/10 transition-all hover:scale-[1.02] border-0"
+                  onClick={handleClear}
+                  disabled={seeding || clearing}
+                >
+                  {clearing ? (
+                    <>
+                      <Activity className="h-5 w-5 ml-2 animate-spin" />
+                      جاري المسح...
+                    </>
+                  ) : (
+                    <>
+                      <Trash2 className="h-5 w-5 ml-2" />
+                      مسح جميع البيانات
+                    </>
+                  )}
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </div>

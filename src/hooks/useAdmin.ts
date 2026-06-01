@@ -47,3 +47,23 @@ export function useSeedDatabase() {
  },
  });
 }
+
+// Hook for clearing database
+export function useClearDatabase() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: adminApi.clearDatabase,
+    onSuccess: () => {
+      toast.success('تم مسح جميع البيانات بنجاح (مع الاحتفاظ بالمستخدمين)');
+      // Invalidate queries to refresh data
+      queryClient.invalidateQueries({ queryKey: ['admin-stats'] });
+      queryClient.invalidateQueries({ queryKey: ['cars'] });
+      queryClient.invalidateQueries({ queryKey: ['featured-cars'] });
+      queryClient.invalidateQueries({ queryKey: ['equipment'] });
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.error || 'فشل في مسح البيانات');
+    },
+  });
+}
