@@ -9,17 +9,17 @@ import { MultiImageUpload } from "@/components/multi-image-upload"
 import { YearPicker } from "@/components/year-picker"
 import { currentYear } from "@/lib/date-utils"
 import { toast } from "sonner"
-import { Plus, X, Phone, Tractor, ImagePlus, Info, Settings, MapPin, CheckCircle, Tag, Store } from "lucide-react"
+import { Plus, X, Phone, Bike, ImagePlus, Info, Settings, MapPin, CheckCircle, Tag, Store } from "lucide-react"
 import { SITE_PHONE_DISPLAY } from "@/lib/phone"
 import { RichTextEditor } from "@/components/rich-text-editor"
 import { useShowrooms } from "@/hooks/useContent"
 import { cn } from "@/lib/utils"
 
-const CATEGORIES = ["جرار", "حفار", "شاحنة", "معدة زراعية", "معدة بناء", "أخرى"] as const
+const CATEGORIES = ["موتوسيكل", "توك توك", "تروسيكل", "سكوتر", "دراجة نارية", "أخرى"] as const
 const CONDITIONS = ["جديد", "مستعمل"] as const
 const STATUSES = ["متاح", "مباع", "محجوز"] as const
 
-export interface EquipmentFormData {
+export interface BikeFormData {
   title: string
   brand: string
   model: string
@@ -39,13 +39,13 @@ export interface EquipmentFormData {
   showroom?: string
 }
 
-export const emptyEquipmentForm: EquipmentFormData = {
+export const emptyBikeForm: BikeFormData = {
   title: "",
   brand: "",
   model: "",
   year: String(new Date().getFullYear()),
   price: "",
-  category: "معدة زراعية",
+  category: "موتوسيكل",
   condition: "مستعمل",
   hours: "0",
   location: "مدينة المنيا. ميدان الحميات",
@@ -59,26 +59,26 @@ export const emptyEquipmentForm: EquipmentFormData = {
   showroom: "",
 }
 
-interface EquipmentFormProps {
-  form: EquipmentFormData
-  onChange: (form: EquipmentFormData) => void
-  errors: Partial<Record<keyof EquipmentFormData, string>>
+interface BikeFormProps {
+  form: BikeFormData
+  onChange: (form: BikeFormData) => void
+  errors: Partial<Record<keyof BikeFormData, string>>
   isUploading: boolean
   onUploadingChange: (v: boolean) => void
 }
 
-export function EquipmentForm({
+export function BikeForm({
   form,
   onChange,
   errors,
   isUploading,
   onUploadingChange,
-}: EquipmentFormProps) {
+}: BikeFormProps) {
   const [newFeature, setNewFeature] = useState("")
   const { data: showroomsRes } = useShowrooms(false)
   const showrooms = showroomsRes?.data || []
 
-  const set = <K extends keyof EquipmentFormData>(key: K, value: EquipmentFormData[K]) => {
+  const set = <K extends keyof BikeFormData>(key: K, value: BikeFormData[K]) => {
     onChange({ ...form, [key]: value })
   }
 
@@ -124,7 +124,7 @@ export function EquipmentForm({
           <CardHeader className="p-6 border-b border-slate-100/60 bg-white">
             <CardTitle className="flex items-center gap-3 text-lg font-black text-slate-800">
               <div className="p-2 bg-primary/10 rounded-lg text-primary">
-                <Tractor className="h-5 w-5" />
+                <Bike className="h-5 w-5" />
               </div>
               البيانات الأساسية
             </CardTitle>
@@ -135,7 +135,7 @@ export function EquipmentForm({
               <Input
                 value={form.title}
                 onChange={(e) => set("title", e.target.value)}
-                placeholder="مثال: جرار ماسي فيرغسون 2020 بحالة ممتازة"
+                placeholder="مثال: موتوسيكل هوجن 2020 بحالة ممتازة"
                 className={cn("h-12 rounded-xl bg-slate-50 border-slate-200 focus-visible:ring-primary font-bold", errors.title && "border-rose-500 focus-visible:ring-rose-500")}
               />
               {errors.title && <p className="text-xs text-rose-500 font-bold">{errors.title}</p>}
@@ -147,7 +147,7 @@ export function EquipmentForm({
                 <Input
                   value={form.brand}
                   onChange={(e) => set("brand", e.target.value)}
-                  placeholder="مثال: كتربيلر، جون دير"
+                  placeholder="مثال: هوجن، حلاوة، هوندا"
                   className={cn("h-12 rounded-xl bg-slate-50 border-slate-200 focus-visible:ring-primary font-bold", errors.brand && "border-rose-500 focus-visible:ring-rose-500")}
                 />
                 {errors.brand && <p className="text-xs text-rose-500 font-bold">{errors.brand}</p>}
@@ -157,7 +157,7 @@ export function EquipmentForm({
                 <Input
                   value={form.model}
                   onChange={(e) => set("model", e.target.value)}
-                  placeholder="مثال: 320D L"
+                  placeholder="مثال: V250"
                   className="h-12 rounded-xl bg-slate-50 border-slate-200 focus-visible:ring-primary font-bold"
                 />
               </div>
@@ -203,7 +203,7 @@ export function EquipmentForm({
                 <Label className="text-sm font-black text-slate-700">التصنيف <span className="text-rose-500">*</span></Label>
                 <select
                   value={form.category}
-                  onChange={(e) => set("category", e.target.value as EquipmentFormData["category"])}
+                  onChange={(e) => set("category", e.target.value as BikeFormData["category"])}
                   className="flex h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-bold focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-primary transition-colors"
                 >
                   {CATEGORIES.map((c) => (
@@ -212,10 +212,10 @@ export function EquipmentForm({
                 </select>
               </div>
               <div className="space-y-2.5">
-                <Label className="text-sm font-black text-slate-700">حالة المعدة <span className="text-rose-500">*</span></Label>
+                <Label className="text-sm font-black text-slate-700">حالة الدراجة <span className="text-rose-500">*</span></Label>
                 <select
                   value={form.condition}
-                  onChange={(e) => set("condition", e.target.value as EquipmentFormData["condition"])}
+                  onChange={(e) => set("condition", e.target.value as BikeFormData["condition"])}
                   className="flex h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-bold focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-primary transition-colors"
                 >
                   {CONDITIONS.map((c) => (
@@ -244,7 +244,7 @@ export function EquipmentForm({
                 <RichTextEditor
                   value={form.description}
                   onChange={(val) => set("description", val)}
-                  placeholder="اكتب وصفاً جذاباً للمعدة يوضح حالتها وصيانتها ومميزاتها..."
+                  placeholder="اكتب وصفاً جذاباً للدراجة يوضح حالتها وصيانتها ومميزاتها..."
                 />
               </div>
               {errors.description && (
@@ -332,7 +332,7 @@ export function EquipmentForm({
               <Label className="text-sm font-black text-slate-700">حالة العرض</Label>
               <select
                 value={form.status}
-                onChange={(e) => set("status", e.target.value as EquipmentFormData["status"])}
+                onChange={(e) => set("status", e.target.value as BikeFormData["status"])}
                 className="flex h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-bold focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-primary transition-colors"
               >
                 {STATUSES.map((s) => (
@@ -438,7 +438,7 @@ export function EquipmentForm({
   )
 }
 
-export function equipmentFormToPayload(form: EquipmentFormData) {
+export function bikeFormToPayload(form: BikeFormData) {
   return {
     title: form.title.trim(),
     brand: form.brand.trim(),
@@ -460,8 +460,8 @@ export function equipmentFormToPayload(form: EquipmentFormData) {
   }
 }
 
-export function validateEquipmentForm(form: EquipmentFormData) {
-  const errors: Partial<Record<keyof EquipmentFormData, string>> = {}
+export function validateBikeForm(form: BikeFormData) {
+  const errors: Partial<Record<keyof BikeFormData, string>> = {}
   if (!form.title.trim()) errors.title = "مطلوب"
   if (!form.brand.trim()) errors.brand = "مطلوب"
   if (form.price && isNaN(Number(form.price))) errors.price = "يجب أن يكون رقماً"

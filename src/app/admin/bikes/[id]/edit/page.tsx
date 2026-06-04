@@ -8,21 +8,21 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { ArrowRight } from "lucide-react"
 import { useEquipmentById, useUpdateEquipment } from "@/hooks/useEquipment"
 import {
- EquipmentForm,
- emptyEquipmentForm,
- equipmentFormToPayload,
- validateEquipmentForm,
- type EquipmentFormData,
-} from "@/components/equipment-form"
+ BikeForm,
+ emptyBikeForm,
+ bikeFormToPayload,
+ validateBikeForm,
+ type BikeFormData,
+} from "@/components/bike-form"
 
-export default function EditEquipmentPage() {
+export default function EditBikePage() {
  const params = useParams()
  const id = params.id as string
  const router = useRouter()
  const { data, isLoading } = useEquipmentById(id)
  const updateMutation = useUpdateEquipment()
- const [form, setForm] = useState<EquipmentFormData>(emptyEquipmentForm)
- const [errors, setErrors] = useState<Partial<Record<keyof EquipmentFormData, string>>>({})
+ const [form, setForm] = useState<BikeFormData>(emptyBikeForm)
+ const [errors, setErrors] = useState<Partial<Record<keyof BikeFormData, string>>>({})
  const [isUploading, setIsUploading] = useState(false)
 
  useEffect(() => {
@@ -34,15 +34,15 @@ export default function EditEquipmentPage() {
  model: item.model || "",
  year: item.year ? String(item.year) : "",
  price: item.price ? String(item.price) : "",
- category: item.category as EquipmentFormData["category"],
- condition: item.condition as EquipmentFormData["condition"],
+ category: item.category as BikeFormData["category"],
+ condition: item.condition as BikeFormData["condition"],
  hours: String(item.hours ?? 0),
  location: item.location || "مدينة المنيا. ميدان الحميات",
  phone: item.phone ?? "",
  description: item.description || "",
  images: item.images || [],
  features: item.features || [],
- status: item.status as EquipmentFormData["status"],
+ status: item.status as BikeFormData["status"],
  featured: item.featured ?? false,
  locationLink: item.locationLink || "",
  showroom: typeof item.showroom === 'object' ? item.showroom?._id : item.showroom || "",
@@ -51,13 +51,13 @@ export default function EditEquipmentPage() {
 
  const onSubmit = (e: React.FormEvent) => {
  e.preventDefault()
- const validation = validateEquipmentForm(form)
+ const validation = validateBikeForm(form)
  setErrors(validation)
  if (Object.keys(validation).length > 0) return
 
  updateMutation.mutate(
- { id, data: equipmentFormToPayload(form) },
- { onSuccess: () => router.push("/admin/equipment") }
+ { id, data: bikeFormToPayload(form) },
+ { onSuccess: () => router.push("/admin/bikes") }
  )
  }
 
@@ -82,18 +82,18 @@ export default function EditEquipmentPage() {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b border-slate-200">
           <div className="space-y-1.5">
             <div className="flex items-center gap-2 text-slate-500 mb-2 font-bold text-sm">
-              <Link href="/admin/equipment" className="hover:text-primary transition-colors">المعدات</Link>
+              <Link href="/admin/bikes" className="hover:text-primary transition-colors">الدراجات הנارية</Link>
               <ArrowRight className="h-3 w-3" />
               <span className="text-slate-800">تعديل {form.title}</span>
             </div>
-            <h1 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">تعديل بيانات المعدة</h1>
+            <h1 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">تعديل بيانات الدراجة</h1>
             <p className="text-sm md:text-base text-slate-500 font-bold max-w-2xl">
-              تحديث بيانات المعدة الثقيلة أو الزراعية
+              تحديث بيانات الدراجة النارية
             </p>
           </div>
           <div className="flex items-center gap-3 shrink-0">
             <Button variant="outline" asChild className="h-11 border-slate-200 text-slate-600 font-black rounded-xl hover:bg-slate-50 px-6">
-              <Link href="/admin/equipment">إلغاء الأمر</Link>
+              <Link href="/admin/bikes">إلغاء الأمر</Link>
             </Button>
             <Button
               onClick={onSubmit}
@@ -106,7 +106,7 @@ export default function EditEquipmentPage() {
         </div>
 
         <form onSubmit={onSubmit} className="mt-8 space-y-8">
-          <EquipmentForm
+          <BikeForm
             form={form}
             onChange={setForm}
             errors={errors}
@@ -122,7 +122,7 @@ export default function EditEquipmentPage() {
               {updateMutation.isPending ? "جاري الحفظ..." : "حفظ التحديثات"}
             </Button>
             <Button type="button" variant="outline" asChild className="flex-1 md:flex-[0_0_auto] h-14 border-slate-200 text-slate-600 hover:bg-slate-50 font-black rounded-xl px-12 text-lg">
-              <Link href="/admin/equipment">إلغاء الأمر</Link>
+              <Link href="/admin/bikes">إلغاء الأمر</Link>
             </Button>
           </div>
         </form>

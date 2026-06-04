@@ -28,7 +28,7 @@ const EquipmentSchema = new mongoose.Schema({
  },
  category: {
  type: String,
- enum: ['جرار', 'حفار', 'شاحنة', 'معدة زراعية', 'معدة بناء', 'موتوسيكل', 'توك توك', 'تروسيكل', 'أخرى'],
+ enum: ['جرار', 'حفار', 'شاحنة', 'معدة زراعية', 'معدة بناء', 'موتوسيكل', 'توك توك', 'تروسيكل', 'سكوتر', 'دراجة نارية', 'أخرى'],
  default: 'معدة زراعية',
  },
  condition: {
@@ -77,6 +77,10 @@ const EquipmentSchema = new mongoose.Schema({
  featured: {
  type: Boolean,
  default: false,
+ },
+ showroom: {
+ type: mongoose.Schema.Types.ObjectId,
+ ref: 'Showroom',
  },
 }, {
  timestamps: true,

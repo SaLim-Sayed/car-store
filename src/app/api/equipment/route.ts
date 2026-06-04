@@ -38,11 +38,11 @@ export async function GET(request: NextRequest) {
 
  if (category) {
  query.category = category;
- } else if (type === 'bikes') {
- query.category = { $in: ['موتوسيكل', 'توك توك', 'تروسيكل'] };
- } else if (type === 'equipment') {
- query.category = { $nin: ['موتوسيكل', 'توك توك', 'تروسيكل'] };
- }
+  } else if (type === 'bikes') {
+  query.category = { $in: ['موتوسيكل', 'توك توك', 'تروسيكل', 'سكوتر', 'دراجة نارية'] };
+  } else if (type === 'equipment') {
+  query.category = { $nin: ['موتوسيكل', 'توك توك', 'تروسيكل', 'سكوتر', 'دراجة نارية'] };
+  }
 
  if (featured === 'true') query.featured = true;
 

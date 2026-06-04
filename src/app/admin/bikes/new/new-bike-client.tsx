@@ -7,46 +7,46 @@ import { Button } from "@/components/ui/button"
 import { ArrowRight } from "lucide-react"
 import { useCreateEquipment } from "@/hooks/useEquipment"
 import {
-  EquipmentForm,
-  emptyEquipmentForm,
-  equipmentFormToPayload,
-  validateEquipmentForm,
-  type EquipmentFormData,
-} from "@/components/equipment-form"
+  BikeForm,
+  emptyBikeForm,
+  bikeFormToPayload,
+  validateBikeForm,
+  type BikeFormData,
+} from "@/components/bike-form"
 
-function coerceCategory(raw?: string): EquipmentFormData["category"] | undefined {
+function coerceCategory(raw?: string): BikeFormData["category"] | undefined {
   if (!raw) return undefined
-  const allowed: EquipmentFormData["category"][] = [
-    "جرار",
-    "حفار",
-    "شاحنة",
-    "معدة زراعية",
-    "معدة بناء",
+  const allowed: BikeFormData["category"][] = [
+    "موتوسيكل",
+    "توك توك",
+    "تروسيكل",
+    "سكوتر",
+    "دراجة نارية",
     "أخرى",
   ]
-  return allowed.includes(raw as EquipmentFormData["category"])
-    ? (raw as EquipmentFormData["category"])
+  return allowed.includes(raw as BikeFormData["category"])
+    ? (raw as BikeFormData["category"])
     : undefined
 }
 
-export default function NewEquipmentClient({ initialCategory }: { initialCategory?: string }) {
+export default function NewBikeClient({ initialCategory }: { initialCategory?: string }) {
   const router = useRouter()
   const createMutation = useCreateEquipment()
-  const [form, setForm] = useState<EquipmentFormData>(() => ({
-    ...emptyEquipmentForm,
-    category: coerceCategory(initialCategory) || emptyEquipmentForm.category,
+  const [form, setForm] = useState<BikeFormData>(() => ({
+    ...emptyBikeForm,
+    category: coerceCategory(initialCategory) || emptyBikeForm.category,
   }))
-  const [errors, setErrors] = useState<Partial<Record<keyof EquipmentFormData, string>>>({})
+  const [errors, setErrors] = useState<Partial<Record<keyof BikeFormData, string>>>({})
   const [isUploading, setIsUploading] = useState(false)
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    const validation = validateEquipmentForm(form)
+    const validation = validateBikeForm(form)
     setErrors(validation)
     if (Object.keys(validation).length > 0) return
 
-    createMutation.mutate(equipmentFormToPayload(form), {
-      onSuccess: () => router.push("/admin/equipment"),
+    createMutation.mutate(bikeFormToPayload(form), {
+      onSuccess: () => router.push("/admin/bikes"),
     })
   }
 
@@ -56,17 +56,17 @@ export default function NewEquipmentClient({ initialCategory }: { initialCategor
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b border-slate-200">
           <div className="space-y-1.5">
             <div className="flex items-center gap-2 text-slate-500 mb-2 font-bold text-sm">
-              <Link href="/admin/equipment" className="hover:text-primary transition-colors">
-                المعدات
+              <Link href="/admin/bikes" className="hover:text-primary transition-colors">
+                الدراجات הנارية
               </Link>
               <ArrowRight className="h-3 w-3" />
-              <span className="text-slate-800">إضافة معدة جديدة</span>
+              <span className="text-slate-800">إضافة دراجة جديدة</span>
             </div>
             <h1 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">
-              إضافة معدة جديدة
+              إضافة دراجة جديدة
             </h1>
             <p className="text-sm md:text-base text-slate-500 font-bold max-w-2xl">
-              آلات زراعية أو معدات ثقيلة
+              موتوسيكلات وتوك توك وتروسيكلات
             </p>
           </div>
           <div className="flex items-center gap-3 shrink-0">
@@ -75,20 +75,20 @@ export default function NewEquipmentClient({ initialCategory }: { initialCategor
               asChild
               className="h-11 border-slate-200 text-slate-600 font-black rounded-xl hover:bg-slate-50 px-6"
             >
-              <Link href="/admin/equipment">إلغاء الأمر</Link>
+              <Link href="/admin/bikes">إلغاء الأمر</Link>
             </Button>
             <Button
               onClick={onSubmit}
               disabled={createMutation.isPending || isUploading}
               className="h-11 bg-primary hover:bg-primary/90 text-white font-black rounded-xl shadow-lg shadow-primary/20 transition-all hover:scale-105 active:scale-95 px-8"
             >
-              {createMutation.isPending ? "جاري الحفظ..." : "حفظ المعدة"}
+              {createMutation.isPending ? "جاري الحفظ..." : "حفظ الدراجة"}
             </Button>
           </div>
         </div>
 
         <form onSubmit={onSubmit} className="mt-8 space-y-8">
-          <EquipmentForm
+          <BikeForm
             form={form}
             onChange={setForm}
             errors={errors}
@@ -101,7 +101,7 @@ export default function NewEquipmentClient({ initialCategory }: { initialCategor
               disabled={createMutation.isPending || isUploading}
               className="flex-1 md:flex-[0_0_auto] h-14 bg-primary hover:bg-primary/90 text-white font-black rounded-xl shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-95 px-12 text-lg"
             >
-              {createMutation.isPending ? "جاري الحفظ..." : "حفظ المعدة"}
+              {createMutation.isPending ? "جاري الحفظ..." : "حفظ الدراجة"}
             </Button>
             <Button
               type="button"
@@ -109,7 +109,7 @@ export default function NewEquipmentClient({ initialCategory }: { initialCategor
               asChild
               className="flex-1 md:flex-[0_0_auto] h-14 border-slate-200 text-slate-600 hover:bg-slate-50 font-black rounded-xl px-12 text-lg"
             >
-              <Link href="/admin/equipment">إلغاء الأمر</Link>
+              <Link href="/admin/bikes">إلغاء الأمر</Link>
             </Button>
           </div>
         </form>

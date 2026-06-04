@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Tractor, Edit, Trash2, Plus, Search, Settings, ArrowUpRight } from "lucide-react"
+import { Bike, Edit, Trash2, Plus, Search, Settings, ArrowUpRight } from "lucide-react"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import {
@@ -21,8 +21,8 @@ import {
 } from "@/components/ui/dialog"
 import { useEquipment, useDeleteEquipment, type Equipment } from "@/hooks/useEquipment"
 
-export default function AdminEquipmentPage() {
-  const { data, isLoading } = useEquipment(1, 100, { type: 'equipment' })
+export default function AdminBikesPage() {
+  const { data, isLoading } = useEquipment(1, 100, { type: 'bikes' })
   const deleteMutation = useDeleteEquipment()
   const equipment = data?.data || []
   
@@ -66,16 +66,16 @@ export default function AdminEquipmentPage() {
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b border-slate-200">
           <div className="space-y-1.5">
-            <h1 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">إدارة المعدات الثقيلة</h1>
+            <h1 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">إدارة الدراجات النارية</h1>
             <p className="text-sm md:text-base text-slate-500 font-bold max-w-2xl">
-              إدارة مخزون الجرارات، الحفارات، والمعدات الثقيلة المعروضة. أضف معدات جديدة أو حدث المخزون الحالي.
+              إدارة مخزون الدراجات، التوك توك، والتروسيكلات المعروضة. أضف دراجة جديدة أو حدث المخزون الحالي.
             </p>
           </div>
           <div className="flex items-center gap-3 shrink-0">
             <Button asChild className="h-11 bg-slate-950 hover:bg-slate-800 text-white font-black rounded-xl shadow-lg shadow-slate-900/20 transition-all hover:scale-105 active:scale-95 px-6">
-              <Link href="/admin/equipment/new">
+              <Link href="/admin/bikes/new">
                 <Plus className="h-5 w-5 ml-2" />
-                إضافة معدة
+                إضافة دراجة
               </Link>
             </Button>
           </div>
@@ -97,9 +97,9 @@ export default function AdminEquipmentPage() {
             <CardHeader className="p-6 border-b border-slate-100/60 bg-white flex flex-row items-center justify-between">
               <CardTitle className="flex items-center gap-3 text-lg font-black text-slate-800">
                 <div className="p-2 bg-primary/10 rounded-lg text-primary">
-                  <Tractor className="h-5 w-5" />
+                  <Bike className="h-5 w-5" />
                 </div>
-                قائمة المعدات ({filteredEquipment.length})
+                قائمة الدراجات ({filteredEquipment.length})
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0 overflow-x-auto">
@@ -107,7 +107,7 @@ export default function AdminEquipmentPage() {
                 <table className="w-full text-right border-collapse min-w-[900px]">
                   <thead>
                     <tr className="border-y border-slate-100/80 text-slate-500 text-[11px] font-semibold text-slate-600 uppercase tracking-wider font-bold bg-slate-50/50">
-                      <th className="py-2.5 px-4 pr-8">المعدة</th>
+                      <th className="py-2.5 px-4 pr-8">الدراجة</th>
                       <th className="py-2.5 px-4">السعر</th>
                       <th className="py-2.5 px-4">التصنيف</th>
                       <th className="py-2.5 px-4">الحالة</th>
@@ -128,7 +128,7 @@ export default function AdminEquipmentPage() {
                                 />
                               ) : (
                                 <div className="w-full h-full flex items-center justify-center text-slate-300">
-                                  <Tractor className="h-5 w-5" />
+                                  <Bike className="h-5 w-5" />
                                 </div>
                               )}
                             </div>
@@ -170,7 +170,7 @@ export default function AdminEquipmentPage() {
                         <td className="py-2.5 px-4 pl-8 text-center">
                           <div className="flex items-center justify-center gap-2 opacity-100">
                             <Button asChild size="sm" variant="ghost" className="h-9 w-9 p-0 rounded-lg text-slate-500 hover:text-primary hover:bg-slate-100">
-                              <Link href={`/admin/equipment/${item._id}/edit`}>
+                              <Link href={`/admin/bikes/${item._id}/edit`}>
                                 <Edit className="h-4.5 w-4.5" />
                               </Link>
                             </Button>
@@ -187,7 +187,7 @@ export default function AdminEquipmentPage() {
                               </DialogTrigger>
                               <DialogContent className="rounded-[2rem] p-8 border-0 shadow-2xl">
                                 <DialogHeader className="space-y-3">
-                                  <DialogTitle className="text-xl font-bold text-slate-900">حذف المعدة؟</DialogTitle>
+                                  <DialogTitle className="text-xl font-bold text-slate-900">حذف الدراجة؟</DialogTitle>
                                   <DialogDescription className="text-sm font-bold text-slate-500 leading-relaxed">
                                     سيتم حذف {item.title || item.brand} نهائياً من قاعدة البيانات. هذا الإجراء لا يمكن التراجع عنه.
                                   </DialogDescription>
@@ -215,11 +215,11 @@ export default function AdminEquipmentPage() {
               ) : (
                 <div className="text-center py-16 text-slate-500 text-sm font-bold flex flex-col items-center gap-4">
                   <div className="w-16 h-16 bg-slate-50 rounded-lg flex items-center justify-center">
-                    <Tractor className="h-8 w-8 text-slate-300" />
+                    <Bike className="h-8 w-8 text-slate-300" />
                   </div>
                   <h3 className="text-lg font-[1000] text-slate-700">لا توجد نتائج</h3>
                   <p className="text-slate-500 font-medium">
-                    {searchTerm ? "لم نجد أي معدة تطابق بحثك حالياً" : "لم يتم إضافة أي معدات للمخزون بعد"}
+                    {searchTerm ? "لم نجد أي دراجة تطابق بحثك حالياً" : "لم يتم إضافة أي دراجات للمخزون بعد"}
                   </p>
                 </div>
               )}
@@ -229,7 +229,7 @@ export default function AdminEquipmentPage() {
             {totalPages > 1 && (
               <div className="flex items-center justify-between border-t border-slate-100 p-4 bg-white">
                 <span className="text-sm text-slate-500 font-medium">
-                  عرض {(currentPage - 1) * itemsPerPage + 1} إلى {Math.min(currentPage * itemsPerPage, filteredEquipment.length)} من أصل {filteredEquipment.length} معدة
+                  عرض {(currentPage - 1) * itemsPerPage + 1} إلى {Math.min(currentPage * itemsPerPage, filteredEquipment.length)} من أصل {filteredEquipment.length} دراجة
                 </span>
                 <div className="flex items-center gap-2">
                   <Button
