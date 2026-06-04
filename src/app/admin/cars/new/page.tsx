@@ -14,7 +14,7 @@ import Link from "next/link"
 import { RichTextEditor } from "@/components/rich-text-editor"
 import { YearPicker } from "@/components/year-picker"
 import { currentYear } from "@/lib/date-utils"
-import { cn } from "@/lib/utils"
+import { cn, toEnglishDigits } from "@/lib/utils"
 import { MultiImageUpload } from "@/components/multi-image-upload"
 
 const FUEL_TYPES = ["بنزين", "كهرباء", "غاز طبيعي", "غاز", "سولار"] as const
@@ -119,9 +119,9 @@ export default function NewCarPage() {
     const newErrors: Partial<Record<keyof CarForm, string>> = {}
     if (!form.brand) newErrors.brand = "مطلوب"
     if (!form.model) newErrors.model = "مطلوب"
-    if (!form.year || isNaN(Number(form.year))) newErrors.year = "مطلوب"
-    if (form.price && isNaN(Number(form.price))) newErrors.price = "يجب أن يكون رقماً"
-    if (form.mileage && isNaN(Number(form.mileage))) newErrors.mileage = "يجب أن يكون رقماً"
+    if (!form.year || isNaN(Number(toEnglishDigits(form.year)))) newErrors.year = "مطلوب"
+    if (form.price && isNaN(Number(toEnglishDigits(form.price)))) newErrors.price = "يجب أن يكون رقماً"
+    if (form.mileage && isNaN(Number(toEnglishDigits(form.mileage)))) newErrors.mileage = "يجب أن يكون رقماً"
     if (!form.color) newErrors.color = "مطلوب"
     if (!form.location?.trim()) newErrors.location = "مطلوب"
     if (!form.description || form.description.length < 10)
@@ -142,9 +142,9 @@ export default function NewCarPage() {
     try {
       const payload = {
         ...form,
-        year: Number(form.year),
-        price: form.price ? Number(form.price) : undefined,
-        mileage: form.mileage ? Number(form.mileage) : undefined,
+        year: Number(toEnglishDigits(form.year)),
+        price: form.price ? Number(toEnglishDigits(form.price)) : undefined,
+        mileage: form.mileage ? Number(toEnglishDigits(form.mileage)) : undefined,
         phone: form.phone.trim(),
         location: form.location.trim(),
         locationLink: form.locationLink.trim(),
@@ -259,8 +259,8 @@ export default function NewCarPage() {
                       <Label htmlFor="price" className="text-sm font-black text-slate-700">السعر (ج.م) <span className="text-slate-500 font-medium">(اختياري)</span></Label>
                       <Input
                         id="price"
-                        type="number"
-                        min={0}
+                        type="text"
+                        inputMode="numeric"
                         value={form.price}
                         onChange={(e) => set("price", e.target.value)}
                         placeholder="1,250,000"
@@ -275,8 +275,8 @@ export default function NewCarPage() {
                       <Label htmlFor="mileage" className="text-sm font-black text-slate-700">المسافة (كم) <span className="text-slate-500 font-medium">(اختياري)</span></Label>
                       <Input
                         id="mileage"
-                        type="number"
-                        min={0}
+                        type="text"
+                        inputMode="numeric"
                         value={form.mileage}
                         onChange={(e) => set("mileage", e.target.value)}
                         placeholder="0"
@@ -477,7 +477,8 @@ export default function NewCarPage() {
                       <Phone className="absolute right-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
                       <Input
                         id="phone"
-                        type="tel"
+                        type="text"
+                        inputMode="numeric"
                         value={form.phone}
                         onChange={(e) => set("phone", e.target.value)}
                         placeholder="01012345678"

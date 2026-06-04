@@ -13,6 +13,7 @@ import {
   Tractor,
   Bike,
   Users,
+  Settings,
   LogOut,
   ExternalLink,
   Menu,
@@ -29,6 +30,7 @@ const adminLinks = [
   { href: "/admin/showrooms", label: "المعارض", icon: Store },
   { href: "/admin/news", label: "الأخبار", icon: Newspaper },
   { href: "/admin/users", label: "المستخدمون", icon: Users },
+  { href: "/admin/settings", label: "الإعدادات", icon: Settings },
 ];
 
 export function AdminSidebar() {

@@ -6,6 +6,7 @@ import { Phone, MapPin, ArrowUp, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getWhatsAppUrl, WHATSAPP_MESSAGES } from "@/lib/whatsapp";
 import { SITE_PHONE_DISPLAY } from "@/lib/phone";
+import { useSettings } from "@/hooks/useSettings";
 
 // Custom SVG components for brand social icons
 const FacebookIcon = ({ className }: { className?: string }) => (
@@ -43,6 +44,9 @@ const TwitterIcon = ({ className }: { className?: string }) => (
 );
 
 export function Footer() {
+  const { data: settingsData } = useSettings();
+  const settings = settingsData?.data || {};
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -68,24 +72,30 @@ export function Footer() {
 
             {/* Social Icons */}
             <div className="flex items-center gap-3 pt-2">
+              {(!settings.facebook || settings.facebook) && (
+                <a
+                  href={settings.facebook || "https://www.facebook.com/share/1GWZAJfyKL/"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="h-10 w-10 rounded-xl bg-white/10 hover:bg-[#E28328] text-white flex items-center justify-center transition-all duration-300 transform hover:-translate-y-1"
+                  aria-label="فيسبوك"
+                >
+                  <FacebookIcon className="h-5 w-5" />
+                </a>
+              )}
+              {settings.twitter && (
+                <a
+                  href={settings.twitter}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="h-10 w-10 rounded-xl bg-white/10 hover:bg-[#E28328] text-white flex items-center justify-center transition-all duration-300 transform hover:-translate-y-1"
+                  aria-label="تويتر"
+                >
+                  <TwitterIcon className="h-5 w-5" />
+                </a>
+              )}
               <a
-                href="https://www.facebook.com/share/1GWZAJfyKL/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="h-10 w-10 rounded-xl bg-white/10 hover:bg-[#E28328] text-white flex items-center justify-center transition-all duration-300 transform hover:-translate-y-1"
-                aria-label="فيسبوك"
-              >
-                <FacebookIcon className="h-5 w-5" />
-              </a>
-              <a
-                href="#"
-                className="h-10 w-10 rounded-xl bg-white/10 hover:bg-[#E28328] text-white flex items-center justify-center transition-all duration-300 transform hover:-translate-y-1"
-                aria-label="تويتر"
-              >
-                <TwitterIcon className="h-5 w-5" />
-              </a>
-              <a
-                href={getWhatsAppUrl(WHATSAPP_MESSAGES.default)}
+                href={getWhatsAppUrl(WHATSAPP_MESSAGES.default, settings.phoneE164)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="h-10 w-10 rounded-xl bg-white/10 hover:bg-[#22C55E] text-white flex items-center justify-center transition-all duration-300 transform hover:-translate-y-1"
@@ -196,13 +206,13 @@ export function Footer() {
                 <div className="h-9 w-9 rounded-lg bg-white/10 flex items-center justify-center shrink-0">
                   <MapPin className="h-4.5 w-4.5 text-[#E28328]" />
                 </div>
-                <span>مدينة المنيا. ميدان الحميات، مصر</span>
+                <span>{settings.address || "مدينة المنيا. ميدان الحميات، مصر"}</span>
               </div>
               <div className="flex items-center gap-3">
                 <div className="h-9 w-9 rounded-lg bg-white/10 flex items-center justify-center shrink-0">
                   <Phone className="h-4.5 w-4.5 text-[#E28328]" />
                 </div>
-                <span dir="ltr">{SITE_PHONE_DISPLAY}</span>
+                <span dir="ltr">{settings.phoneDisplay || SITE_PHONE_DISPLAY}</span>
               </div>
             </div>
 
@@ -211,7 +221,7 @@ export function Footer() {
               className="w-full h-14 rounded-xl bg-[#22C55E] hover:bg-[#1eb052] text-white font-black text-base transition-all duration-300 shadow-lg shadow-blue-950/20 hover:scale-[1.02]"
             >
               <a
-                href={getWhatsAppUrl(WHATSAPP_MESSAGES.default)}
+                href={getWhatsAppUrl(WHATSAPP_MESSAGES.default, settings.phoneE164)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2"

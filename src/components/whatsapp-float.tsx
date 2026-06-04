@@ -2,9 +2,11 @@
 
 import { getWhatsAppUrl, WHATSAPP_MESSAGES } from '@/lib/whatsapp';
 import { WhatsAppIcon } from '@/components/whatsapp-icon';
+import { useSettings } from '@/hooks/useSettings';
 
 export function WhatsAppFloat() {
- const href = getWhatsAppUrl(WHATSAPP_MESSAGES.default);
+ const { data: settingsData } = useSettings();
+ const href = getWhatsAppUrl(WHATSAPP_MESSAGES.default, settingsData?.data?.phoneE164);
 
  return (
  <a

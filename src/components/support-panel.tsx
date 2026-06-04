@@ -3,8 +3,11 @@
 import { getTelHref, SITE_PHONE_DISPLAY } from "@/lib/phone";
 import { getWhatsAppUrl } from "@/lib/whatsapp";
 import { Headphones, MessagesSquare } from "lucide-react";
+import { useSettings } from "@/hooks/useSettings";
 
 export function SupportPanel() {
+  const { data: settingsData } = useSettings();
+  const settings = settingsData?.data || {};
   return (
     <section className="py-16 bg-white border-t border-slate-100" dir="rtl">
       <div className="container mx-auto px-4 max-w-7xl">
@@ -17,7 +20,7 @@ export function SupportPanel() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Card 2: Contact Sales */}
           <a
-            href={getTelHref()}
+            href={getTelHref(null, settings.phoneE164)}
             className="flex items-center justify-between gap-4 py-4 px-6 md:p-6 bg-white border border-slate-100 rounded-2xl shadow-sm hover:shadow-md hover:border-primary/20 transition-all duration-300 group"
           >
             {/* Left Side: Headset Icon */}
@@ -31,7 +34,7 @@ export function SupportPanel() {
                 اتصل بالمبيعات
               </h3>
               <p className="text-xs md:text-sm font-bold text-slate-500">
-                تواصل مع فريق المبيعات لدينا ({SITE_PHONE_DISPLAY})
+                تواصل مع فريق المبيعات لدينا ({settings.phoneDisplay || SITE_PHONE_DISPLAY})
               </p>
             </div>
           </a>
@@ -40,6 +43,7 @@ export function SupportPanel() {
           <a
             href={getWhatsAppUrl(
               "مرحباً، أريد الاستفسار عن الدعم الفني لموقع سيارات المنيا",
+              settings.phoneE164
             )}
             target="_blank"
             rel="noopener noreferrer"

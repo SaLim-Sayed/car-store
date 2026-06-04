@@ -13,7 +13,7 @@ import { Plus, X, Phone, Bike, ImagePlus, Info, Settings, MapPin, CheckCircle, T
 import { SITE_PHONE_DISPLAY } from "@/lib/phone"
 import { RichTextEditor } from "@/components/rich-text-editor"
 import { useShowrooms } from "@/hooks/useContent"
-import { cn } from "@/lib/utils"
+import { cn, toEnglishDigits } from "@/lib/utils"
 
 const CATEGORIES = ["موتوسيكل", "توك توك", "تروسيكل", "سكوتر", "دراجة نارية", "أخرى"] as const
 const CONDITIONS = ["جديد", "مستعمل"] as const
@@ -176,8 +176,8 @@ export function BikeForm({
                 <Label htmlFor="price" className="text-sm font-black text-slate-700">السعر (ج.م) <span className="text-slate-500 font-medium">(اختياري)</span></Label>
                 <Input
                   id="price"
-                  type="number"
-                  min={0}
+                  type="text"
+                  inputMode="numeric"
                   value={form.price}
                   onChange={(e) => set("price", e.target.value)}
                   placeholder="1,250,000"
@@ -188,8 +188,8 @@ export function BikeForm({
               <div className="space-y-2.5">
                 <Label className="text-sm font-black text-slate-700">ساعات التشغيل</Label>
                 <Input
-                  type="number"
-                  min={0}
+                  type="text"
+                  inputMode="numeric"
                   value={form.hours}
                   onChange={(e) => set("hours", e.target.value)}
                   placeholder="0"
@@ -418,7 +418,8 @@ export function BikeForm({
               <div className="relative">
                 <Phone className="absolute right-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
                 <Input
-                  type="tel"
+                  type="text"
+                  inputMode="numeric"
                   value={form.phone}
                   onChange={(e) => set("phone", e.target.value)}
                   placeholder="01012345678"
@@ -443,11 +444,11 @@ export function bikeFormToPayload(form: BikeFormData) {
     title: form.title.trim(),
     brand: form.brand.trim(),
     model: form.model.trim(),
-    year: form.year ? Number(form.year) : undefined,
-    price: form.price ? Number(form.price) : undefined,
+    year: form.year ? Number(toEnglishDigits(form.year)) : undefined,
+    price: form.price ? Number(toEnglishDigits(form.price)) : undefined,
     category: form.category,
     condition: form.condition,
-    hours: form.hours ? Number(form.hours) : undefined,
+    hours: form.hours ? Number(toEnglishDigits(form.hours)) : undefined,
     location: form.location.trim(),
     phone: form.phone.trim(),
     description: form.description.trim(),
@@ -464,7 +465,8 @@ export function validateBikeForm(form: BikeFormData) {
   const errors: Partial<Record<keyof BikeFormData, string>> = {}
   if (!form.title.trim()) errors.title = "مطلوب"
   if (!form.brand.trim()) errors.brand = "مطلوب"
-  if (form.price && isNaN(Number(form.price))) errors.price = "يجب أن يكون رقماً"
+  if (form.price && isNaN(Number(toEnglishDigits(form.price)))) errors.price = "يجب أن يكون رقماً"
+  if (form.hours && isNaN(Number(toEnglishDigits(form.hours)))) errors.hours = "يجب أن يكون رقماً"
   if (!form.description.trim()) errors.description = "مطلوب"
   if (!form.images.length) errors.images = "صورة واحدة على الأقل مطلوبة"
   return errors

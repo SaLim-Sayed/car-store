@@ -9,7 +9,8 @@ export const WHATSAPP_MESSAGES = {
 } as const;
 
 export function getWhatsAppUrl(
- message: string = WHATSAPP_MESSAGES.default
+ message: string = WHATSAPP_MESSAGES.default,
+ phone: string = WHATSAPP_PHONE
 ): string {
- return `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(message)}`;
+ return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
 }
