@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Phone, MessageSquare, MapPin, Heart, ChevronLeft, ChevronRight, Calendar } from "lucide-react";
+import { Phone, MessageSquare, MapPin, ChevronLeft, ChevronRight, Calendar } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { getTelHref, getContactPhone } from "@/lib/phone";
 import { useState, useRef } from "react";

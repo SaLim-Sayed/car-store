@@ -63,7 +63,7 @@ async function getCar(id: string): Promise<CarDoc | null> {
       features: car.features || [],
       status: car.status,
       locationLink: car.locationLink,
-      showroom: car.showroom,
+      showroom: car.showroom ? JSON.parse(JSON.stringify(car.showroom)) : null,
       createdAt: car.createdAt ? car.createdAt.toISOString() : new Date().toISOString()
     } as CarDoc;
   } catch (error) {

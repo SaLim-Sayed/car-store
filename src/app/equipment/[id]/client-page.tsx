@@ -12,7 +12,6 @@ import {
  Tractor,
  Gauge,
  Share2,
- Heart,
  MessageSquare,
  Check,
  ChevronRight,
@@ -260,15 +259,6 @@ export default function EquipmentDetailPage({
           className="size-11 rounded-xl border-neutral-200/90 bg-background shadow-none hover:bg-muted"
         >
           <Share2 className="size-5" />
-        </Button>
-        <Button
-          type="button"
-          variant="outline"
-          size="icon"
-          aria-label="المفضلة"
-          className="size-11 rounded-xl border-neutral-200/90 bg-background shadow-none hover:bg-muted"
-        >
-          <Heart className="size-5" />
         </Button>
       </div>
     </div>
