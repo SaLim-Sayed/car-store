@@ -476,7 +476,7 @@ export default function ClientPage({ initialCar }: { initialCar: CarDoc }) {
  <Button 
    variant="link" 
    className="mt-2 text-primary font-bold w-full"
-   onClick={() => router.push(`/showrooms`)}
+   onClick={() => router.push(`/showrooms/${car.showroom?._id}`)}
  >
    عرض تفاصيل المعرض
  </Button>
@@ -502,6 +502,13 @@ export default function ClientPage({ initialCar }: { initialCar: CarDoc }) {
  <Button
  variant="ghost"
  className="w-full text-primary font-black hover:bg-primary/5"
+ onClick={() => {
+ if (car.showroom?._id) {
+ router.push(`/showrooms/${car.showroom._id}`);
+ } else {
+ router.push('/cars');
+ }
+ }}
  >
  عرض جميع الإعلانات
  <ChevronRight className="mr-2 h-4 w-4 rotate-180" />

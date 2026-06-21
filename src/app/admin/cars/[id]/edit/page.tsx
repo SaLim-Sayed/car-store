@@ -100,7 +100,7 @@ export default function EditCarPage() {
             features: c.features ?? [],
             status: c.status,
             locationLink: c.locationLink ?? "",
-            showroom: c.showroom ?? "",
+            showroom: c.showroom ? (typeof c.showroom === 'object' ? c.showroom._id : c.showroom) : "",
           })
         } else {
           toast.error("السيارة غير موجودة")
@@ -137,10 +137,11 @@ export default function EditCarPage() {
     setForm((prev) => ({
       ...prev,
       showroom: nextId,
+      location: sr?.address ?? prev.location,
       phone: sr?.phone ?? prev.phone,
       locationLink: sr?.locationLink ?? prev.locationLink,
     }))
-    setErrors((prev) => ({ ...prev, showroom: undefined, phone: undefined, locationLink: undefined }))
+    setErrors((prev) => ({ ...prev, showroom: undefined, location: undefined, phone: undefined, locationLink: undefined }))
   }
 
   const addFeature = () => {

@@ -95,10 +95,11 @@ export default function NewCarPage() {
       ...prev,
       showroom: nextId,
       // Fill from showroom (user can still edit after)
+      location: sr?.address ?? prev.location,
       phone: sr?.phone ?? prev.phone,
       locationLink: sr?.locationLink ?? prev.locationLink,
     }))
-    setErrors((prev) => ({ ...prev, showroom: undefined, phone: undefined, locationLink: undefined }))
+    setErrors((prev) => ({ ...prev, showroom: undefined, location: undefined, phone: undefined, locationLink: undefined }))
   }
 
   const addFeature = () => {
