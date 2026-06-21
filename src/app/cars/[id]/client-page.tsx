@@ -2,6 +2,7 @@
 
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { CallButton } from "@/components/call-button";
+import { ShareButton } from "@/components/share-button";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -213,24 +214,11 @@ export default function ClientPage({ initialCar }: { initialCar: CarDoc }) {
      </div>
 
      <div className="flex items-center gap-2 lg:flex-col shrink-0">
-       <Button
-         type="button"
-         variant="outline"
-         size="icon"
-         aria-label="مشاركة الإعلان"
+       <ShareButton
          className="size-11 rounded-xl border-neutral-200/90 bg-white shadow-none hover:bg-gray-50"
-       >
-         <Share2 className="size-5" />
-       </Button>
-       <Button
-         type="button"
-         variant="outline"
-         size="icon"
-         aria-label="المفضلة"
-         className="size-11 rounded-xl border-neutral-200/90 bg-white shadow-none hover:bg-gray-50"
-       >
-         <Heart className="size-5" />
-       </Button>
+         title={`${car.brand} ${car.model} ${car.year}`}
+         text={`شاهد سيارة ${car.brand} ${car.model} موديل ${car.year} المعروضة للبيع`}
+       />
      </div>
    </div>
  </header>

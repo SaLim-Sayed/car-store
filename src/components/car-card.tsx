@@ -11,6 +11,7 @@ import { useState, useRef } from "react";
 import { FaWhatsapp } from "react-icons/fa";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FormattedDate } from "@/components/formatted-date";
+import { ShareButton } from "@/components/share-button";
 import "swiper/css";
 
 interface CarCardProps {
@@ -35,7 +36,6 @@ interface CarCardProps {
 
 export function CarCard({ car }: CarCardProps) {
   const router = useRouter();
-  const [isFavorite, setIsFavorite] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const swiperRef = useRef<any>(null);
 
@@ -120,21 +120,16 @@ export function CarCard({ car }: CarCardProps) {
             <span>⚡ تيربو</span>
           </div>
 
-          {/* Top Left: Favorites Button */}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              setIsFavorite(!isFavorite);
-            }}
-            className="absolute top-3 left-3 z-10 h-8 w-8 rounded-full bg-black/35 hover:bg-black/50 text-white flex items-center justify-center transition-all"
-            aria-label="حفظ في المفضلة"
-          >
-            <Heart
-              className={`h-4.5 w-4.5 transition-colors ${
-                isFavorite ? "fill-red-500 text-red-500" : "text-white"
-              }`}
+          {/* Top Left Actions */}
+          <div className="absolute top-3 left-3 z-10 flex items-center gap-2">
+            <ShareButton
+              className="h-8 w-8 rounded-full bg-black/35 hover:bg-black/50 text-white border-0"
+              iconClassName="h-4 w-4"
+              title={`${car.brand} ${car.model}`}
+              text={`شاهد سيارة ${car.brand} ${car.model} موديل ${car.year} المعروضة للبيع`}
+              url={`${typeof window !== "undefined" ? window.location.origin : ""}/cars/${car._id}`}
             />
-          </button>
+          </div>
 
           {/* Bottom Left: Images Counter */}
           <div className="absolute bottom-3 left-3 z-10 bg-black/60 backdrop-blur-sm text-white font-bold text-xs px-2.5 py-1 rounded-md sm:rounded-lg select-none">

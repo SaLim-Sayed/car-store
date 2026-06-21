@@ -12,6 +12,7 @@ import { ChevronLeft, Mail, MapPin, Phone, Store } from "lucide-react";
 import Link from "next/link";
 import { formatPhoneDisplay } from "@/lib/phone";
 import { buildPageMetadata } from "@/lib/seo";
+import { ShareButton } from "@/components/share-button";
 import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
@@ -182,6 +183,11 @@ export default async function ShowroomDetailsPage({
                       اتصال
                     </a>
                   </Button>
+                  <ShareButton
+                    className="h-12 w-12 rounded-xl bg-white border-neutral-200"
+                    title={showroom.name}
+                    text={`شاهد سيارات معرض ${showroom.name}`}
+                  />
                 </div>
               </div>
 
