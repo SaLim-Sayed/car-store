@@ -57,7 +57,7 @@ async function getShowroomCars(showroomId: string) {
     .sort({ createdAt: -1 })
     .limit(24)
     .lean();
-  return cars as any[];
+  return JSON.parse(JSON.stringify(cars)) as any[];
 }
 
 export async function generateMetadata({
