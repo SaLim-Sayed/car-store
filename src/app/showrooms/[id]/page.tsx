@@ -127,35 +127,33 @@ export default async function ShowroomDetailsPage({
           <Card className="border-0 shadow-none rounded-2xl md:rounded-[2rem] bg-white overflow-hidden">
             <CardContent className="p-6 md:p-10 grid grid-cols-1 lg:grid-cols-12 gap-8">
               <div className="lg:col-span-7 space-y-5">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex items-center gap-4 min-w-0">
-                    <div className="h-16 w-16 md:h-20 md:w-20 bg-gray-50 rounded-xl flex items-center justify-center border-2 border-gray-100 overflow-hidden shrink-0">
-                      {showroom.logo ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={showroom.logo}
-                          alt={showroom.name}
-                          className="w-full h-full object-contain p-3"
-                        />
-                      ) : (
-                        <Store className="h-10 w-10 text-primary opacity-20" />
-                      )}
+                <div className="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-10">
+                  <div className="flex size-32 shrink-0 items-center justify-center overflow-hidden rounded-[2rem] border border-neutral-100 bg-white shadow-lg md:size-52">
+                    {showroom.logo ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={showroom.logo}
+                        alt={showroom.name}
+                        className="h-full w-full object-fill p-0"
+                      />
+                    ) : (
+                      <Store className="size-16 text-primary opacity-20 md:size-24" />
+                    )}
+                  </div>
+                  <div className="min-w-0 flex-1 space-y-4 pt-2 md:pt-6 text-center md:text-start">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h1 className="text-2xl font-[1000] leading-tight tracking-tighter text-slate-900 md:text-4xl">
+                        {showroom.name}
+                      </h1>
+                      {showroom.featured ? (
+                        <Badge className="rounded-full border-0 bg-amber-100 px-3 py-1 text-[11px] font-black text-amber-700">
+                          شريك متميز
+                        </Badge>
+                      ) : null}
                     </div>
-                    <div className="min-w-0 space-y-1">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <h1 className="text-2xl md:text-4xl font-[1000] tracking-tighter truncate">
-                          {showroom.name}
-                        </h1>
-                        {showroom.featured ? (
-                          <Badge className="bg-amber-100 text-amber-700 border-0 rounded-full px-3 py-1 font-black text-[11px]">
-                            شريك متميز
-                          </Badge>
-                        ) : null}
-                      </div>
-                      <div className="flex items-center gap-2 text-muted-foreground font-bold">
-                        <MapPin className="h-5 w-5 text-primary shrink-0" />
-                        <span className="line-clamp-2">{showroom.address}</span>
-                      </div>
+                    <div className="flex items-start gap-2 font-bold text-muted-foreground">
+                      <MapPin className="mt-0.5 size-5 shrink-0 text-primary" />
+                      <span className="leading-relaxed">{showroom.address}</span>
                     </div>
                   </div>
                 </div>

@@ -105,7 +105,7 @@ function ShowroomsPageContent() {
                         <img
                           src={showroom.logo}
                           alt={showroom.name}
-                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                          className="w-full h-full object-fill transition-transform duration-700 group-hover:scale-105"
                         />
                       ) : (
                         <Store className="h-16 w-16 text-primary opacity-20" />

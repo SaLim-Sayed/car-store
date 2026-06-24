@@ -68,10 +68,23 @@ export function MapEmbed({
           </div>
         </div>
       ) : (
-        <p className="text-xs font-bold text-muted-foreground">
-          لا يمكن عرض الخريطة داخل الصفحة لهذا الرابط، لكن يمكنك فتحه في خرائط
-          Google.
-        </p>
+        <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-6 text-center shadow-sm">
+          <div className="flex size-12 items-center justify-center rounded-full bg-slate-100 text-slate-400">
+            <MapPin className="size-6" />
+          </div>
+          <div className="space-y-1">
+            <h4 className="text-sm font-black text-slate-700">موقع المعرض متاح خارجياً</h4>
+            <p className="text-xs font-bold leading-relaxed text-slate-500 max-w-[250px] mx-auto">
+              لا يمكن عرض الخريطة داخل الصفحة لهذا الرابط، لكن يمكنك فتحه مباشرة في خرائط Google.
+            </p>
+          </div>
+          <Button asChild variant="outline" size="sm" className="mt-2 h-10 rounded-xl font-bold bg-white">
+            <a href={raw} target="_blank" rel="noopener noreferrer">
+              فتح في خرائط Google
+              <ExternalLink className="mr-2 h-4 w-4" aria-hidden />
+            </a>
+          </Button>
+        </div>
       )}
     </section>
   );
