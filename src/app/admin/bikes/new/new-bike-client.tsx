@@ -17,11 +17,17 @@ import {
 function coerceCategory(raw?: string): BikeFormData["category"] | undefined {
   if (!raw) return undefined
   const allowed: BikeFormData["category"][] = [
+    "سيارة",
     "موتوسيكل",
     "توك توك",
     "تروسيكل",
     "سكوتر",
     "دراجة نارية",
+    "جرار",
+    "حفار",
+    "شاحنة",
+    "معدة زراعية",
+    "معدة بناء",
     "أخرى",
   ]
   return allowed.includes(raw as BikeFormData["category"])

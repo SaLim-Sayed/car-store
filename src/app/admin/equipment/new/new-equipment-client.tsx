@@ -17,6 +17,12 @@ import {
 function coerceCategory(raw?: string): EquipmentFormData["category"] | undefined {
   if (!raw) return undefined
   const allowed: EquipmentFormData["category"][] = [
+    "سيارة",
+    "موتوسيكل",
+    "توك توك",
+    "تروسيكل",
+    "سكوتر",
+    "دراجة نارية",
     "جرار",
     "حفار",
     "شاحنة",

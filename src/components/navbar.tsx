@@ -4,7 +4,7 @@ import { GlobalSearch } from "@/components/global-search";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/lib/store/authStore";
 import { cn } from "@/lib/utils";
-import { ChevronLeft, Menu, Settings, X } from "lucide-react";
+import { ChevronLeft, Menu, Settings, X, Home, Car, Store, Tractor, Bike, Newspaper } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -52,12 +52,12 @@ export function Navbar() {
   };
 
   const navLinks = [
-    { href: "/", label: "الرئيسية" },
-    { href: "/cars", label: "السيارات" },
-    { href: "/showrooms", label: "المعارض" },
-    { href: "/equipment", label: "المعدات الثقيلة" },
-    { href: "/bikes", label: "الدراجات النارية" },
-    { href: "/news", label: "الأخبار" },
+    { href: "/", label: "الرئيسية", icon: Home },
+    { href: "/cars", label: "السيارات", icon: Car },
+    { href: "/showrooms", label: "المعارض", icon: Store },
+    { href: "/equipment", label: "المعدات الثقيلة", icon: Tractor },
+    { href: "/bikes", label: "الدراجات النارية", icon: Bike },
+    { href: "/news", label: "الأخبار", icon: Newspaper },
   ];
 
   const isHomePage = pathname === "/";
@@ -85,7 +85,7 @@ export function Navbar() {
           aria-hidden="true"
         />
       )}
-      <header ref={navRef} className="fixed top-0 z-[50] w-full overflow-visible transition-all duration-500 bg-[#1B3E7A] text-white shadow-none">
+      <header ref={navRef} className="fixed top-0 z-[50] w-full overflow-visible transition-all duration-500 bg-[#1B3E7A]/95 backdrop-blur-md border-b border-white/10 text-white shadow-sm">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-12 lg:h-16">
             <div className="flex items-center gap-3 lg:gap-6 min-w-0">
@@ -116,23 +116,25 @@ export function Navbar() {
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center lg:gap-3 xl:gap-8 lg:mr-4 xl:mr-10 shrink-0">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`text-sm lg:text-sm xl:text-lg font-black transition-all duration-500 relative group py-2 ${
-                    pathname === link.href
-                      ? "text-white"
-                      : "text-white/80 hover:text-white"
-                  }`}
-                >
-                  {link.label}
-                  <span
-                    className={`absolute -bottom-1 right-0 h-1 bg-primary rounded-full transition-all duration-500 shadow-[0_0_12px_rgba(217,119,6,0.4)] ${pathname === link.href ? "w-full" : "w-0 group-hover:w-full"}`}
-                  />
-                </Link>
-              ))}
+            <nav className="hidden lg:flex items-center lg:gap-2 xl:gap-4 lg:mr-4 xl:mr-8 shrink-0">
+              {navLinks.map((link) => {
+                const Icon = link.icon;
+                const isActive = pathname === link.href;
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm xl:text-base font-black transition-all duration-300 group ${
+                      isActive
+                        ? "bg-white/15 text-white shadow-inner"
+                        : "text-white/80 hover:bg-white/10 hover:text-white"
+                    }`}
+                  >
+                    <Icon className={`h-4 w-4 ${isActive ? "text-white" : "text-white/70 group-hover:text-white transition-colors duration-300"}`} />
+                    {link.label}
+                  </Link>
+                );
+              })}
             </nav>
           </div>
 
@@ -278,22 +280,21 @@ export function Navbar() {
           )}
 
           {navLinks.map((link) => {
+            const Icon = link.icon;
             const isActive = pathname === link.href;
             return (
               <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className={`flex items-center justify-between px-5 py-3 rounded-xl text-lg font-black transition-all ${
+                className={`flex items-center gap-3 px-5 py-3 rounded-xl text-lg font-black transition-all ${
                   isActive
-                    ? "bg-[#E28328] text-white shadow-none"
+                    ? "bg-white/15 text-white shadow-inner"
                     : "text-white/80 hover:bg-white/10 hover:text-white"
                 }`}
               >
+                <Icon className={`h-5 w-5 ${isActive ? "text-white" : "text-white/60"}`} />
                 {link.label}
-                {isActive && (
-                  <div className="h-1.5 w-1.5 lg:h-2 lg:w-2 rounded-full bg-white" />
-                )}
               </Link>
             );
           })}

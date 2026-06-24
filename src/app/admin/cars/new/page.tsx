@@ -20,10 +20,12 @@ import { MultiImageUpload } from "@/components/multi-image-upload"
 const FUEL_TYPES = ["بنزين", "كهرباء", "غاز طبيعي", "غاز", "سولار"] as const
 const TRANSMISSIONS = ["يدوي", "أوتوماتيك"] as const
 const STATUSES = ["متاح", "مباع", "محجوز"] as const
+const BODY_TYPES = ["سيارة", "دراجة نارية", "دراجة", "توك توك", "معدة", "أخرى"] as const
 
 type FuelType = (typeof FUEL_TYPES)[number]
 type Transmission = (typeof TRANSMISSIONS)[number]
 type Status = (typeof STATUSES)[number]
+type BodyType = (typeof BODY_TYPES)[number]
 
 interface CarForm {
   brand: string
@@ -42,6 +44,7 @@ interface CarForm {
   status: Status
   locationLink: string
   showroom: string
+  bodyType: BodyType
 }
 
 export default function NewCarPage() {
@@ -68,6 +71,7 @@ export default function NewCarPage() {
     locationLink: "",
     showroom: "",
     images: [],
+    bodyType: "سيارة",
   })
 
   const [errors, setErrors] = useState<Partial<Record<keyof CarForm, string>>>({})
@@ -150,6 +154,7 @@ export default function NewCarPage() {
         location: form.location.trim(),
         locationLink: form.locationLink.trim(),
         showroom: form.showroom || undefined,
+        bodyType: form.bodyType,
       }
 
       const res = await fetch("/api/cars", {
@@ -217,6 +222,20 @@ export default function NewCarPage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-6 space-y-6">
+                  <div className="space-y-2.5">
+                    <Label htmlFor="bodyType" className="text-sm font-black text-slate-700">نوع المركبة <span className="text-rose-500">*</span></Label>
+                    <select
+                      id="bodyType"
+                      value={form.bodyType}
+                      onChange={(e) => set("bodyType", e.target.value as BodyType)}
+                      className="flex h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-bold focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-primary transition-colors"
+                    >
+                      {BODY_TYPES.map((type) => (
+                        <option key={type} value={type}>{type}</option>
+                      ))}
+                    </select>
+                  </div>
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2.5">
                       <Label htmlFor="brand" className="text-sm font-black text-slate-700">العلامة التجارية <span className="text-rose-500">*</span></Label>

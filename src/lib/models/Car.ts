@@ -65,6 +65,11 @@ const CarSchema = new mongoose.Schema({
  enum: ['متاح', 'مباع', 'محجوز'],
  default: 'متاح',
  },
+ bodyType: {
+ type: String,
+ enum: ['سيارة', 'دراجة نارية', 'دراجة', 'توك توك', 'معدة', 'أخرى'],
+ default: 'سيارة',
+ },
   location: {
    type: String,
    trim: true,

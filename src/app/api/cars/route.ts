@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongoose';
 import Car from '@/lib/models/Car';
+import Equipment from '@/lib/models/Equipment';
 import '@/lib/models/Showroom';
 import { handleApiError } from '@/lib/api-helpers';
 
@@ -71,7 +72,42 @@ export async function POST(request: NextRequest) {
  await connectDB();
  
  const body = await request.json();
- 
+
+ if (body.bodyType && body.bodyType !== 'سيارة') {
+   let category = 'أخرى';
+   if (body.bodyType === 'دراجة نارية') category = 'موتوسيكل';
+   if (body.bodyType === 'توك توك') category = 'توك توك';
+   if (body.bodyType === 'معدة') category = 'معدة زراعية';
+
+   const newEquipment = new Equipment({
+     title: `${body.brand} ${body.model}`,
+     brand: body.brand,
+     model: body.model,
+     year: body.year,
+     price: body.price,
+     category: category,
+     condition: 'مستعمل',
+     hours: body.mileage || 0,
+     location: body.location,
+     phone: body.phone,
+     description: body.description,
+     images: body.images,
+     features: body.features,
+     status: body.status,
+     locationLink: body.locationLink,
+     showroom: body.showroom,
+     featured: false,
+   });
+
+   await newEquipment.save();
+
+   return NextResponse.json({
+     success: true,
+     data: newEquipment,
+     message: 'تمت إضافة المركبة إلى قسم (دراجات أو معدات) بنجاح',
+   }, { status: 201 });
+ }
+
  const car = new Car(body);
  await car.save();
  

@@ -15,7 +15,7 @@ import { RichTextEditor } from "@/components/rich-text-editor"
 import { useShowrooms } from "@/hooks/useContent"
 import { cn, toEnglishDigits } from "@/lib/utils"
 
-const CATEGORIES = ["موتوسيكل", "توك توك", "تروسيكل", "سكوتر", "دراجة نارية", "أخرى"] as const
+const CATEGORIES = ["سيارة", "موتوسيكل", "توك توك", "تروسيكل", "سكوتر", "دراجة نارية", "جرار", "حفار", "شاحنة", "معدة زراعية", "معدة بناء", "أخرى"] as const
 const CONDITIONS = ["جديد", "مستعمل"] as const
 const STATUSES = ["متاح", "مباع", "محجوز"] as const
 

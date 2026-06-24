@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongoose';
 import Equipment from '@/lib/models/Equipment';
+import Car from '@/lib/models/Car';
 import { handleApiError, getServerSession } from '@/lib/api-helpers';
 import { persistImageUrl } from '@/lib/persist-image';
 
@@ -47,6 +48,37 @@ export async function PUT(
 
  if (body.images?.length) {
  body.images = await normalizeImages(body.images);
+ }
+
+ if (body.category === 'سيارة') {
+   const newCar = new Car({
+     brand: body.brand,
+     model: body.model || 'غير محدد',
+     year: body.year || new Date().getFullYear(),
+     price: body.price,
+     fuelType: 'بنزين',
+     transmission: 'أوتوماتيك',
+     mileage: body.hours || 0,
+     color: 'غير محدد',
+     location: body.location,
+     phone: body.phone,
+     description: body.description,
+     images: body.images,
+     features: body.features,
+     status: body.status,
+     locationLink: body.locationLink,
+     showroom: body.showroom,
+     bodyType: 'سيارة',
+   });
+   
+   await newCar.save();
+   await Equipment.findByIdAndDelete(id);
+
+   return NextResponse.json({
+     success: true,
+     data: newCar,
+     message: 'تم تحويل المركبة إلى قسم السيارات بنجاح',
+   });
  }
 
  const equipment = await Equipment.findByIdAndUpdate(id, body, {
