@@ -149,38 +149,44 @@ export function CarCard({ car }: CarCardProps) {
 
       <CardContent className="flex flex-1 flex-col p-4 text-right">
         {/* Title */}
-        <h3 className="font-[1000] text-base md:text-lg text-slate-800 transition-colors group-hover:text-primary leading-snug line-clamp-1 mb-1.5">
+        <h3 className="font-[1000] text-lg md:text-xl text-slate-900 transition-colors group-hover:text-primary leading-snug line-clamp-1 mb-2">
           {car.brand} {car.model}
         </h3>
 
         {/* Technical Specs Line */}
         <div
-          className="flex items-center justify-end gap-1.5 text-[11px] md:text-xs font-bold text-slate-500 mb-2.5"
-          dir="rtl"
+          className="flex items-center justify-start gap-1.5 text-[11px] md:text-xs font-bold text-slate-500 mb-2.5"
         >
           <span>{car.year}</span>
-          <span className="text-slate-300 font-normal">|</span>
-          <span>
-            {car.mileage !== undefined && car.mileage !== null ? `${car.mileage.toLocaleString()} كم` : "غير محدد"}
-          </span>
           <span className="text-slate-300 font-normal">|</span>
           <span>{car.transmission}</span>
           <span className="text-slate-300 font-normal">|</span>
           <span>{car.fuelType}</span>
+          {car.mileage !== undefined && car.mileage !== null && (
+            <>
+              <span className="text-slate-300 font-normal">|</span>
+              <span>{car.mileage.toLocaleString()} كم</span>
+            </>
+          )}
         </div>
 
         {/* Price Section */}
-        <div className="flex items-baseline justify-end gap-1 mb-4 select-none">
-          <span className="text-xl md:text-2xl font-[1000] text-[#1B3E7A]">
+        <div className="flex items-end justify-start gap-1.5 mb-4 select-none">
+          <span className="text-sm font-bold text-slate-400 mb-1">
+            السعر:
+          </span>
+          <span className="text-2xl md:text-3xl font-[1000] text-[#1B3E7A] tracking-tight leading-none">
             {car.price ? car.price.toLocaleString() : "حسب الطلب"}
           </span>
-          <span className="text-[11px] md:text-xs font-black text-[#1B3E7A]/80">
-            جنيه
-          </span>
+          {car.price ? (
+            <span className="text-xs font-bold text-slate-500 mb-1">
+              جنيه
+            </span>
+          ) : null}
         </div>
 
         {/* Custom Tags Section */}
-        <div className="flex flex-wrap items-center justify-end gap-1.5 mb-5 border-t border-slate-100/80 pt-3">
+        <div className="flex flex-wrap items-center justify-start gap-1.5 mb-5 border-t border-slate-100/80 pt-3">
           {/* Location Tag */}
           <span className="inline-flex items-center gap-0.5 rounded-lg bg-slate-50 px-2 py-0.5 text-[10px] font-black text-slate-500 border border-slate-100">
             <MapPin className="h-3 w-3 text-slate-500 shrink-0" />

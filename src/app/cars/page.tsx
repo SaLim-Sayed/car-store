@@ -12,14 +12,15 @@ import { Breadcrumbs } from "@/components/breadcrumbs"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Car as CarIcon } from "lucide-react"
 import { useCarStore } from "@/lib/store/carStore"
-import { useCars, CarsFilters, Car } from "@/hooks/useCars"
+import { useInfiniteCars, CarsFilters, Car } from "@/hooks/useCars"
+import { useInView } from "react-intersection-observer"
 import { useShowroomById } from "@/hooks/useContent"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 function CarsPageContent() {
  const searchParams = useSearchParams()
  const { filters, setFilters } = useCarStore()
- const [page, setPage] = useState(1)
+ const { ref, inView } = useInView()
 
  useEffect(() => {
  const q = searchParams.get("search")
@@ -37,25 +38,35 @@ function CarsPageContent() {
  sortBy: filters.sortBy || undefined,
  }
 
- const { data: carsData, isLoading, error, refetch } = useCars(page, 9, apiFilters)
- const cars = carsData?.data || []
- const pagination = carsData?.pagination
+  const { 
+    data: carsData, 
+    isLoading, 
+    error, 
+    refetch,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage
+  } = useInfiniteCars(9, apiFilters)
+
+  useEffect(() => {
+    if (inView && hasNextPage) {
+      fetchNextPage()
+    }
+  }, [inView, hasNextPage, fetchNextPage])
+
+  const cars = carsData?.pages.flatMap(page => page.data) || []
+  const pagination = carsData?.pages[0]?.pagination
 
  const showroomId = searchParams.get("showroom")
  const { data: showroomData } = useShowroomById(showroomId || "")
  const showroomInfo = showroomData?.data
 
- const handlePageChange = (newPage: number) => {
- setPage(newPage)
- window.scrollTo({ top: 0, behavior: "smooth" })
- }
-
  return (
  <div className="min-h-screen bg-background">
  
- <main className="container mx-auto px-4 py-24">
- <Breadcrumbs items={[{ label: "سيارات للبيع" }]} />
- <div className="mb-16 space-y-4">
+  <main className="container mx-auto px-4 py-8 md:py-24">
+  <Breadcrumbs items={[{ label: "سيارات للبيع" }]} />
+  <div className="mt-4 mb-8 md:mb-16 space-y-3 md:space-y-4">
  <h1 className="text-5xl md:text-6xl font-[1000] tracking-tighter">
  {showroomInfo ? `سيارات ${showroomInfo.name}` : "جميع السيارات"}
  </h1>
@@ -64,12 +75,12 @@ function CarsPageContent() {
  ? `تصفح السيارات المتاحة لدى ${showroomInfo.name}`
  : "اكتشف مجموعتنا الواسعة من السيارات الجديدة والمستعملة في المنيا"}
  </p>
- <div className="h-1.5 w-32 bg-primary rounded-full" />
- </div>
+  <div className="h-1.5 w-24 md:w-32 bg-primary rounded-full mt-4" />
+  </div>
 
- <div className="mb-16">
- <CarSearch />
- </div>
+  <div className="mb-8 md:mb-16">
+  <CarSearch />
+  </div>
 
  {isLoading ? (
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -116,13 +127,14 @@ function CarsPageContent() {
  <div className="flex items-center gap-2">
  <span className="text-sm font-bold text-muted-foreground whitespace-nowrap">ترتيب حسب:</span>
  <Select
+ dir="rtl"
  value={filters.sortBy || 'newest'}
  onValueChange={(val) => setFilters({ sortBy: val })}
  >
  <SelectTrigger className="w-[160px] h-10 rounded-xl border-2 border-gray-100 bg-white font-bold text-sm">
  <SelectValue placeholder="الترتيب" />
  </SelectTrigger>
- <SelectContent className="rounded-xl border-0 shadow-lg bg-white">
+ <SelectContent className="rounded-xl border border-gray-100 shadow-xl bg-white">
  <SelectItem value="newest">الأحدث أولاً</SelectItem>
  <SelectItem value="oldest">الأقدم أولاً</SelectItem>
  </SelectContent>
@@ -130,50 +142,21 @@ function CarsPageContent() {
  </div>
  </div>
 
- <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
- {cars.map((car: Car) => (
- <CarCard key={car._id} car={car} />
- ))}
- </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {cars.map((car: Car) => (
+            <CarCard key={car._id} car={car} />
+          ))}
+        </div>
 
- {pagination && pagination.pages > 1 && (
- <div className="flex justify-center pt-8">
- <div className="flex items-center gap-3">
- <Button
- variant="outline"
- className="rounded-xl h-12 px-6 font-bold"
- onClick={() => handlePageChange(Math.max(1, page - 1))}
- disabled={page === 1}
- >
- السابق
- </Button>
- 
- <div className="flex gap-2">
- {Array.from({ length: pagination.pages }, (_, i) => i + 1).map((p) => (
- <Button
- key={p}
- variant={p === page ? "default" : "outline"}
- className={`w-12 h-12 rounded-xl font-bold transition-all ${
- p === page ? "shadow-none scale-110" : ""
- }`}
- onClick={() => handlePageChange(p)}
- >
- {p}
- </Button>
- ))}
- </div>
-
- <Button
- variant="outline"
- className="rounded-xl h-12 px-6 font-bold"
- onClick={() => handlePageChange(Math.min(pagination.pages, page + 1))}
- disabled={page === pagination.pages}
- >
- التالي
- </Button>
- </div>
- </div>
- )}
+        {/* Infinite Scroll Sentinel */}
+        {hasNextPage && (
+          <div ref={ref} className="flex justify-center pt-12 pb-8">
+            <div className="flex flex-col items-center gap-4">
+              <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+              <span className="text-muted-foreground font-bold">جاري تحميل المزيد...</span>
+            </div>
+          </div>
+        )}
  </div>
  )}
  </main>

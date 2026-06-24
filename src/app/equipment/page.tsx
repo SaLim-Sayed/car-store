@@ -41,17 +41,17 @@ export default function EquipmentPage() {
  <div className="min-h-screen bg-background">
  <Navbar />
 
- <main className="container mx-auto px-4 py-24">
- <Breadcrumbs items={[{ label: "آلات ومعدات" }]} />
- <div className="mb-12 space-y-4">
+  <main className="container mx-auto px-4 py-8 md:py-24">
+  <Breadcrumbs items={[{ label: "آلات ومعدات" }]} />
+  <div className="mt-4 mb-8 md:mb-16 space-y-3 md:space-y-4">
  <h1 className="text-5xl md:text-6xl font-[1000] tracking-tighter">آلات زراعية ومعدات ثقيلة</h1>
  <p className="text-muted-foreground text-xl font-medium">
  جرارات، حفارات، شاحنات، ومعدات بناء وزراعة في محافظة المنيا
  </p>
- <div className="h-1.5 w-32 bg-primary rounded-full" />
- </div>
+  <div className="h-1.5 w-24 md:w-32 bg-primary rounded-full mt-4" />
+  </div>
 
- <form onSubmit={handleSearch} className="mb-8 flex gap-3 max-w-2xl">
+  <form onSubmit={handleSearch} className="mb-8 flex gap-3 max-w-2xl">
  <div className="relative flex-1">
  <Search className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
  <Input
@@ -87,6 +87,7 @@ export default function EquipmentPage() {
  <div className="flex items-center gap-2 shrink-0 w-full sm:w-auto self-end md:self-auto">
  <span className="text-sm font-bold text-muted-foreground whitespace-nowrap">ترتيب حسب:</span>
  <Select
+ dir="rtl"
  value={sortBy}
  onValueChange={(val) => {
  setSortBy(val)
@@ -96,7 +97,7 @@ export default function EquipmentPage() {
  <SelectTrigger className="w-[160px] h-10 rounded-xl border-2 border-gray-100 bg-white font-bold text-sm">
  <SelectValue placeholder="الترتيب" />
  </SelectTrigger>
- <SelectContent className="rounded-xl border-0 shadow-lg bg-white">
+ <SelectContent className="rounded-xl border border-gray-100 shadow-xl bg-white">
  <SelectItem value="newest">الأحدث أولاً</SelectItem>
  <SelectItem value="oldest">الأقدم أولاً</SelectItem>
  </SelectContent>

@@ -4,6 +4,8 @@ import { usePathname } from "next/navigation";
 import { Navbar } from "@/components/navbar";
 import { WhatsAppFloat } from "@/components/whatsapp-float";
 import { Footer } from "@/components/footer";
+import { BottomNav } from "@/components/bottom-nav";
+import { ScrollToTop } from "@/components/scroll-to-top";
 
 export function ClientShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -15,7 +17,7 @@ export function ClientShell({ children }: { children: React.ReactNode }) {
   }
 
   const isHomePage = pathname === "/";
-  const contentPadding = isHomePage ? "" : "pt-[7.5rem] md:pt-[8.75rem]";
+  const contentPadding = isHomePage ? "pb-20 md:pb-0" : "pt-20 md:pt-[7.5rem] pb-20 md:pb-0";
 
   return (
     <>
@@ -23,6 +25,8 @@ export function ClientShell({ children }: { children: React.ReactNode }) {
       <div className={contentPadding}>{children}</div>
       <Footer />
       <WhatsAppFloat />
+      <ScrollToTop />
+      <BottomNav />
     </>
   );
 }

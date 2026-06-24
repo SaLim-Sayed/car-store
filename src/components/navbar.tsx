@@ -8,13 +8,25 @@ import { ChevronLeft, Menu, Settings, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 export function Navbar() {
   const pathname = usePathname();
   const { user, isAuthenticated, logout } = useAuthStore();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const navRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (isMobileMenuOpen && navRef.current && !navRef.current.contains(event.target as Node)) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+    
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isMobileMenuOpen]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -65,30 +77,38 @@ export function Navbar() {
   }, [isHomePage, isScrolled]);
 
   return (
-    <header className="fixed top-0 z-[50] w-full overflow-visible transition-all duration-500 bg-[#1B3E7A] text-white shadow-none">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-12 lg:h-16">
-          <div className="flex items-center gap-3 lg:gap-6 min-w-0">
+    <>
+      {isMobileMenuOpen && (
+        <div
+          className="fixed inset-0 z-[40] bg-black/50 backdrop-blur-sm transition-opacity lg:hidden"
+          onClick={() => setIsMobileMenuOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+      <header ref={navRef} className="fixed top-0 z-[50] w-full overflow-visible transition-all duration-500 bg-[#1B3E7A] text-white shadow-none">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between h-12 lg:h-16">
+            <div className="flex items-center gap-3 lg:gap-6 min-w-0">
             <Link
               href="/"
               className="flex items-center gap-2 lg:gap-3 transition-all shrink-0"
             >
-              <div className="relative hidden lg:block rounded-md overflow-hidden shrink-0 w-[150px] xl:w-[240px]">
+              <div className="relative hidden lg:block rounded-md overflow-hidden shrink-0 w-[200px] xl:w-[320px]">
                 <Image
                   src="/logo.png"
                   alt="سيارات المنيا"
-                  width={240}
-                  height={192}
+                  width={320}
+                  height={256}
                   priority
                   className="w-full h-auto object-contain"
                 />
               </div>
-              <div className="relative block lg:hidden rounded-md overflow-hidden shrink-0 w-[120px] sm:w-[150px]">
+              <div className="relative block lg:hidden rounded-md overflow-hidden shrink-0 w-[160px] sm:w-[200px]">
                 <Image
                   src="/logo.png"
                   alt="سيارات المنيا"
-                  width={150}
-                  height={120}
+                  width={200}
+                  height={160}
                   priority
                   className="w-full h-auto object-contain"
                 />
@@ -320,5 +340,6 @@ export function Navbar() {
         </nav>
       )}
     </header>
+    </>
   );
 }

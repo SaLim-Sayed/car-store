@@ -53,13 +53,14 @@ export default function HomePage() {
         <div className="container mx-auto px-4 py-8 md:py-16 space-y-16 md:space-y-20">
           {/* Services — mobile: compact links, desktop: full cards */}
           <section className="space-y-5">
-            {/* Mobile-only: 3-col enhanced tiles */}
-            <div className="grid grid-cols-3 gap-3 md:hidden">
+            {/* Mobile-only: 1-col enhanced horizontal tiles */}
+            <div className="grid grid-cols-1 gap-4 md:hidden">
               {[
                 {
                   title: "بيع سيارتك",
                   icon: Car,
                   accentBg: "bg-[#1B3E7A]",
+                  shadowColor: "shadow-[#1B3E7A]/30",
                   link: getWhatsAppUrl(WHATSAPP_MESSAGES.sellCar),
                   isExternal: true,
                   label: "اعرض الآن",
@@ -70,6 +71,7 @@ export default function HomePage() {
                   title: "إضافة معرض",
                   icon: PlusCircle,
                   accentBg: "bg-amber-600",
+                  shadowColor: "shadow-amber-500/30",
                   link: getWhatsAppUrl(
                     "مرحباً، أريد إضافة معرضي على سوق سيارات المنيا",
                   ),
@@ -82,6 +84,7 @@ export default function HomePage() {
                   title: "إضافة معدة",
                   icon: Tractor,
                   accentBg: "bg-emerald-600",
+                  shadowColor: "shadow-emerald-500/30",
                   link: getWhatsAppUrl(WHATSAPP_MESSAGES.sellEquipment),
                   isExternal: true,
                   label: "أضف معدة",
@@ -91,31 +94,38 @@ export default function HomePage() {
               ].map((s, i) => (
                 <div
                   key={i}
-                  className="flex flex-col items-center text-center bg-white border border-gray-200 rounded-xl p-3 gap-2"
+                  className="flex items-center bg-gradient-to-br from-white to-slate-50/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100/80 rounded-[1.5rem] p-4 group active:scale-[0.98] transition-transform"
                 >
                   <div
-                    className={`w-11 h-11 ${s.accentBg} rounded-xl flex items-center justify-center`}
+                    className={`w-16 h-16 ${s.accentBg} rounded-[1.25rem] flex flex-shrink-0 items-center justify-center shadow-lg ${s.shadowColor}`}
                   >
-                    <s.icon className="w-5 h-5 text-white" />
+                    <s.icon className="w-8 h-8 text-white" />
                   </div>
-                  <p className="text-xs font-black text-foreground leading-tight">
-                    {s.title}
-                  </p>
-                  <Link
-                    href={s.link}
-                    {...(s.isExternal
-                      ? { target: "_blank", rel: "noopener noreferrer" }
-                      : {})}
-                    className={`w-full text-[10px] font-bold py-1.5 rounded-lg text-white ${s.accentBg} hover:opacity-90 transition-opacity`}
-                  >
-                    {s.label}
-                  </Link>
-                  <Link
-                    href={s.sub}
-                    className="text-[10px] font-bold text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    {s.subLabel}
-                  </Link>
+                  
+                  <div className="flex-1 mr-4 flex flex-col justify-center">
+                    <p className="text-lg font-black text-slate-800 mb-2.5">
+                      {s.title}
+                    </p>
+                    
+                    <div className="flex items-center gap-2">
+                      <Link
+                        href={s.link}
+                        {...(s.isExternal
+                          ? { target: "_blank", rel: "noopener noreferrer" }
+                          : {})}
+                        className={`flex-1 flex items-center justify-center text-xs font-black py-2.5 rounded-xl text-white ${s.accentBg} hover:opacity-90 shadow-md ${s.shadowColor}`}
+                      >
+                        {s.label}
+                      </Link>
+                      
+                      <Link
+                        href={s.sub}
+                        className="flex-1 flex items-center justify-center text-xs font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 py-2.5 rounded-xl"
+                      >
+                        {s.subLabel}
+                      </Link>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>

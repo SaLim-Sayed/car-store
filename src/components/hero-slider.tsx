@@ -5,26 +5,32 @@ import { Car, Shield, Zap } from "lucide-react";
 
 export function HeroSlider() {
   return (
-    <section className="relative w-full bg-[#1B3E7A]">
-      {/* Background texture */}
-      <div className="absolute inset-0 opacity-[0.07] bg-[url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1600&q=80')] bg-cover bg-center" />
+    <section className="relative w-full bg-[#1B3E7A] overflow-hidden">
+      {/* Background Image with Rich Gradient Overlay */}
+      <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1600&q=80')] bg-cover bg-center" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#1B3E7A]/95 via-[#1B3E7A]/80 to-[#1B3E7A]" />
 
       {/* Main content */}
-      <div className="relative z-10 pt-28 pb-10 md:pt-36 md:pb-12">
-        <div className="container mx-auto px-4 max-w-3xl text-center space-y-5">
-          <h1 className="text-2xl md:text-4xl font-black text-white leading-tight tracking-tight">
-            أكبر سوق سيارات في <span className="text-[#E28328]">المنيا</span>
+      <div className="relative z-10 pt-32 pb-14 md:pt-40 md:pb-20">
+        <div className="container mx-auto px-4 max-w-4xl text-center space-y-6 md:space-y-8">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white leading-[1.1] tracking-tight">
+            سوق سيارات <span className="text-[#E28328] relative inline-block">
+              المنيا
+              <div className="absolute -bottom-2 left-0 right-0 h-2 bg-[#E28328]/30 blur-sm rounded-full" />
+            </span> الأول
           </h1>
-          <p className="text-sm md:text-base text-white/70 font-medium max-w-xl mx-auto">
-            ابحث عن سيارتك الجديدة أو المستعملة بأفضل الأسعار والمواصفات
+          <p className="text-base sm:text-lg md:text-xl text-white/80 font-medium max-w-2xl mx-auto leading-relaxed">
+            استكشف أضخم تشكيلة من السيارات الجديدة والمستعملة، والمعدات الثقيلة، بأفضل الأسعار وبكل ثقة وأمان.
           </p>
 
           {/* Search box */}
-          <div className="bg-white rounded-lg overflow-hidden border border-white/10 mt-4 mx-auto max-w-2xl">
-            <GlobalSearch
-              variant="hero"
-              placeholder="ابحث بالماركة، الموديل، أو الكلمات المفتاحية..."
-            />
+          <div className="bg-white/10 backdrop-blur-md p-2 rounded-2xl md:rounded-3xl border border-white/20 mt-8 mx-auto max-w-3xl shadow-2xl">
+            <div className="bg-white rounded-xl md:rounded-2xl overflow-hidden shadow-inner">
+              <GlobalSearch
+                variant="hero"
+                placeholder="ابحث بالماركة، الموديل، أو الكلمات المفتاحية..."
+              />
+            </div>
           </div>
         </div>
       </div>

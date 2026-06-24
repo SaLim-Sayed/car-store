@@ -178,13 +178,15 @@ export default function ClientPage({ initialCar }: { initialCar: CarDoc }) {
            <Calendar className="h-3.5 w-3.5 text-primary" />
            {car.year}
          </Badge>
-          <Badge
-            variant="secondary"
-            className="bg-white border-0 shadow-none px-4 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2"
-          >
-            <Gauge className="h-3.5 w-3.5 text-primary" />
-            {car.mileage !== undefined && car.mileage !== null ? `${car.mileage.toLocaleString()} كم` : "غير محدد"}
-          </Badge>
+          {car.mileage !== undefined && car.mileage !== null && (
+            <Badge
+              variant="secondary"
+              className="bg-white border-0 shadow-none px-4 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2"
+            >
+              <Gauge className="h-3.5 w-3.5 text-primary" />
+              {`${car.mileage.toLocaleString()} كم`}
+            </Badge>
+          )}
          <Badge
            variant="secondary"
            className="bg-white border-0 shadow-none px-4 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2"
@@ -202,6 +204,7 @@ export default function ClientPage({ initialCar }: { initialCar: CarDoc }) {
        </div>
 
        <div className="mt-4 flex items-baseline gap-2 tabular-nums pt-2">
+         <span className="text-xl font-bold text-slate-500 ml-2">السعر</span>
          <span className="font-serif text-4xl font-black text-primary tracking-tighter md:text-5xl">
            {car.price ? car.price.toLocaleString("ar-EG") : "حسب الطلب"}
          </span>
@@ -382,14 +385,16 @@ export default function ClientPage({ initialCar }: { initialCar: CarDoc }) {
  {new Date(car.createdAt).toLocaleDateString("ar-EG")}
  </div>
  </div>
- <div className="grid grid-cols-2 divide-x divide-gray-50 rtl:divide-x-reverse border-t border-gray-50">
- <div className="p-4 bg-gray-50/50 text-muted-foreground font-bold">
- المسافة
- </div>
- <div className="p-4 font-black">
- {car.mileage !== undefined && car.mileage !== null ? `${car.mileage.toLocaleString()} كم` : "غير محدد"}
- </div>
- </div>
+  {car.mileage !== undefined && car.mileage !== null && (
+    <div className="grid grid-cols-2 divide-x divide-gray-50 rtl:divide-x-reverse border-t border-gray-50">
+      <div className="p-4 bg-gray-50/50 text-muted-foreground font-bold">
+        المسافة
+      </div>
+      <div className="p-4 font-black">
+        {`${car.mileage.toLocaleString()} كم`}
+      </div>
+    </div>
+  )}
  <div className="grid grid-cols-2 divide-x divide-gray-50 rtl:divide-x-reverse border-t border-gray-50">
  <div className="p-4 bg-gray-50/50 text-muted-foreground font-bold">
  ناقل الحركة
@@ -550,7 +555,7 @@ export default function ClientPage({ initialCar }: { initialCar: CarDoc }) {
  <div className="flex flex-col gap-1">
  <h2 className="text-white text-xl md:text-2xl font-black">{car.brand} {car.model} {car.year}</h2>
  <div className="flex items-center gap-4">
- <p className="text-primary text-2xl font-black">{car.price ? `${car.price.toLocaleString()} ج.م` : "حسب الطلب"}</p>
+ <p className="text-primary text-2xl font-black">{car.price ? `السعر: ${car.price.toLocaleString()} ج.م` : "السعر حسب الطلب"}</p>
  <div className="hidden md:flex gap-2">
  <Badge variant="outline" className="border-white/20 text-white/60">{car.transmission}</Badge>
  <Badge variant="outline" className="border-white/20 text-white/60">{car.fuelType}</Badge>

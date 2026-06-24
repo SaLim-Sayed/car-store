@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from '@tanstack/react-query';
 import { carsApi } from '@/lib/api-client';
 import { toast } from 'sonner';
 
@@ -54,11 +54,25 @@ export function useCars(page: number = 1, limit: number = 9, filters: CarsFilter
  });
 }
 
+// Hook for fetching cars with infinite scroll
+export function useInfiniteCars(limit: number = 9, filters: CarsFilters = {}) {
+  return useInfiniteQuery({
+    queryKey: ['cars-infinite', limit, filters],
+    queryFn: ({ pageParam = 1 }) => carsApi.getCars({ page: pageParam, limit, ...filters }),
+    getNextPageParam: (lastPage: CarsResponse) => {
+      return lastPage.pagination.page < lastPage.pagination.pages
+        ? lastPage.pagination.page + 1
+        : undefined;
+    },
+    initialPageParam: 1,
+  });
+}
+
 // Hook for fetching featured cars (limited to 3)
 export function useFeaturedCars() {
  return useQuery({
  queryKey: ['featured-cars'],
- queryFn: () => carsApi.getCars({ limit: 3 }),
+ queryFn: () => carsApi.getCars({ limit: 10 }),
  staleTime: 60 * 1000, // 1 minute
  });
 }

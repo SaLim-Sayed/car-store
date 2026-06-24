@@ -17,7 +17,7 @@ export function Breadcrumbs({ items }: BreadcrumbsProps) {
     <nav
       dir="rtl"
       aria-label="مسار الصفحة"
-      className="flex items-center gap-2 bg-white/70 backdrop-blur-md border border-slate-200/50 rounded-full px-5 py-2.5 shadow-[0_2px_12px_-4px_rgba(27,62,122,0.06)] w-fit mb-8 text-sm font-black transition-all hover:shadow-[0_4px_16px_-4px_rgba(27,62,122,0.1)] text-slate-600"
+      className="flex items-center gap-2 bg-white/70 backdrop-blur-md border border-slate-200/50 rounded-full px-5 py-2.5 shadow-[0_2px_12px_-4px_rgba(27,62,122,0.06)] w-fit max-w-full overflow-hidden whitespace-nowrap mb-8 text-sm font-black transition-all hover:shadow-[0_4px_16px_-4px_rgba(27,62,122,0.1)] text-slate-600"
     >
       <Link
         href="/"
