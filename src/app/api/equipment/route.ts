@@ -46,6 +46,11 @@ export async function GET(request: NextRequest) {
 
  if (featured === 'true') query.featured = true;
 
+ const showroom = searchParams.get('showroom');
+ if (showroom) {
+  query.showroom = showroom;
+ }
+
  if (minPrice || maxPrice) {
  query.price = {};
  if (minPrice) (query.price as { $gte?: number }).$gte = parseFloat(minPrice);

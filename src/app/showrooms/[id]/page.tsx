@@ -2,12 +2,14 @@ import { notFound } from "next/navigation";
 import connectDB from "@/lib/mongoose";
 import Showroom from "@/lib/models/Showroom";
 import Car from "@/lib/models/Car";
+import Equipment from "@/lib/models/Equipment";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MapEmbed } from "@/components/map-embed";
 import { CarCard } from "@/components/car-card";
+import { EquipmentCard } from "@/components/equipment-card";
 import { ChevronLeft, Mail, MapPin, Phone, Store } from "lucide-react";
 import Link from "next/link";
 import { formatPhoneDisplay } from "@/lib/phone";
@@ -61,6 +63,15 @@ async function getShowroomCars(showroomId: string) {
   return JSON.parse(JSON.stringify(cars)) as any[];
 }
 
+async function getShowroomEquipment(showroomId: string) {
+  await connectDB();
+  const equipment = await Equipment.find({ showroom: showroomId })
+    .sort({ createdAt: -1 })
+    .limit(24)
+    .lean();
+  return JSON.parse(JSON.stringify(equipment)) as any[];
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -96,6 +107,11 @@ export default async function ShowroomDetailsPage({
   if (!showroom) notFound();
 
   const cars = await getShowroomCars(showroom._id);
+  const equipmentList = await getShowroomEquipment(showroom._id);
+
+  const BIKE_CATEGORIES = ["موتوسيكل", "توك توك", "تروسيكل", "سكوتر", "دراجة نارية"];
+  const bikes = equipmentList.filter(e => BIKE_CATEGORIES.includes(e.category));
+  const heavyEquipment = equipmentList.filter(e => !BIKE_CATEGORIES.includes(e.category));
 
   return (
     <div className="min-h-screen bg-[#F9F6F1]">
@@ -228,6 +244,54 @@ export default async function ShowroomDetailsPage({
                 </p>
               </CardContent>
             </Card>
+          )}
+
+          {bikes.length > 0 && (
+            <>
+              <div className="flex items-end justify-between gap-4 mt-8">
+                <h2 className="text-xl md:text-3xl font-[1000] tracking-tighter">
+                  دراجات المعرض
+                </h2>
+                <Button
+                  asChild
+                  variant="outline"
+                  className="rounded-xl bg-white font-bold"
+                >
+                  <Link href={`/bikes?showroom=${showroom._id}`}>
+                    عرض الكل <ChevronLeft className="h-4 w-4" />
+                  </Link>
+                </Button>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {bikes.map((bike) => (
+                  <EquipmentCard key={String(bike._id)} equipment={bike} />
+                ))}
+              </div>
+            </>
+          )}
+
+          {heavyEquipment.length > 0 && (
+            <>
+              <div className="flex items-end justify-between gap-4 mt-8">
+                <h2 className="text-xl md:text-3xl font-[1000] tracking-tighter">
+                  معدات المعرض
+                </h2>
+                <Button
+                  asChild
+                  variant="outline"
+                  className="rounded-xl bg-white font-bold"
+                >
+                  <Link href={`/equipment?showroom=${showroom._id}`}>
+                    عرض الكل <ChevronLeft className="h-4 w-4" />
+                  </Link>
+                </Button>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {heavyEquipment.map((equipment) => (
+                  <EquipmentCard key={String(equipment._id)} equipment={equipment} />
+                ))}
+              </div>
+            </>
           )}
         </div>
       </main>

@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import mongoose from "mongoose";
 import connectDB from "@/lib/mongoose";
 import Equipment from "@/lib/models/Equipment";
+import Showroom from "@/lib/models/Showroom";
 import ClientPage from "./client-page";
 import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/seo/json-ld";
@@ -30,6 +31,13 @@ interface EquipmentDoc {
   status: string;
   phone?: string;
   featured?: boolean;
+  showroom?: {
+    _id: string;
+    name: string;
+    address: string;
+    phone: string;
+    logo?: string;
+  };
   createdAt: string;
   updatedAt?: string;
 }
@@ -43,7 +51,9 @@ async function getEquipment(id: string): Promise<EquipmentDoc | null> {
 
   try {
     await connectDB();
-    const equipment = await Equipment.findById(id).lean();
+    // Ensure Showroom model is initialized
+    Showroom.init();
+    const equipment = await Equipment.findById(id).populate("showroom").lean() as any;
     if (!equipment) return null;
     
     return {
@@ -64,6 +74,15 @@ async function getEquipment(id: string): Promise<EquipmentDoc | null> {
       status: equipment.status,
       phone: equipment.phone,
       featured: equipment.featured,
+      showroom: equipment.showroom
+        ? {
+            _id: equipment.showroom._id.toString(),
+            name: equipment.showroom.name,
+            address: equipment.showroom.address,
+            phone: equipment.showroom.phone,
+            logo: equipment.showroom.logo,
+          }
+        : undefined,
       createdAt: equipment.createdAt
         ? equipment.createdAt.toISOString()
         : new Date().toISOString(),

@@ -20,8 +20,15 @@ export interface Equipment {
  features: string[];
  status: string;
  featured: boolean;
- createdAt: string;
- updatedAt: string;
+  createdAt: string;
+  updatedAt: string;
+  showroom?: string | {
+    _id: string;
+    name: string;
+    address: string;
+    phone: string;
+    logo?: string;
+  };
 }
 
 export interface EquipmentFilters {

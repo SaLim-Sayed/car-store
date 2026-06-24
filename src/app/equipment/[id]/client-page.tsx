@@ -18,6 +18,7 @@ import {
  X,
  ChevronLeft as ChevronLeftIcon,
  ChevronRight as ChevronRightIcon,
+ Store,
 } from "lucide-react"
 import { CallButton } from "@/components/call-button"
 import { Breadcrumbs } from "@/components/breadcrumbs"
@@ -482,21 +483,40 @@ export default function EquipmentDetailPage({
  <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
  جهة الإعلان
  </p>
- <div className="flex flex-col items-center gap-3">
- <div className="flex size-[4.5rem] items-center justify-center rounded-2xl border border-neutral-100 bg-gradient-to-b from-muted/80 to-muted/40 shadow-none ring-4 ring-neutral-50">
- <Tractor className="size-11 text-primary/35" />
- </div>
- <div className="space-y-1">
- <h3 className="font-serif text-xl font-bold text-[#171717]">
- المنيا للمعدات الثقيلة
- </h3>
- <div className="flex flex-wrap justify-center gap-1 text-sm font-medium text-muted-foreground">
- <MapPin className="size-4 shrink-0 text-primary" aria-hidden />
- {item.location || "مدينة المنيا. ميدان الحميات"}
- </div>
- </div>
- </div>
- </div>
+  {(() => {
+    const s = typeof item.showroom === 'object' && item.showroom !== null ? item.showroom as any : null;
+    return (
+      <div className="flex flex-col items-center gap-3">
+        <div className="flex size-[4.5rem] overflow-hidden items-center justify-center rounded-2xl border border-neutral-100 bg-gradient-to-b from-muted/80 to-muted/40 shadow-none ring-4 ring-neutral-50">
+          {s && s.logo ? (
+            <Image src={s.logo} alt={s.name} width={72} height={72} className="object-contain w-full h-full p-2" />
+          ) : s ? (
+            <Store className="size-11 text-primary/35" />
+          ) : (
+            <Tractor className="size-11 text-primary/35" />
+          )}
+        </div>
+        <div className="space-y-1">
+          {s ? (
+            <Link href={`/showrooms/${s._id}`} className="hover:text-primary transition-colors block">
+              <h3 className="font-serif text-xl font-bold text-[#171717]">
+              {s.name}
+              </h3>
+            </Link>
+          ) : (
+            <h3 className="font-serif text-xl font-bold text-[#171717]">
+            صاحب الإعلان
+            </h3>
+          )}
+          <div className="flex flex-wrap justify-center gap-1 text-sm font-medium text-muted-foreground">
+            <MapPin className="size-4 shrink-0 text-primary" aria-hidden />
+            {s && s.address ? s.address : item.location || "مدينة المنيا"}
+          </div>
+        </div>
+      </div>
+    );
+  })()}
+  </div>
 
  <div className="flex flex-col gap-3 pt-1">
  <CallButton
