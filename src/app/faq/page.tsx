@@ -19,6 +19,7 @@ import {
  FileText,
  Phone
 } from "lucide-react"
+import { CARS_MARKET_FAQ } from "@/lib/seo"
 
 const faqCategories = [
  {
@@ -60,6 +61,7 @@ const faqCategories = [
 ]
 
 const faqs = [
+ ...CARS_MARKET_FAQ.map((faq) => ({ ...faq, category: "cars" as const })),
  {
  category: "general",
  question: "ما هي ساعات عملكم؟",

@@ -66,15 +66,15 @@ function CarsPageContent() {
  <div className="min-h-screen bg-background">
  
   <main className="container mx-auto px-4 py-8 md:py-24">
-  <Breadcrumbs items={[{ label: "سيارات للبيع" }]} />
+  <Breadcrumbs items={[{ label: showroomInfo ? `سيارات ${showroomInfo.name}` : "سيارات مستعملة للبيع في المنيا" }]} />
   <div className="mt-4 mb-8 md:mb-16 space-y-3 md:space-y-4">
- <h1 className="text-5xl md:text-6xl font-[1000] tracking-tighter">
- {showroomInfo ? `سيارات ${showroomInfo.name}` : "جميع السيارات"}
+ <h1 className="text-3xl md:text-5xl font-[1000] tracking-tighter text-pretty">
+ {showroomInfo ? `سيارات ${showroomInfo.name}` : "سيارات مستعملة للبيع في المنيا"}
  </h1>
- <p className="text-muted-foreground text-xl font-medium">
+ <p className="text-muted-foreground text-lg md:text-xl font-medium max-w-3xl">
  {showroomInfo 
  ? `تصفح السيارات المتاحة لدى ${showroomInfo.name}`
- : "اكتشف مجموعتنا الواسعة من السيارات الجديدة والمستعملة في المنيا"}
+ : "إعلانات سيارات مستعملة وجديدة في المنيا وسمالوط ومراكز المحافظة. قارن الأسعار وتواصل مع البائع مباشرة بدون وسيط."}
  </p>
   <div className="h-1.5 w-24 md:w-32 bg-primary rounded-full mt-4" />
   </div>

@@ -32,13 +32,31 @@ const STATIC_PATHS = [
   "terms",
 ] as const;
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const staticEntries = STATIC_PATHS.map((path) => ({
+function staticSitemapEntry(path: (typeof STATIC_PATHS)[number]) {
+  const priority =
+    path === ""
+      ? 1.0
+      : path === "cars"
+        ? 0.95
+        : path === "bikes" || path === "equipment" || path === "showrooms"
+          ? 0.85
+          : path === "faq" || path === "finance"
+            ? 0.75
+            : 0.8;
+
+  const changeFrequency =
+    path === "" || path === "cars" ? ("daily" as const) : ("weekly" as const);
+
+  return {
     url: absoluteUrl(path),
     lastModified: new Date(),
-    changeFrequency: (path === "" ? "daily" : "weekly") as "daily" | "weekly",
-    priority: path === "" ? 1.0 : 0.8,
-  }));
+    changeFrequency,
+    priority,
+  };
+}
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const staticEntries = STATIC_PATHS.map(staticSitemapEntry);
 
   try {
     await connectDB();
@@ -55,7 +73,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: absoluteUrl(`cars/${String(car._id)}`),
       lastModified: car.updatedAt || new Date(),
       changeFrequency: "weekly" as const,
-      priority: 0.6,
+      priority: 0.7,
     }));
 
     const equipmentEntries = equipment.map((equip) => ({
