@@ -18,6 +18,7 @@ import {
   ExternalLink,
   Menu,
   X,
+  TrendingUp,
 } from "lucide-react";
 import { useAuthStore } from "@/lib/store/authStore";
 import { cn } from "@/lib/utils";
@@ -29,6 +30,7 @@ const adminLinks = [
   { href: "/admin/bikes", label: "الدراجات النارية", icon: Bike },
   { href: "/admin/showrooms", label: "المعارض", icon: Store },
   { href: "/admin/news", label: "الأخبار", icon: Newspaper },
+  { href: "/admin/reports/showroom-clicks", label: "تقارير المعارض", icon: TrendingUp },
   { href: "/admin/users", label: "المستخدمون", icon: Users },
   { href: "/admin/settings", label: "الإعدادات", icon: Settings },
 ];

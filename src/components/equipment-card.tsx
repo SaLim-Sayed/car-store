@@ -24,6 +24,27 @@ export function EquipmentCard({ equipment }: EquipmentCardProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const swiperRef = useRef<any>(null);
 
+  const trackCall = async (e: React.MouseEvent) => {
+    if (equipment.showroom) {
+      const showroomId = typeof equipment.showroom === "object" ? equipment.showroom._id : equipment.showroom;
+      if (showroomId) {
+        fetch("/api/track/click", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ 
+            type: "showroom_contact", 
+            targetId: showroomId,
+            metadata: {
+              itemName: equipment.title || `${equipment.brand} ${equipment.model || ""}`.trim(),
+              itemType: ['موتوسيكل', 'توك توك', 'تروسيكل'].includes(equipment.category) ? "bike" : "equipment",
+              itemId: equipment._id
+            }
+          }),
+        }).catch(console.error);
+      }
+    }
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case "متاح":
@@ -210,6 +231,7 @@ export function EquipmentCard({ equipment }: EquipmentCardProps) {
           {/* Call Button */}
           <a
             href={getTelHref(equipment.phone)}
+            onClick={trackCall}
             className="h-8 w-8 sm:h-10 sm:w-10 shrink-0 rounded-lg sm:rounded-xl bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE]/60 hover:bg-[#DBEAFE] flex items-center justify-center transition-all shadow-sm"
             aria-label="اتصال"
           >

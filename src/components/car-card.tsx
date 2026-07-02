@@ -31,6 +31,7 @@ interface CarCardProps {
     createdAt: string;
     phone?: string;
     location?: string;
+    showroom?: any;
   };
 }
 
@@ -38,6 +39,28 @@ export function CarCard({ car }: CarCardProps) {
   const router = useRouter();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const swiperRef = useRef<any>(null);
+
+  const trackCall = async (e: React.MouseEvent) => {
+    // e.stopPropagation() is already handled if needed, but let's allow the href to trigger.
+    if (car.showroom) {
+      const showroomId = typeof car.showroom === "object" ? car.showroom._id : car.showroom;
+      if (showroomId) {
+        fetch("/api/track/click", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ 
+            type: "showroom_contact", 
+            targetId: showroomId,
+            metadata: {
+              itemName: `${car.brand} ${car.model}`,
+              itemType: "car",
+              itemId: car._id
+            }
+          }),
+        }).catch(console.error);
+      }
+    }
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -226,6 +249,7 @@ export function CarCard({ car }: CarCardProps) {
           {/* Call Button */}
           <a
             href={getTelHref(car.phone)}
+            onClick={trackCall}
             className="h-8 w-8 sm:h-10 sm:w-10 shrink-0 rounded-lg sm:rounded-xl bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE]/60 hover:bg-[#DBEAFE] flex items-center justify-center transition-all shadow-sm"
             aria-label="اتصال"
           >

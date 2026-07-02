@@ -15,6 +15,7 @@ import Link from "next/link";
 import { formatPhoneDisplay } from "@/lib/phone";
 import { buildPageMetadata } from "@/lib/seo";
 import { ShareButton } from "@/components/share-button";
+import { ContactShowroomButton } from "@/components/contact-showroom-button";
 import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
@@ -188,15 +189,10 @@ export default async function ShowroomDetailsPage({
                       <ChevronLeft className="mr-2 h-5 w-5" />
                     </Link>
                   </Button>
-                  <Button
-                    asChild
-                    variant="outline"
-                    className="h-12 rounded-xl font-black bg-white"
-                  >
-                    <a href={`tel:${showroom.phone}`} dir="ltr">
-                      اتصال
-                    </a>
-                  </Button>
+                  <ContactShowroomButton
+                    showroomId={showroom._id}
+                    phone={showroom.phone}
+                  />
                   <ShareButton
                     className="h-12 w-12 rounded-xl bg-white border-neutral-200"
                     title={showroom.name}

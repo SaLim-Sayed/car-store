@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Skeleton } from "@/components/ui/skeleton"
 import { toast } from "sonner"
-import { ArrowRight, Plus, X, Store, MapPin, Phone, Mail, Globe, ImagePlus, CheckCircle, Tag, Info } from "lucide-react"
+import { ArrowRight, Plus, X, Store, MapPin, Phone, Mail, Globe, ImagePlus, CheckCircle, Tag, Info, List } from "lucide-react"
 import Link from "next/link"
 import { useShowrooms, useUpdateShowroom } from "@/hooks/useContent"
 import { cn } from "@/lib/utils"
@@ -22,6 +22,8 @@ export default function EditShowroomPage() {
   const updateMutation = useUpdateShowroom()
   const [isUploading, setIsUploading] = useState(false)
   const [newImageUrl, setNewImageUrl] = useState("")
+  const [clicks, setClicks] = useState<any[]>([])
+  const [isLoadingClicks, setIsLoadingClicks] = useState(true)
 
   const [form, setForm] = useState({
     name: "",
@@ -60,7 +62,24 @@ export default function EditShowroomPage() {
         toast.error("فشل في تحميل بيانات المعرض")
       }
     }
-    if (id) fetchItem()
+    const fetchClicks = async () => {
+      try {
+        const res = await fetch(`/api/showrooms/${id}/clicks`)
+        const data = await res.json()
+        if (data.success) {
+          setClicks(data.data)
+        }
+      } catch (e) {
+        console.error("Failed to load clicks")
+      } finally {
+        setIsLoadingClicks(false)
+      }
+    }
+
+    if (id) {
+      fetchItem()
+      fetchClicks()
+    }
   }, [id])
 
   const [errors, setErrors] = useState<Partial<Record<keyof typeof form, string>>>({})
@@ -438,6 +457,71 @@ export default function EditShowroomPage() {
             </Button>
           </div>
         </form>
+
+        {/* Showroom Clicks Section */}
+        <div className="mt-12">
+          <Card className="border border-slate-100 shadow-sm rounded-xl bg-white overflow-hidden ring-1 ring-slate-100/50">
+            <CardHeader className="p-6 border-b border-slate-100/60 bg-white">
+              <div className="flex items-center justify-between">
+                <CardTitle className="flex items-center gap-3 text-lg font-black text-slate-800">
+                  <div className="p-2 bg-primary/10 rounded-lg text-primary">
+                    <List className="h-5 w-5" />
+                  </div>
+                  سجل النقرات (اتصال)
+                </CardTitle>
+                <Button asChild variant="outline" size="sm" className="h-9 font-bold text-slate-600 rounded-lg">
+                  <Link href={`/admin/reports/showroom-clicks?showroomId=${id}`}>
+                    عرض التقرير المفصل
+                  </Link>
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent className="p-0">
+              {isLoadingClicks ? (
+                <div className="p-12 text-center text-slate-500 font-bold">
+                  جاري تحميل النقرات...
+                </div>
+              ) : clicks.length > 0 ? (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-right text-sm">
+                    <thead className="bg-slate-50/50 text-slate-500 border-b border-slate-100">
+                      <tr>
+                        <th className="px-6 py-4 font-bold">بخصوص الإعلان</th>
+                        <th className="px-6 py-4 font-bold">نوع الإعلان</th>
+                        <th className="px-6 py-4 font-bold">تاريخ ووقت النقرة</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      {clicks.map((click, index) => (
+                        <tr key={index} className="hover:bg-slate-50 transition-colors">
+                          <td className="px-6 py-4 font-bold text-slate-800">
+                            {click.metadata?.itemName || "غير محدد"}
+                          </td>
+                          <td className="px-6 py-4">
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-600">
+                              {click.metadata?.itemType === "car" ? "سيارة" :
+                               click.metadata?.itemType === "equipment" ? "معدة" :
+                               click.metadata?.itemType === "bike" ? "دراجة" :
+                               click.metadata?.itemType === "showroom" ? "تواصل مباشر" :
+                               click.metadata?.itemType || "غير محدد"}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 text-slate-500 font-medium" dir="ltr" style={{ textAlign: "right" }}>
+                            {new Date(click.createdAt).toLocaleString("ar-EG")}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <div className="p-12 text-center text-slate-500 font-bold">
+                  لا توجد أي نقرات مسجلة لهذا المعرض حتى الآن.
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
       </main>
     </div>
   )

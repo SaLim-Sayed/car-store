@@ -6,6 +6,14 @@ import Equipment from "@/lib/models/Equipment";
 import Showroom from "@/lib/models/Showroom";
 import News from "@/lib/models/News";
 
+const BIKE_CATEGORIES = [
+  "موتوسيكل",
+  "توك توك",
+  "تروسيكل",
+  "سكوتر",
+  "دراجة نارية",
+] as const;
+
 export const dynamic = "force-dynamic";
 
 const STATIC_PATHS = [
@@ -13,6 +21,7 @@ const STATIC_PATHS = [
   "about",
   "cars",
   "equipment",
+  "bikes",
   "news",
   "contact",
   "services",
@@ -34,9 +43,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     await connectDB();
 
-    const [cars, equipment, showrooms, news] = await Promise.all([
+    const [cars, equipment, bikes, showrooms, news] = await Promise.all([
       Car.find({}, "_id updatedAt").lean(),
-      Equipment.find({}, "_id updatedAt").lean(),
+      Equipment.find({ category: { $nin: BIKE_CATEGORIES } }, "_id updatedAt").lean(),
+      Equipment.find({ category: { $in: BIKE_CATEGORIES } }, "_id updatedAt").lean(),
       Showroom.find({}, "_id updatedAt").lean(),
       News.find({}, "_id updatedAt").lean(),
     ]);
@@ -51,6 +61,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const equipmentEntries = equipment.map((equip) => ({
       url: absoluteUrl(`equipment/${String(equip._id)}`),
       lastModified: equip.updatedAt || new Date(),
+      changeFrequency: "weekly" as const,
+      priority: 0.6,
+    }));
+
+    const bikeEntries = bikes.map((bike) => ({
+      url: absoluteUrl(`bikes/${String(bike._id)}`),
+      lastModified: bike.updatedAt || new Date(),
       changeFrequency: "weekly" as const,
       priority: 0.6,
     }));
@@ -73,6 +90,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       ...staticEntries,
       ...carEntries,
       ...equipmentEntries,
+      ...bikeEntries,
       ...showroomEntries,
       ...newsEntries,
     ];

@@ -29,6 +29,7 @@ import { getWhatsAppUrl } from "@/lib/whatsapp"
 import type { Equipment } from "@/hooks/useEquipment"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { MapEmbed } from "@/components/map-embed"
+import { cn } from "@/lib/utils"
 import { Swiper, SwiperSlide } from "swiper/react"
 import { Navigation, Thumbs, FreeMode } from "swiper/modules"
 
@@ -84,6 +85,29 @@ export default function EquipmentDetailPage({
  const [galleryStripSwiper, setGalleryStripSwiper] = useState<any>(null)
  const [mainSwiper, setMainSwiper] = useState<any>(null)
 
+  const trackCall = async () => {
+    if (item?.showroom) {
+      const showroomId = typeof item.showroom === "object" ? item.showroom._id : item.showroom;
+      if (showroomId) {
+        fetch("/api/track/click", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ 
+            type: "showroom_contact", 
+            targetId: showroomId,
+            metadata: {
+              itemName: item.title || `${item.brand} ${item.model || ""}`.trim(),
+              itemType: "equipment",
+              itemId: item._id
+            }
+          }),
+        }).catch(console.error);
+      }
+    }
+  };
+
+  const trackWhatsapp = trackCall;
+
  useEffect(() => {
  setSelectedImage(0)
  }, [params.id])
@@ -118,15 +142,23 @@ export default function EquipmentDetailPage({
  Math.max(0, (item?.images?.length || 1) - 1)
  )
  try {
+ if (galleryStripSwiper.params.loop) {
+ galleryStripSwiper.slideToLoop(i, 280)
+ } else {
  galleryStripSwiper.slideTo(i, 280)
+ }
  } catch {
  /* ignore */
  }
  }, [selectedImage, galleryStripSwiper, item?.images?.length])
 
  useEffect(() => {
-    if (mainSwiper && !mainSwiper.destroyed && mainSwiper.activeIndex !== selectedImage) {
-      mainSwiper.slideTo(selectedImage, 280)
+    if (mainSwiper && !mainSwiper.destroyed && mainSwiper.realIndex !== selectedImage) {
+      if (mainSwiper.params.loop) {
+        mainSwiper.slideToLoop(selectedImage, 280)
+      } else {
+        mainSwiper.slideTo(selectedImage, 280)
+      }
     }
   }, [selectedImage, mainSwiper])
 
@@ -156,6 +188,7 @@ export default function EquipmentDetailPage({
  }
 
  const images = item.images?.length ? item.images : ["/placeholder-car.jpg"]
+ const galleryLoop = images.length > 1
  const label = item.title || `${item.brand} ${item.model || ""}`.trim()
 
  const listingPageUrl = `${getAppUrl().replace(/\/$/, "")}${pathname || ""}`
@@ -267,128 +300,150 @@ export default function EquipmentDetailPage({
 
  {/* Image gallery */}
  <div
- className={
- images.length > 1
- ? "grid w-full min-w-0 grid-cols-1 items-start gap-5 overflow-hidden lg:grid-cols-[minmax(0,1fr)_7.75rem] lg:gap-6 xl:grid-cols-[minmax(0,1fr)_8.5rem]"
- : "block w-full min-w-0 overflow-hidden"
- }
- >
- <div className="min-w-0 group/main-slider relative isolate w-full overflow-hidden rounded-2xl border border-neutral-200/65 bg-muted/35 shadow-[inset_0_1px_0_rgb(255_255_255/0.6)] lg:rounded-[1.625rem]">
-   <Swiper
-     dir="rtl"
-     onSwiper={setMainSwiper}
-     onSlideChange={(swiper) => setSelectedImage(swiper.activeIndex)}
-     className="w-full h-full overflow-hidden rounded-2xl"
-     modules={[Navigation]}
-     navigation={{
-       prevEl: '.main-slider-prev',
-       nextEl: '.main-slider-next',
-     }}
-     grabCursor={true}
-   >
-     {images.map((img, idx) => (
-       <SwiperSlide key={idx} className="w-full h-full">
-         <div 
-           className="relative aspect-[16/10] max-h-[min(52vh,440px)] w-full min-h-[200px] bg-neutral-100 sm:min-h-[240px] cursor-zoom-in group"
-           onClick={() => setIsLightboxOpen(true)}
-         >
-           <Image
-             src={img}
-             alt={`${label} - ${idx + 1}`}
-             fill
-             priority={idx === 0}
-             sizes="(max-width: 1024px) 100vw, (max-width: 1536px) 68vw, 1150px"
-             className="object-cover transition duration-[650ms] ease-out group-hover:scale-[1.025]"
-           />
-           <span className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-black/[0.05]" />
-           <span className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/45 via-black/15 to-transparent" />
-           <span className="pointer-events-none absolute bottom-3 inset-x-0 text-center text-[11px] font-medium text-white/85">
-             اضغط للتكبير
-           </span>
-         </div>
-       </SwiperSlide>
-     ))}
-   </Swiper>
-   
-   {images.length > 1 && (
-     <>
-       <button
-         className="main-slider-next absolute right-4 top-1/2 -translate-y-1/2 z-10 h-10 w-10 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center opacity-0 group-hover/main-slider:opacity-100 transition-opacity disabled:opacity-0"
-         onClick={(e) => e.stopPropagation()}
-         aria-label="الصورة السابقة"
-       >
-         <ChevronRightIcon className="h-6 w-6" />
-       </button>
-       <button
-         className="main-slider-prev absolute left-4 top-1/2 -translate-y-1/2 z-10 h-10 w-10 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center opacity-0 group-hover/main-slider:opacity-100 transition-opacity disabled:opacity-0"
-         onClick={(e) => e.stopPropagation()}
-         aria-label="الصورة التالية"
-       >
-         <ChevronLeftIcon className="h-6 w-6" />
-       </button>
-     </>
+   className={cn(
+     "mb-10 w-full min-w-0 overflow-hidden",
+     images.length > 1
+       ? "grid grid-cols-1 items-start gap-4 sm:gap-5 lg:grid-cols-[minmax(0,1fr)_7rem] lg:gap-5 xl:grid-cols-[minmax(0,1fr)_8.5rem] xl:gap-6"
+       : "block",
    )}
- </div>
+ >
+   <div className="group/main-slider relative isolate min-w-0 overflow-hidden rounded-[1.25rem] border border-neutral-200/70 bg-white shadow-[0_8px_30px_-12px_rgb(15_23_42/0.12)] ring-1 ring-black/[0.04] sm:rounded-[1.5rem] lg:rounded-[1.625rem]">
+     <Swiper
+       dir="rtl"
+       loop={galleryLoop}
+       loopAdditionalSlides={images.length}
+       onSwiper={setMainSwiper}
+       onSlideChange={(swiper) => setSelectedImage(swiper.realIndex)}
+       className="h-full w-full overflow-hidden rounded-[1.25rem] sm:rounded-[1.5rem] lg:rounded-[1.625rem]"
+       modules={[Navigation]}
+       navigation={{
+         prevEl: ".eq-main-slider-prev",
+         nextEl: ".eq-main-slider-next",
+       }}
+       grabCursor
+     >
+       {images.map((img, idx) => (
+         <SwiperSlide key={idx} className="h-full w-full">
+           <div
+             className="group relative flex aspect-[16/10] max-h-[min(58vh,500px)] w-full min-h-[230px] cursor-zoom-in items-center justify-center bg-[#f8f9fb] p-3 sm:min-h-[280px] sm:p-5 md:p-6"
+             onClick={() => setIsLightboxOpen(true)}
+           >
+             <Image
+               src={img}
+               alt={`${label} - ${idx + 1}`}
+               fill
+               priority={idx === 0}
+               sizes="(max-width: 1024px) 100vw, (max-width: 1536px) 70vw, 1100px"
+               className="object-contain p-1 transition duration-500 ease-out"
+             />
+             <span className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-black/[0.05]" />
+             <span className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/35 to-transparent" />
+             <span className="pointer-events-none absolute bottom-3 inset-x-0 text-center text-[11px] font-bold text-white/95">
+               اضغط للتكبير
+             </span>
+           </div>
+         </SwiperSlide>
+       ))}
+     </Swiper>
 
- {images.length > 1 ? (
- <aside className="min-w-0 w-full lg:sticky lg:top-[7.75rem] xl:top-[8rem] [-ms-scrollbar-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
- <div className="mb-3 flex flex-wrap items-center justify-between gap-x-2 gap-y-1 text-[11px] font-semibold text-muted-foreground sm:text-xs lg:flex-col lg:items-stretch lg:justify-start">
- <span>معرض الصور</span>
- <span className="tabular-nums opacity-85">
- {images.length.toLocaleString("ar-EG")} صورة
- </span>
- </div>
- <div className="rounded-2xl border border-neutral-200/70 bg-neutral-50/90 p-2 shadow-none ring-1 ring-black/[0.02]">
- <Swiper
- modules={[FreeMode]}
- dir="rtl"
- freeMode
- slidesPerView="auto"
- spaceBetween={9}
- breakpoints={{
- 1024: {
- direction: "vertical",
- },
- }}
- onSwiper={setGalleryStripSwiper}
- wrapperClass="swiper-thumb-strip-wrapper"
- className="swiper-thumb-strip w-full [--swiper-scrollbar-size:0] lg:h-[380px]"
- >
- {images.map((image, index) => (
- <SwiperSlide
- key={`${image}-${index}`}
- className="!box-border shrink-0 !h-[4.5rem] !w-[4.5rem] sm:!h-[4.875rem] sm:!w-[4.875rem] lg:!h-[5.125rem] lg:!w-[5.125rem]"
- >
- <button
- type="button"
- aria-label={`صورة رقم ${index + 1}`}
- {...(selectedImage === index
- ? { "aria-current": "true" as const }
- : {})}
- onClick={() => {
- setSelectedImage(index)
- setIsLightboxOpen(true)
- }}
- className={`relative h-full w-full overflow-hidden rounded-[0.65rem] border transition-[box-shadow,border-color] outline-none cursor-zoom-in ${
- selectedImage === index
- ? "border-primary shadow-none shadow-primary/10 ring-[3px] ring-primary/20"
- : "border-transparent bg-background/95 shadow-none hover:border-neutral-300/90 hover:shadow"
- }`}
- >
- <Image
- src={image}
- alt={`${label} — معاينة ${index + 1}`}
- fill
- sizes="92px"
- className="object-cover"
- />
- </button>
- </SwiperSlide>
- ))}
- </Swiper>
- </div>
- </aside>
- ) : null}
+     {images.length > 1 && (
+       <>
+         <div className="pointer-events-none absolute bottom-4 left-4 z-20 rounded-full bg-black/55 px-3 py-1 text-xs font-bold text-white backdrop-blur-sm">
+           {selectedImage + 1} / {images.length}
+         </div>
+         <button
+           type="button"
+           className="eq-main-slider-next absolute right-3 top-1/2 z-20 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/95 text-slate-800 shadow-lg ring-1 ring-black/5 transition hover:bg-white sm:right-4"
+           onClick={(e) => e.stopPropagation()}
+           aria-label="الصورة السابقة"
+         >
+           <ChevronRightIcon className="size-5" />
+         </button>
+         <button
+           type="button"
+           className="eq-main-slider-prev absolute left-3 top-1/2 z-20 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/95 text-slate-800 shadow-lg ring-1 ring-black/5 transition hover:bg-white sm:left-4"
+           onClick={(e) => e.stopPropagation()}
+           aria-label="الصورة التالية"
+         >
+           <ChevronLeftIcon className="size-5" />
+         </button>
+       </>
+     )}
+   </div>
+
+   {images.length > 1 ? (
+     <aside className="min-w-0 w-full lg:sticky lg:top-28 xl:top-32">
+       <div className="mb-2.5 flex items-center justify-between gap-2 px-0.5 text-[11px] font-bold text-slate-500 sm:text-xs">
+         <span>معرض الصور</span>
+         <span className="tabular-nums">{images.length} صورة</span>
+       </div>
+
+       <div className="relative rounded-[1.1rem] border border-neutral-200/80 bg-white p-2 shadow-sm ring-1 ring-black/[0.03]">
+         <button
+           type="button"
+           className="eq-thumb-prev absolute right-1 top-1/2 z-10 flex size-8 -translate-y-1/2 items-center justify-center rounded-full bg-white text-slate-700 shadow-md ring-1 ring-black/5 transition hover:bg-slate-50 lg:right-1/2 lg:top-1 lg:translate-x-1/2 lg:translate-y-0"
+           aria-label="الصورة السابقة في المعرض"
+         >
+           <ChevronRightIcon className="size-4 lg:rotate-90" />
+         </button>
+         <button
+           type="button"
+           className="eq-thumb-next absolute left-1 top-1/2 z-10 flex size-8 -translate-y-1/2 items-center justify-center rounded-full bg-white text-slate-700 shadow-md ring-1 ring-black/5 transition hover:bg-slate-50 lg:bottom-1 lg:left-1/2 lg:top-auto lg:-translate-x-1/2 lg:translate-y-0"
+           aria-label="الصورة التالية في المعرض"
+         >
+           <ChevronLeftIcon className="size-4 lg:rotate-90" />
+         </button>
+
+         <Swiper
+           modules={[Navigation]}
+           dir="rtl"
+           loop={galleryLoop}
+           loopAdditionalSlides={images.length}
+           slidesPerView="auto"
+           spaceBetween={10}
+           watchSlidesProgress
+           breakpoints={{
+             0: { direction: "horizontal", spaceBetween: 10 },
+             1024: { direction: "vertical", spaceBetween: 12 },
+           }}
+           navigation={{
+             prevEl: ".eq-thumb-prev",
+             nextEl: ".eq-thumb-next",
+           }}
+           onSwiper={setGalleryStripSwiper}
+           className="w-full px-9 [--swiper-scrollbar-size:0] lg:h-[min(58vh,500px)] lg:px-2 lg:py-9"
+         >
+           {images.map((image, index) => (
+             <SwiperSlide
+               key={`${image}-${index}`}
+               className="!box-border shrink-0 !h-[4.5rem] !w-[4.5rem] sm:!h-[5rem] sm:!w-[5rem] lg:!h-[5.75rem] lg:!w-full"
+             >
+               <button
+                 type="button"
+                 aria-label={`صورة رقم ${index + 1}`}
+                 {...(selectedImage === index ? { "aria-current": "true" as const } : {})}
+                 onClick={() => setSelectedImage(index)}
+                 className={cn(
+                   "relative flex h-full w-full items-center justify-center overflow-hidden rounded-xl border-2 bg-[#f8f9fb] p-1.5 transition-all outline-none",
+                   selectedImage === index
+                     ? "border-primary ring-2 ring-primary/25 shadow-md"
+                     : "border-slate-200/80 opacity-85 hover:border-slate-300 hover:opacity-100",
+                 )}
+               >
+                 <Image
+                   src={image}
+                   alt={`${label} — معاينة ${index + 1}`}
+                   fill
+                   sizes="96px"
+                   className="object-contain"
+                 />
+               </button>
+             </SwiperSlide>
+           ))}
+         </Swiper>
+       </div>
+     </aside>
+   ) : null}
  </div>
  </article>
 
@@ -522,11 +577,13 @@ export default function EquipmentDetailPage({
  <CallButton
  phone={item.phone}
  label="اتصال"
+ onClick={trackCall}
  className="h-14 w-full min-h-14 shrink-0 rounded-xl border-0 bg-[#1d4ed8] text-base font-bold text-white shadow-none shadow-blue-950/15 hover:bg-[#1e40af]"
  />
  <Button
  variant="outline"
  size="xl"
+ onClick={trackWhatsapp}
  className="h-14 min-h-14 w-full rounded-xl border-2 border-[#15803d] bg-background text-[15px] font-bold text-[#15803d] hover:bg-[#15803d]/[0.06] shadow-none"
  asChild
  >
@@ -584,6 +641,7 @@ export default function EquipmentDetailPage({
  showNumber={false}
  size="sm"
  variant="outline"
+ onClick={trackCall}
  className="bg-white/10 border-white/20 text-white hover:bg-white/20 rounded-xl font-bold px-6"
  />
  <Button
@@ -617,6 +675,8 @@ export default function EquipmentDetailPage({
  <div className="w-full flex-1 flex items-center justify-center relative px-4 md:px-20 overflow-hidden">
  <Swiper
  dir="rtl"
+ loop={galleryLoop}
+ loopAdditionalSlides={images.length}
  spaceBetween={20}
  navigation={{
  prevEl: '.swiper-button-prev-custom',
@@ -626,7 +686,7 @@ export default function EquipmentDetailPage({
  modules={[Navigation, Thumbs]}
  className="w-full h-full max-w-5xl flex items-center"
  initialSlide={selectedImage}
- onSlideChange={(swiper) => setSelectedImage(swiper.activeIndex)}
+ onSlideChange={(swiper) => setSelectedImage(swiper.realIndex)}
  >
  {images.map((image, index) => (
  <SwiperSlide key={index} className="flex items-center justify-center">
@@ -667,7 +727,7 @@ export default function EquipmentDetailPage({
  <img
  src={image}
  alt="thumbnail"
- className="w-full h-full object-cover"
+ className="w-full h-full object-contain bg-[#f8f9fb] p-0.5"
  />
  </SwiperSlide>
  ))}

@@ -23,6 +23,14 @@ export const GLOBAL_ARABIC_KEYWORDS = [
   "سيارات صعيد مصر",
   "سوق المعدات الزراعية",
   "أخبار السيارات في مصر",
+  "سيارات مستعملة للبيع",
+  "سيارات للبيع بالتقسيط",
+  "سوق السيارات",
+  "حراج السيارات",
+  "اسعار السيارات اليوم",
+  "عربيات للبيع",
+  "موتوسيكلات للبيع",
+  "عربيات مستعملة",
 ] as const;
 
 export type PageSeoConfig = {
@@ -101,7 +109,7 @@ export const STATIC_PAGE_SEO = {
     description:
       "أكبر سوق عربي لبيع وشراء السيارات والمعدات الثقيلة والزراعية في محافظة المنيا. تصفّح آلاف الإعلانات، قارن الأسعار، وتواصل مع البائعين والمعارض مباشرة بدون عمولة.",
     path: "",
-    keywords: ["الصفحة الرئيسية", "سوق سيارات", "إعلانات سيارات المنيا"],
+    keywords: ["الصفحة الرئيسية", "سوق سيارات", "إعلانات سيارات المنيا", "شراء عربيات", "سوق السيارات المستعملة"],
   },
   cars: {
     title: "سيارات للبيع في المنيا",
@@ -113,6 +121,10 @@ export const STATIC_PAGE_SEO = {
       "سيارات مستعملة",
       "سيارات جديدة المنيا",
       "أسعار السيارات في المنيا",
+      "عربيات مستعملة للبيع",
+      "سيارات بالتقسيط",
+      "سوق السيارات المستعملة",
+      "حراج سيارات",
     ],
   },
   equipment: {
@@ -124,6 +136,10 @@ export const STATIC_PAGE_SEO = {
       "معدات ثقيلة للبيع",
       "جرار زراعي للبيع",
       "معدات زراعية مستعملة",
+      "حفارات للبيع",
+      "لوادر للبيع",
+      "معدات بناء",
+      "جرارات مستعملة",
     ],
   },
   news: {
@@ -131,14 +147,29 @@ export const STATIC_PAGE_SEO = {
     description:
       "آخر أخبار السيارات، العروض، نصائح الشراء والصيانة، وتحديثات سوق السيارات في المنيا ومصر.",
     path: "news",
-    keywords: ["أخبار السيارات", "أسعار السيارات", "سوق السيارات مصر"],
+    keywords: ["أخبار السيارات", "أسعار السيارات", "سوق السيارات مصر", "عروض السيارات", "نصائح صيانة السيارات"],
+  },
+  bikes: {
+    title: "دراجات نارية للبيع في المنيا",
+    description:
+      "تصفّح دراجات نارية وسكوتر جديدة ومستعملة للبيع في المنيا والصعيد. تواصل مباشرة مع البائع بدون عمولة.",
+    path: "bikes",
+    keywords: [
+      "دراجات نارية للبيع",
+      "سكوتر مستعمل",
+      "موتوسيكلات المنيا",
+      "أسعار الموتوسيكلات",
+      "موتوسيكلات للبيع",
+      "تروسيكل للبيع",
+      "توك توك للبيع",
+    ],
   },
   showrooms: {
     title: "معارض السيارات في المنيا",
     description:
       "دليل معارض ووكلاء السيارات المعتمدين في المنيا. اكتشف العروض والسيارات المتاحة وتواصل مع المعرض مباشرة.",
     path: "showrooms",
-    keywords: ["معارض سيارات", "وكلاء سيارات المنيا", "شركات سيارات"],
+    keywords: ["معارض سيارات", "وكلاء سيارات المنيا", "شركات سيارات", "معارض السيارات المستعملة", "أرقام معارض السيارات"],
   },
   about: {
     title: "من نحن",
@@ -373,6 +404,59 @@ export function buildEquipmentListingJsonLd(equipment: {
           ? "https://schema.org/InStock"
           : "https://schema.org/OutOfStock",
       url,
+    },
+  };
+}
+
+export function buildBikeListingJsonLd(bike: {
+  _id: string;
+  brand?: string;
+  model?: string;
+  year?: number;
+  price?: number;
+  condition?: string;
+  status?: string;
+  images?: string[];
+}) {
+  const url = absoluteUrl(`bikes/${bike._id}`);
+  const label = `${bike.brand ?? ""} ${bike.model ?? ""}`.trim();
+  const image = bike.images?.[0]
+    ? bike.images[0].startsWith("http")
+      ? bike.images[0]
+      : absoluteUrl(bike.images[0].replace(/^\//, ""))
+    : absoluteUrl("logo.png");
+
+  return {
+    "@context": "https://schema.org",
+    "@type": ["Product", "Vehicle"],
+    name: bike.year ? `${label} ${bike.year}` : label,
+    description: bike.year
+      ? `${label} موديل ${bike.year} دراجة نارية للبيع في المنيا`
+      : `${label} دراجة نارية للبيع في المنيا`,
+    url,
+    image,
+    inLanguage: LANGUAGE,
+    brand: bike.brand ? { "@type": "Brand", name: bike.brand } : undefined,
+    model: bike.model,
+    vehicleModelDate: String(bike.year),
+    itemCondition:
+      bike.condition === "جديد"
+        ? "https://schema.org/NewCondition"
+        : "https://schema.org/UsedCondition",
+    offers: {
+      "@type": "Offer",
+      price: bike.price ?? 0,
+      priceCurrency: "EGP",
+      availability:
+        bike.status === "متاح"
+          ? "https://schema.org/InStock"
+          : "https://schema.org/OutOfStock",
+      url,
+      availableAtOrFrom: {
+        "@type": "Place",
+        name: "محافظة المنيا",
+        address: { "@type": "PostalAddress", addressLocality: "المنيا", addressCountry: "EG" },
+      },
     },
   };
 }

@@ -26,6 +26,8 @@ import {
   X
 } from "lucide-react";
 import { MapEmbed } from "@/components/map-embed";
+import { cn } from "@/lib/utils";
+import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FreeMode, Navigation, Thumbs } from "swiper/modules";
@@ -71,6 +73,27 @@ export default function ClientPage({ initialCar }: { initialCar: CarDoc }) {
  const [galleryStripSwiper, setGalleryStripSwiper] = useState<any>(null);
  const [mainSwiper, setMainSwiper] = useState<any>(null);
 
+  const trackCall = async () => {
+    if (car.showroom) {
+      const showroomId = typeof car.showroom === "object" ? car.showroom._id : car.showroom;
+      if (showroomId) {
+        fetch("/api/track/click", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ 
+            type: "showroom_contact", 
+            targetId: showroomId,
+            metadata: {
+              itemName: `${car.brand} ${car.model}`,
+              itemType: "car",
+              itemId: car._id
+            }
+          }),
+        }).catch(console.error);
+      }
+    }
+  };
+
  useEffect(() => {
  setSelectedImage(0);
  }, [params.id]);
@@ -82,15 +105,23 @@ export default function ClientPage({ initialCar }: { initialCar: CarDoc }) {
     const n = Math.max(0, (car?.images?.length ?? 1) - 1);
     const i = Math.min(Math.max(0, selectedImage), n);
     try {
-      galleryStripSwiper.slideTo(i, 280);
+      if (galleryStripSwiper.params.loop) {
+        galleryStripSwiper.slideToLoop(i, 280);
+      } else {
+        galleryStripSwiper.slideTo(i, 280);
+      }
     } catch {
       /* ignore */
     }
   }, [selectedImage, galleryStripSwiper, car?.images?.length]);
 
   useEffect(() => {
-    if (mainSwiper && !mainSwiper.destroyed && mainSwiper.activeIndex !== selectedImage) {
-      mainSwiper.slideTo(selectedImage, 280);
+    if (mainSwiper && !mainSwiper.destroyed && mainSwiper.realIndex !== selectedImage) {
+      if (mainSwiper.params.loop) {
+        mainSwiper.slideToLoop(selectedImage, 280);
+      } else {
+        mainSwiper.slideTo(selectedImage, 280);
+      }
     }
   }, [selectedImage, mainSwiper]);
 
@@ -145,6 +176,10 @@ export default function ClientPage({ initialCar }: { initialCar: CarDoc }) {
  </div>
  );
  }
+
+ const images = car.images?.length ? car.images : ["/placeholder-car.jpg"];
+ const galleryLoop = images.length > 1;
+ const listingTitle = `${car.brand} ${car.model} ${car.year}`;
 
  return (
  <div className="min-h-screen bg-[#F9F6F1] pb-20">
@@ -226,117 +261,161 @@ export default function ClientPage({ initialCar }: { initialCar: CarDoc }) {
    </div>
  </header>
 
- {/* Image gallery — compact hero + smaller thumbs */}
+ {/* Image gallery */}
  <div
- className={
- car.images.length > 1
- ? "grid grid-cols-1 gap-4 mb-10 lg:grid-cols-12 lg:gap-5"
- : "mb-10"
- }
- >
- <div className="lg:col-span-9 lg:max-w-[min(100%,56rem)] relative isolate group/main-slider">
-   <Swiper
-     dir="rtl"
-     onSwiper={setMainSwiper}
-     onSlideChange={(swiper) => setSelectedImage(swiper.activeIndex)}
-     className="w-full h-full rounded-2xl overflow-hidden"
-     modules={[Navigation]}
-     navigation={{
-       prevEl: '.car-main-slider-prev',
-       nextEl: '.car-main-slider-next',
-     }}
-     grabCursor={true}
-   >
-     {(car.images.length ? car.images : ["/placeholder-car.jpg"]).map((img, idx) => (
-       <SwiperSlide key={idx} className="w-full h-full">
-         <div 
-           className="relative h-[200px] w-full bg-white cursor-zoom-in sm:h-[228px] md:h-[252px] lg:h-[276px] group"
-           onClick={() => setIsLightboxOpen(true)}
-         >
-           <img
-             src={img}
-             alt={`${car.brand} ${car.model} - ${idx + 1}`}
-             className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.025]"
-           />
-         </div>
-       </SwiperSlide>
-     ))}
-   </Swiper>
-   
-   <Badge
-     className={`absolute top-6 right-6 px-6 py-2 rounded-full text-xs font-black border-0 shadow-none z-20 pointer-events-none ${getStatusColor(car.status)}`}
-   >
-     {car.status}
-   </Badge>
-
-   {car.images.length > 1 && (
-     <>
-       <button
-         className="car-main-slider-next absolute right-4 top-1/2 -translate-y-1/2 z-20 h-10 w-10 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center opacity-0 group-hover/main-slider:opacity-100 transition-opacity disabled:opacity-0"
-         onClick={(e) => e.stopPropagation()}
-         aria-label="الصورة السابقة"
-       >
-         <ChevronRightIcon className="h-6 w-6" />
-       </button>
-       <button
-         className="car-main-slider-prev absolute left-4 top-1/2 -translate-y-1/2 z-20 h-10 w-10 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center opacity-0 group-hover/main-slider:opacity-100 transition-opacity disabled:opacity-0"
-         onClick={(e) => e.stopPropagation()}
-         aria-label="الصورة التالية"
-       >
-         <ChevronLeftIcon className="h-6 w-6" />
-       </button>
-     </>
+   className={cn(
+     "mb-10 w-full min-w-0 overflow-hidden",
+     images.length > 1
+       ? "grid grid-cols-1 items-start gap-4 sm:gap-5 lg:grid-cols-[minmax(0,1fr)_7rem] lg:gap-5 xl:grid-cols-[minmax(0,1fr)_8.5rem] xl:gap-6"
+       : "block",
    )}
- </div>
+ >
+   <div className="group/main-slider relative isolate min-w-0 overflow-hidden rounded-[1.25rem] border border-neutral-200/70 bg-white shadow-[0_8px_30px_-12px_rgb(15_23_42/0.12)] ring-1 ring-black/[0.04] sm:rounded-[1.5rem] lg:rounded-[1.625rem]">
+     <Swiper
+       dir="rtl"
+       loop={galleryLoop}
+       loopAdditionalSlides={images.length}
+       onSwiper={setMainSwiper}
+       onSlideChange={(swiper) => setSelectedImage(swiper.realIndex)}
+       className="h-full w-full overflow-hidden rounded-[1.25rem] sm:rounded-[1.5rem] lg:rounded-[1.625rem]"
+       modules={[Navigation]}
+       navigation={{
+         prevEl: ".car-main-slider-prev",
+         nextEl: ".car-main-slider-next",
+       }}
+       grabCursor
+     >
+       {images.map((img, idx) => (
+         <SwiperSlide key={idx} className="h-full w-full">
+           <div
+             className="group relative flex aspect-[16/10] max-h-[min(58vh,500px)] w-full min-h-[230px] cursor-zoom-in items-center justify-center bg-[#f8f9fb] p-3 sm:min-h-[280px] sm:p-5 md:p-6"
+             onClick={() => setIsLightboxOpen(true)}
+           >
+             <Image
+               src={img}
+               alt={`${listingTitle} - ${idx + 1}`}
+               fill
+               priority={idx === 0}
+               sizes="(max-width: 1024px) 100vw, (max-width: 1536px) 70vw, 1100px"
+               className="object-contain p-1 transition duration-500 ease-out"
+             />
+             <span className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-black/[0.05]" />
+             <span className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/35 to-transparent" />
+             <span className="pointer-events-none absolute bottom-3 inset-x-0 text-center text-[11px] font-bold text-white/95">
+               اضغط للتكبير
+             </span>
+           </div>
+         </SwiperSlide>
+       ))}
+     </Swiper>
 
- {car.images.length > 1 ? (
- <div className="min-w-0 w-full lg:col-span-3 lg:sticky lg:top-32 lg:max-h-[276px] lg:shrink-0 lg:self-start [-ms-scrollbar-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
- <Swiper
- modules={[FreeMode]}
- dir="rtl"
- freeMode
- slidesPerView="auto"
- spaceBetween={8}
- breakpoints={{
- 1024: {
- direction: "vertical",
- },
- }}
- onSwiper={setGalleryStripSwiper}
- className="w-full [--swiper-scrollbar-size:0] lg:h-[276px]"
- >
- {car.images.map((image, index) => (
- <SwiperSlide
- key={`${image}-${index}`}
- className="!box-border shrink-0 !h-[4.75rem] !w-[4.75rem] sm:!h-[5rem] sm:!w-[5rem] lg:!h-[5.25rem] lg:!w-[5.25rem]"
- >
- <button
- type="button"
- aria-label={`صورة رقم ${index + 1}`}
- {...(selectedImage === index
- ? { "aria-current": "true" as const }
- : {})}
- onClick={() => {
- setSelectedImage(index);
- setIsLightboxOpen(true);
- }}
- className={`relative h-full w-full overflow-hidden rounded-xl border-2 transition-all cursor-zoom-in ${
- selectedImage === index
- ? "border-primary shadow-none ring-2 ring-primary/20"
- : "border-transparent hover:border-gray-300/90 shadow-none"
- }`}
- >
- <img
- src={image}
- alt={`${car.brand} ${car.model} — معاينة ${index + 1}`}
- className="h-full w-full object-cover"
- />
- </button>
- </SwiperSlide>
- ))}
- </Swiper>
- </div>
- ) : null}
+     <Badge
+       className={cn(
+         "pointer-events-none absolute top-4 right-4 z-20 rounded-full border-0 px-4 py-1.5 text-xs font-black shadow-md backdrop-blur-sm",
+         getStatusColor(car.status),
+       )}
+     >
+       {car.status}
+     </Badge>
+
+     {images.length > 1 && (
+       <>
+         <div className="pointer-events-none absolute bottom-4 left-4 z-20 rounded-full bg-black/55 px-3 py-1 text-xs font-bold text-white backdrop-blur-sm">
+           {selectedImage + 1} / {images.length}
+         </div>
+         <button
+           type="button"
+           className="car-main-slider-next absolute right-3 top-1/2 z-20 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/95 text-slate-800 shadow-lg ring-1 ring-black/5 transition hover:bg-white sm:right-4"
+           onClick={(e) => e.stopPropagation()}
+           aria-label="الصورة السابقة"
+         >
+           <ChevronRightIcon className="size-5" />
+         </button>
+         <button
+           type="button"
+           className="car-main-slider-prev absolute left-3 top-1/2 z-20 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/95 text-slate-800 shadow-lg ring-1 ring-black/5 transition hover:bg-white sm:left-4"
+           onClick={(e) => e.stopPropagation()}
+           aria-label="الصورة التالية"
+         >
+           <ChevronLeftIcon className="size-5" />
+         </button>
+       </>
+     )}
+   </div>
+
+   {images.length > 1 ? (
+     <aside className="min-w-0 w-full lg:sticky lg:top-28 xl:top-32">
+       <div className="mb-2.5 flex items-center justify-between gap-2 px-0.5 text-[11px] font-bold text-slate-500 sm:text-xs">
+         <span>معرض الصور</span>
+         <span className="tabular-nums">{images.length} صورة</span>
+       </div>
+
+       <div className="relative rounded-[1.1rem] border border-neutral-200/80 bg-white p-2 shadow-sm ring-1 ring-black/[0.03]">
+         <button
+           type="button"
+           className="car-thumb-prev absolute right-1 top-1/2 z-10 flex size-8 -translate-y-1/2 items-center justify-center rounded-full bg-white text-slate-700 shadow-md ring-1 ring-black/5 transition hover:bg-slate-50 lg:right-1/2 lg:top-1 lg:translate-x-1/2 lg:translate-y-0"
+           aria-label="الصورة السابقة في المعرض"
+         >
+           <ChevronRightIcon className="size-4 lg:rotate-90" />
+         </button>
+         <button
+           type="button"
+           className="car-thumb-next absolute left-1 top-1/2 z-10 flex size-8 -translate-y-1/2 items-center justify-center rounded-full bg-white text-slate-700 shadow-md ring-1 ring-black/5 transition hover:bg-slate-50 lg:bottom-1 lg:left-1/2 lg:top-auto lg:-translate-x-1/2 lg:translate-y-0"
+           aria-label="الصورة التالية في المعرض"
+         >
+           <ChevronLeftIcon className="size-4 lg:rotate-90" />
+         </button>
+
+         <Swiper
+           modules={[Navigation]}
+           dir="rtl"
+           loop={galleryLoop}
+           loopAdditionalSlides={images.length}
+           slidesPerView="auto"
+           spaceBetween={10}
+           watchSlidesProgress
+           breakpoints={{
+             0: { direction: "horizontal", spaceBetween: 10 },
+             1024: { direction: "vertical", spaceBetween: 12 },
+           }}
+           navigation={{
+             prevEl: ".car-thumb-prev",
+             nextEl: ".car-thumb-next",
+           }}
+           onSwiper={setGalleryStripSwiper}
+           className="w-full px-9 [--swiper-scrollbar-size:0] lg:h-[min(58vh,500px)] lg:px-2 lg:py-9"
+         >
+           {images.map((image, index) => (
+             <SwiperSlide
+               key={`${image}-${index}`}
+               className="!box-border shrink-0 !h-[4.5rem] !w-[4.5rem] sm:!h-[5rem] sm:!w-[5rem] lg:!h-[5.75rem] lg:!w-full"
+             >
+               <button
+                 type="button"
+                 aria-label={`صورة رقم ${index + 1}`}
+                 {...(selectedImage === index ? { "aria-current": "true" as const } : {})}
+                 onClick={() => setSelectedImage(index)}
+                 className={cn(
+                   "relative flex h-full w-full items-center justify-center overflow-hidden rounded-xl border-2 bg-[#f8f9fb] p-1.5 transition-all outline-none",
+                   selectedImage === index
+                     ? "border-primary ring-2 ring-primary/25 shadow-md"
+                     : "border-slate-200/80 opacity-85 hover:border-slate-300 hover:opacity-100",
+                 )}
+               >
+                 <Image
+                   src={image}
+                   alt={`${listingTitle} — معاينة ${index + 1}`}
+                   fill
+                   sizes="96px"
+                   className="object-contain"
+                 />
+               </button>
+             </SwiperSlide>
+           ))}
+         </Swiper>
+       </div>
+     </aside>
+   ) : null}
  </div>
 
  {/* Main Content: 2 Columns */}
@@ -494,6 +573,7 @@ export default function ClientPage({ initialCar }: { initialCar: CarDoc }) {
  <CallButton
  phone={car.phone}
  label="اتصال"
+ onClick={trackCall}
  className="w-full h-16 rounded-2xl text-xl bg-[#2563EB] hover:bg-blue-700 text-white shadow-none shadow-blue-200"
  />
  <Button
@@ -565,9 +645,11 @@ export default function ClientPage({ initialCar }: { initialCar: CarDoc }) {
  
  <div className="flex items-center gap-4">
  <div className="hidden md:flex gap-3 mr-8">
- <Button variant="outline" size="sm" className="bg-white/10 border-white/20 text-white hover:bg-white/20 rounded-xl font-bold px-6">
+ <Button variant="outline" size="sm" className="bg-white/10 border-white/20 text-white hover:bg-white/20 rounded-xl font-bold px-6" onClick={trackCall} asChild>
+ <a href={`tel:${car.phone}`}>
  <Phone className="h-4 w-4 ml-2" />
  اتصال
+ </a>
  </Button>
  <Button variant="outline" size="sm" className="bg-[#22C55E] border-0 text-white hover:bg-green-600 rounded-xl font-bold px-6">
  <MessageSquare className="h-4 w-4 ml-2" />
@@ -589,6 +671,8 @@ export default function ClientPage({ initialCar }: { initialCar: CarDoc }) {
  <div className="w-full flex-1 flex items-center justify-center relative px-4 md:px-20 overflow-hidden">
  <Swiper
  dir="rtl"
+ loop={galleryLoop}
+ loopAdditionalSlides={images.length}
  spaceBetween={20}
  navigation={{
  prevEl: '.swiper-button-prev-custom',
@@ -598,7 +682,7 @@ export default function ClientPage({ initialCar }: { initialCar: CarDoc }) {
  modules={[Navigation, Thumbs]}
  className="w-full h-full max-w-5xl flex items-center"
  initialSlide={selectedImage}
- onSlideChange={(swiper) => setSelectedImage(swiper.activeIndex)}
+ onSlideChange={(swiper) => setSelectedImage(swiper.realIndex)}
  >
  {car.images.map((image, index) => (
  <SwiperSlide key={index} className="flex items-center justify-center">
@@ -639,7 +723,7 @@ export default function ClientPage({ initialCar }: { initialCar: CarDoc }) {
  <img
  src={image}
  alt="thumbnail"
- className="w-full h-full object-cover"
+ className="w-full h-full object-contain bg-[#f8f9fb] p-0.5"
  />
  </SwiperSlide>
  ))}
