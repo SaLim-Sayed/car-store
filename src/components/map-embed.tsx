@@ -8,55 +8,61 @@ function toEmbedUrl(url: string) {
   const u = url.trim();
   if (!u) return null;
 
-  // If already an embed URL
   if (u.includes("/maps/embed") || u.includes("output=embed")) return u;
 
-  // Standard google maps links can often be embedded by adding output=embed
   if (u.includes("google.com/maps")) {
     return u.includes("?") ? `${u}&output=embed` : `${u}?output=embed`;
   }
 
-  // Short links (maps.app.goo.gl) usually cannot be embedded reliably
   return null;
+}
+
+function coordsToEmbedUrl(lat: number, lng: number) {
+  return `https://www.google.com/maps?q=${lat},${lng}&z=15&output=embed`;
 }
 
 export function MapEmbed({
   url,
   title = "الموقع على الخريطة",
   className,
+  coordinates,
 }: {
   url?: string | null;
   title?: string;
   className?: string;
+  coordinates?: { lat: number; lng: number } | null;
 }) {
   const raw = (url ?? "").trim();
-  if (!raw) return null;
+  const embedFromUrl = raw ? toEmbedUrl(raw) : null;
+  const embedFromCoords =
+    coordinates && Number.isFinite(coordinates.lat) && Number.isFinite(coordinates.lng)
+      ? coordsToEmbedUrl(coordinates.lat, coordinates.lng)
+      : null;
+  const embed = embedFromUrl ?? embedFromCoords;
+  const externalHref = raw || (coordinates ? `https://www.google.com/maps?q=${coordinates.lat},${coordinates.lng}` : null);
 
-  const embed = toEmbedUrl(raw);
+  if (!embed && !externalHref) return null;
 
   return (
-    <section className={cn("space-y-3", className)}>
-      <div className="flex items-center justify-between gap-3">
-        <h3 className="text-sm font-black text-slate-800 flex items-center gap-2">
-          <MapPin className="h-4 w-4 text-primary" />
+    <section className={cn("space-y-2", className)}>
+      <div className="flex items-center justify-between gap-2">
+        <h3 className="flex items-center gap-1.5 text-sm font-medium text-slate-800">
+          <MapPin className="size-3.5 text-primary" />
           {title}
         </h3>
-        <Button
-          asChild
-          variant="outline"
-          size="sm"
-          className="h-9 rounded-lg font-bold"
-        >
-          <a href={raw} target="_blank" rel="noopener noreferrer">
-            فتح
-            <ExternalLink className="h-4 w-4 mr-2" aria-hidden />
-          </a>
-        </Button>
+        {externalHref ? (
+          <Button asChild variant="outline" size="sm" className="h-8 rounded-lg text-xs">
+            <a href={externalHref} target="_blank" rel="noopener noreferrer">
+              فتح
+              <ExternalLink className="mr-1.5 size-3" aria-hidden />
+            </a>
+          </Button>
+        ) : null}
       </div>
 
       {embed ? (
-        <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
-          <div className="relative w-full aspect-[16/10]">
+        <div className="overflow-hidden rounded-lg border border-slate-200 bg-white">
+          <div className="relative aspect-[4/3] w-full sm:aspect-[16/11]">
             <iframe
               src={embed}
               title={title}
@@ -67,26 +73,17 @@ export function MapEmbed({
             />
           </div>
         </div>
-      ) : (
-        <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-6 text-center shadow-sm">
-          <div className="flex size-12 items-center justify-center rounded-full bg-slate-100 text-slate-400">
-            <MapPin className="size-6" />
-          </div>
-          <div className="space-y-1">
-            <h4 className="text-sm font-black text-slate-700">موقع المعرض متاح خارجياً</h4>
-            <p className="text-xs font-bold leading-relaxed text-slate-500 max-w-[250px] mx-auto">
-              لا يمكن عرض الخريطة داخل الصفحة لهذا الرابط، لكن يمكنك فتحه مباشرة في خرائط Google.
-            </p>
-          </div>
-          <Button asChild variant="outline" size="sm" className="mt-2 h-10 rounded-xl font-bold bg-white">
-            <a href={raw} target="_blank" rel="noopener noreferrer">
-              فتح في خرائط Google
-              <ExternalLink className="mr-2 h-4 w-4" aria-hidden />
-            </a>
-          </Button>
-        </div>
-      )}
+      ) : externalHref ? (
+        <a
+          href={externalHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center justify-between gap-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-3 text-sm transition-colors hover:bg-slate-100"
+        >
+          <span className="text-slate-600">عرض الموقع في خرائط Google</span>
+          <ExternalLink className="size-4 shrink-0 text-slate-400" />
+        </a>
+      ) : null}
     </section>
   );
 }
-

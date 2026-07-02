@@ -21,6 +21,7 @@ import {
  Store,
 } from "lucide-react"
 import { CallButton } from "@/components/call-button"
+import { ListingContactBar, listingPageBottomPadding } from "@/components/listing-contact-bar"
 import { Breadcrumbs } from "@/components/breadcrumbs"
 import Link from "next/link"
 import { toast } from "sonner"
@@ -218,7 +219,7 @@ export default function EquipmentDetailPage({
  }
 
  return (
- <div className="min-h-screen w-full overflow-x-hidden bg-gradient-to-b from-[#faf8f4] via-[#F9F6F1] to-[#f4f1eb] pb-24">
+ <div className={cn("min-h-screen w-full overflow-x-hidden bg-gradient-to-b from-[#faf8f4] via-[#F9F6F1] to-[#f4f1eb]", listingPageBottomPadding)}>
  <main className="container mx-auto w-full max-w-7xl min-w-0 px-4 pt-8 pb-24 lg:pt-11">
   <article className="mb-12 w-full min-w-0 rounded-[1.75rem] border border-neutral-200/70 bg-card px-4 py-6 shadow-[0_4px_24px_-8px_rgb(26_26_26/0.12)] ring-1 ring-black/[0.03] sm:px-6 sm:py-8 lg:mb-14 lg:rounded-[2rem] lg:px-8 lg:py-10">
    <Breadcrumbs
@@ -616,6 +617,13 @@ export default function EquipmentDetailPage({
  </div>
  </div>
  </main>
+
+ <ListingContactBar
+   phone={item.phone}
+   whatsappHref={whatsappHref}
+   onCall={trackCall}
+   onWhatsapp={trackWhatsapp}
+ />
 
  {/* Fullscreen Swiper Lightbox */}
  <Dialog open={isLightboxOpen} onOpenChange={setIsLightboxOpen}>

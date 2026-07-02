@@ -2,6 +2,7 @@
 
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { CallButton } from "@/components/call-button";
+import { ListingContactBar, listingPageBottomPadding } from "@/components/listing-contact-bar";
 import { ShareButton } from "@/components/share-button";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -26,9 +27,11 @@ import {
   X
 } from "lucide-react";
 import { MapEmbed } from "@/components/map-embed";
+import { getAppUrl } from "@/lib/app-url";
+import { getWhatsAppUrl } from "@/lib/whatsapp";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FreeMode, Navigation, Thumbs } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -56,12 +59,20 @@ interface CarDoc {
  features: string[];
  status: string;
  locationLink?: string;
- showroom?: any;
+ showroom?: {
+  _id?: string;
+  name?: string;
+  address?: string;
+  logo?: string;
+  locationLink?: string;
+  location?: { coordinates?: [number, number] };
+ };
  createdAt: string;
 }
 
 export default function ClientPage({ initialCar }: { initialCar: CarDoc }) {
  const params = useParams();
+ const pathname = usePathname();
  const router = useRouter();
  const [car, setCar] = useState<CarDoc>(initialCar);
  const [loading, setLoading] = useState(false);
@@ -177,18 +188,44 @@ export default function ClientPage({ initialCar }: { initialCar: CarDoc }) {
  );
  }
 
+  const trackWhatsapp = trackCall;
+
  const images = car.images?.length ? car.images : ["/placeholder-car.jpg"];
  const galleryLoop = images.length > 1;
- const listingTitle = `${car.brand} ${car.model} ${car.year}`;
+ const listingTitle = buildListingTitle(car);
+ const listingPageUrl = `${getAppUrl().replace(/\/$/, "")}${pathname || ""}`;
+ const whatsappHref = getWhatsAppUrl(
+   `مرحباً، أريد الاستفسار عن سيارة ${listingTitle} المعروضة للبيع\nالرابط: ${listingPageUrl}`,
+ );
+ const mapCoordinates =
+   car.showroom?.location?.coordinates && car.showroom.location.coordinates.length >= 2
+     ? {
+         lng: car.showroom.location.coordinates[0],
+         lat: car.showroom.location.coordinates[1],
+       }
+     : null;
+
+ const specRows = [
+   { label: "الماركة", value: car.brand },
+   { label: "الموديل", value: car.model },
+   { label: "سنة الصنع", value: String(car.year) },
+   { label: "اللون", value: car.color },
+   { label: "تاريخ النشر", value: new Date(car.createdAt).toLocaleDateString("ar-EG") },
+   ...(car.mileage !== undefined && car.mileage !== null
+     ? [{ label: "المسافة", value: `${car.mileage.toLocaleString("ar-EG")} كم` }]
+     : []),
+   { label: "ناقل الحركة", value: car.transmission },
+   { label: "نوع الوقود", value: car.fuelType },
+ ];
 
  return (
- <div className="min-h-screen bg-[#F9F6F1] pb-20">
+ <div className={cn("min-h-screen bg-slate-50/60", listingPageBottomPadding)}>
  <main className="container mx-auto px-4 pt-10 pb-24">
   {/* Breadcrumbs */}
   <Breadcrumbs
     items={[
       { label: "سيارات للبيع", href: "/cars" },
-      { label: `${car.brand} ${car.model}` },
+      { label: listingTitle },
     ]}
   />
 
@@ -199,11 +236,9 @@ export default function ClientPage({ initialCar }: { initialCar: CarDoc }) {
        <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-primary/95">
          إعلان سيارات
        </p>
-       <h1 className="text-pretty font-serif text-3xl md:text-5xl font-black leading-snug tracking-tight text-[#1A1A1A]">
-         {car.brand} {car.model} {car.year}
-         <span className="mr-2 block text-xl font-semibold leading-normal text-muted-foreground sm:mr-0 sm:mt-1 sm:inline sm:text-2xl lg:text-[1.35rem]">
-           للبيع
-         </span>
+       <h1 className="text-pretty text-2xl font-semibold leading-snug text-slate-900 sm:text-3xl">
+         {listingTitle}
+         <span className="mr-2 text-lg font-medium text-slate-500 sm:text-xl">للبيع</span>
        </h1>
        <div className="flex flex-wrap gap-2">
          <Badge
@@ -238,16 +273,12 @@ export default function ClientPage({ initialCar }: { initialCar: CarDoc }) {
          </Badge>
        </div>
 
-       <div className="mt-4 flex items-baseline gap-2 tabular-nums pt-2">
-         <span className="text-xl font-bold text-slate-500 ml-2">السعر</span>
-         <span className="font-serif text-4xl font-black text-primary tracking-tighter md:text-5xl">
+       <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1 pt-1">
+         <span className="text-sm font-medium text-slate-500">السعر</span>
+         <span className="text-2xl font-semibold text-primary tabular-nums sm:text-3xl">
            {car.price ? car.price.toLocaleString("ar-EG") : "حسب الطلب"}
          </span>
-         {car.price && (
-           <span className="text-2xl font-black text-muted-foreground">
-             جنيه
-           </span>
-         )}
+         {car.price ? <span className="text-sm font-medium text-slate-500">جنيه</span> : null}
        </div>
      </div>
 
@@ -320,7 +351,7 @@ export default function ClientPage({ initialCar }: { initialCar: CarDoc }) {
 
      {images.length > 1 && (
        <>
-         <div className="pointer-events-none absolute bottom-4 left-4 z-20 rounded-full bg-black/55 px-3 py-1 text-xs font-bold text-white backdrop-blur-sm">
+         <div className="pointer-events-none absolute bottom-4 left-4 z-20 rounded-full bg-black/55 px-3 py-1 text-xs font-medium text-white backdrop-blur-sm" dir="ltr">
            {selectedImage + 1} / {images.length}
          </div>
          <button
@@ -419,86 +450,40 @@ export default function ClientPage({ initialCar }: { initialCar: CarDoc }) {
  </div>
 
  {/* Main Content: 2 Columns */}
- <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
- {/* Details Column */}
- <div className="lg:col-span-8 space-y-12">
+ <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-10">
+ {/* Details first */}
+ <div className="space-y-8 lg:col-span-8">
  {/* Details Table */}
- <section className="space-y-6">
- <h2 className="text-3xl font-black flex items-center gap-3">
- <div className="w-2 h-8 bg-primary rounded-full" />
+ <section className="space-y-3">
+ <h2 className="flex items-center gap-2 text-lg font-semibold text-slate-900">
+ <div className="h-6 w-1 rounded-full bg-primary" />
  تفاصيل السيارة
  </h2>
- <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
- <div className="bg-white rounded-2xl shadow-none overflow-hidden border border-gray-100">
- <div className="grid grid-cols-2 divide-x divide-gray-50 rtl:divide-x-reverse">
- <div className="p-4 bg-gray-50/50 text-muted-foreground font-bold">
- الماركة
+ <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+ {specRows.map((row, index) => (
+ <div
+ key={row.label}
+ className={cn(
+ "grid grid-cols-2 text-sm",
+ index > 0 && "border-t border-slate-100",
+ )}
+ >
+ <div className="bg-slate-50/80 px-3 py-2.5 font-medium text-slate-500">{row.label}</div>
+ <div className="px-3 py-2.5 font-medium text-slate-900">{row.value}</div>
  </div>
- <div className="p-4 font-black">{car.brand}</div>
- </div>
- <div className="grid grid-cols-2 divide-x divide-gray-50 rtl:divide-x-reverse border-t border-gray-50">
- <div className="p-4 bg-gray-50/50 text-muted-foreground font-bold">
- الموديل
- </div>
- <div className="p-4 font-black">{car.model}</div>
- </div>
- <div className="grid grid-cols-2 divide-x divide-gray-50 rtl:divide-x-reverse border-t border-gray-50">
- <div className="p-4 bg-gray-50/50 text-muted-foreground font-bold">
- سنة الصنع
- </div>
- <div className="p-4 font-black">{car.year}</div>
- </div>
- <div className="grid grid-cols-2 divide-x divide-gray-50 rtl:divide-x-reverse border-t border-gray-50">
- <div className="p-4 bg-gray-50/50 text-muted-foreground font-bold">
- اللون
- </div>
- <div className="p-4 font-black">{car.color}</div>
- </div>
- </div>
- <div className="bg-white rounded-2xl shadow-none overflow-hidden border border-gray-100">
- <div className="grid grid-cols-2 divide-x divide-gray-50 rtl:divide-x-reverse">
- <div className="p-4 bg-gray-50/50 text-muted-foreground font-bold">
- تاريخ النشر
- </div>
- <div className="p-4 font-black">
- {new Date(car.createdAt).toLocaleDateString("ar-EG")}
- </div>
- </div>
-  {car.mileage !== undefined && car.mileage !== null && (
-    <div className="grid grid-cols-2 divide-x divide-gray-50 rtl:divide-x-reverse border-t border-gray-50">
-      <div className="p-4 bg-gray-50/50 text-muted-foreground font-bold">
-        المسافة
-      </div>
-      <div className="p-4 font-black">
-        {`${car.mileage.toLocaleString()} كم`}
-      </div>
-    </div>
-  )}
- <div className="grid grid-cols-2 divide-x divide-gray-50 rtl:divide-x-reverse border-t border-gray-50">
- <div className="p-4 bg-gray-50/50 text-muted-foreground font-bold">
- ناقل الحركة
- </div>
- <div className="p-4 font-black">{car.transmission}</div>
- </div>
- <div className="grid grid-cols-2 divide-x divide-gray-50 rtl:divide-x-reverse border-t border-gray-50">
- <div className="p-4 bg-gray-50/50 text-muted-foreground font-bold">
- نوع الوقود
- </div>
- <div className="p-4 font-black">{car.fuelType}</div>
- </div>
- </div>
+ ))}
  </div>
  </section>
 
  {/* Description */}
- <section className="space-y-6">
- <h2 className="text-3xl font-black flex items-center gap-3">
- <div className="w-2 h-8 bg-primary rounded-full" />
+ <section className="space-y-3">
+ <h2 className="flex items-center gap-2 text-lg font-semibold text-slate-900">
+ <div className="h-6 w-1 rounded-full bg-primary" />
  الوصف
  </h2>
- <div className="bg-white p-8 rounded-3xl shadow-none border border-gray-100">
+ <div className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
  <div
- className="text-muted-foreground text-lg leading-relaxed font-medium rich-text-content"
+ className="rich-text-content text-sm leading-relaxed text-slate-600"
  dangerouslySetInnerHTML={{ __html: car.description }}
  />
  </div>
@@ -506,20 +491,17 @@ export default function ClientPage({ initialCar }: { initialCar: CarDoc }) {
 
  {/* Features (Checklist) */}
  {car.features && car.features.length > 0 && (
- <section className="space-y-6">
- <h2 className="text-3xl font-black flex items-center gap-3">
- <div className="w-2 h-8 bg-primary rounded-full" />
+ <section className="space-y-3">
+ <h2 className="flex items-center gap-2 text-lg font-semibold text-slate-900">
+ <div className="h-6 w-1 rounded-full bg-primary" />
  المميزات
  </h2>
- <div className="bg-white p-8 rounded-3xl shadow-none border border-gray-100">
- <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-y-4 gap-x-8">
+ <div className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
+ <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
  {car.features.map((feature, i) => (
- <div
- key={i}
- className="flex items-center gap-3 text-lg font-bold"
- >
- <div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
- <Check className="h-4 w-4 text-primary stroke-[4]" />
+ <div key={i} className="flex items-center gap-2 text-sm font-medium text-slate-700">
+ <div className="flex size-5 shrink-0 items-center justify-center rounded-full bg-primary/10">
+ <Check className="size-3 text-primary" />
  </div>
  {feature}
  </div>
@@ -529,100 +511,96 @@ export default function ClientPage({ initialCar }: { initialCar: CarDoc }) {
  </section>
  )}
 
- <button className="flex items-center gap-2 text-muted-foreground hover:text-destructive transition-colors font-bold mt-12">
- <MessageSquare className="h-5 w-5" />
+ <button
+ type="button"
+ className="flex items-center gap-2 text-sm font-medium text-slate-500 transition-colors hover:text-destructive"
+ >
+ <MessageSquare className="size-4" />
  الإبلاغ عن هذا الإعلان
  </button>
  </div>
 
- {/* Sticky Sidebar Column */}
- <div className="lg:col-span-4">
- <div className="sticky top-40 space-y-6">
- <Card className="border-0 shadow-none rounded-3xl overflow-hidden bg-white">
- <CardContent className="p-8 space-y-8">
- <div className="text-center space-y-4">
- <p className="text-sm font-black text-muted-foreground">
- تواصل مع المعلن
- </p>
- <div className="flex flex-col items-center gap-4">
- <div className="h-24 w-24 bg-gray-50 rounded-[2rem] flex items-center justify-center border-4 border-gray-100 shadow-none">
- <Car className="h-12 w-12 text-primary opacity-20" />
- </div>
- <div className="space-y-1">
- <h3 className="text-2xl font-black">
- {car.showroom?.name || "معرض المنيا للسيارات"}
- </h3>
- <div className="flex items-center justify-center gap-1.5 text-muted-foreground font-bold text-sm">
- <MapPin className="h-4 w-4 text-primary" />
- {car.location || car.showroom?.address || "مدينة المنيا. ميدان الحميات"}
- </div>
- {car.showroom && (
- <Button 
-   variant="link" 
-   className="mt-2 text-primary font-bold w-full"
-   onClick={() => router.push(`/showrooms/${car.showroom?._id}`)}
- >
-   عرض تفاصيل المعرض
- </Button>
+ {/* Contact — always at the end */}
+ <div className="space-y-4 lg:col-span-4 lg:sticky lg:top-28 lg:self-start">
+ <Card className="overflow-hidden rounded-xl border-slate-200 bg-white shadow-none">
+ <CardContent className="space-y-4 p-5 sm:p-6">
+ <div className="text-center space-y-3">
+ <p className="text-xs font-medium text-slate-500">تواصل مع المعلن</p>
+ <div className="flex flex-col items-center gap-3">
+ <div className="flex size-20 items-center justify-center overflow-hidden rounded-xl border border-slate-100 bg-slate-50">
+ {car.showroom?.logo ? (
+   // eslint-disable-next-line @next/next/no-img-element
+   <img src={car.showroom.logo} alt={car.showroom.name} className="size-full object-cover" />
+ ) : (
+   <Car className="size-9 text-primary/30" />
  )}
  </div>
+ <div className="space-y-1">
+ <h3 className="text-base font-semibold text-slate-900">
+ {car.showroom?.name || "معرض المنيا للسيارات"}
+ </h3>
+ <div className="flex items-center justify-center gap-1.5 text-sm text-slate-500">
+ <MapPin className="size-3.5 shrink-0 text-primary" />
+ {car.location || car.showroom?.address || "مدينة المنيا"}
+ </div>
+ {car.showroom?._id ? (
+ <Button
+ variant="link"
+ className="h-auto p-0 text-sm text-primary"
+ onClick={() => router.push(`/showrooms/${car.showroom?._id}`)}
+ >
+ عرض تفاصيل المعرض
+ </Button>
+ ) : null}
  </div>
  </div>
-
- <div className="space-y-4">
- <CallButton
- phone={car.phone}
- label="اتصال"
- onClick={trackCall}
- className="w-full h-16 rounded-2xl text-xl bg-[#2563EB] hover:bg-blue-700 text-white shadow-none shadow-blue-200"
- />
- <Button
- variant="outline"
- size="2xl"
- className="w-full h-16 rounded-2xl text-xl font-black border-2 border-[#22C55E] text-[#22C55E] hover:bg-[#22C55E]/5 shadow-none shadow-green-50"
- >
- <MessageSquare className="h-6 w-6 ml-3" />
- واتساب
- </Button>
- <Button
- variant="ghost"
- className="w-full text-primary font-black hover:bg-primary/5"
- onClick={() => {
- if (car.showroom?._id) {
- router.push(`/showrooms/${car.showroom._id}`);
- } else {
- router.push('/cars');
- }
- }}
- >
- عرض جميع الإعلانات
- <ChevronRight className="mr-2 h-4 w-4 rotate-180" />
- </Button>
  </div>
  </CardContent>
  </Card>
 
- <Card className="border-0 shadow-none rounded-3xl overflow-hidden bg-white">
- <CardContent className="p-6">
+ {(car.locationLink || car.showroom?.locationLink || mapCoordinates) ? (
+ <Card className="overflow-hidden rounded-xl border-slate-200 bg-white shadow-none">
+ <CardContent className="p-4 sm:p-5">
  <MapEmbed
    url={car.locationLink || car.showroom?.locationLink}
+   coordinates={mapCoordinates}
    title="الموقع على الخريطة"
  />
  </CardContent>
  </Card>
+ ) : null}
 
- {/* Safety Tips or Similar Ads could go here */}
- <div className="bg-amber-50 p-6 rounded-2xl border border-amber-100 space-y-3">
- <p className="font-black text-amber-900 text-sm">نصيحة أمان</p>
- <p className="text-amber-800 text-xs font-bold leading-relaxed">
- لا تقم بتحويل أي مبالغ مالية قبل فحص السيارة والتأكد من كافة
- الأوراق القانونية.
+ <div className="rounded-xl border border-amber-200/70 bg-amber-50/80 p-4">
+ <p className="text-xs font-semibold text-amber-900">نصيحة أمان</p>
+ <p className="mt-1.5 text-xs leading-relaxed text-amber-800/90">
+ لا تقم بتحويل أي مبالغ مالية قبل فحص السيارة والتأكد من كافة الأوراق القانونية.
  </p>
  </div>
- </div>
+
+ <Button
+ variant="ghost"
+ className="w-full text-sm font-medium text-primary hover:bg-primary/5"
+ onClick={() => {
+ if (car.showroom?._id) {
+ router.push(`/showrooms/${car.showroom._id}`);
+ } else {
+ router.push("/cars");
+ }
+ }}
+ >
+ عرض جميع الإعلانات
+ <ChevronRight className="mr-2 size-4 rotate-180" />
+ </Button>
  </div>
  </div>
  </main>
+
+ <ListingContactBar
+   phone={car.phone}
+   whatsappHref={whatsappHref}
+   onCall={trackCall}
+   onWhatsapp={trackWhatsapp}
+ />
 
  {/* Fullscreen Swiper Lightbox */}
  <Dialog open={isLightboxOpen} onOpenChange={setIsLightboxOpen}>
@@ -651,9 +629,11 @@ export default function ClientPage({ initialCar }: { initialCar: CarDoc }) {
  اتصال
  </a>
  </Button>
- <Button variant="outline" size="sm" className="bg-[#22C55E] border-0 text-white hover:bg-green-600 rounded-xl font-bold px-6">
+ <Button variant="outline" size="sm" className="bg-[#22C55E] border-0 text-white hover:bg-green-600 rounded-xl font-bold px-6" asChild>
+ <a href={whatsappHref} target="_blank" rel="noopener noreferrer" onClick={trackWhatsapp}>
  <MessageSquare className="h-4 w-4 ml-2" />
  واتساب
+ </a>
  </Button>
  </div>
  <Button 
@@ -733,4 +713,12 @@ export default function ClientPage({ initialCar }: { initialCar: CarDoc }) {
  </Dialog>
  </div>
  );
+}
+
+function buildListingTitle(car: CarDoc) {
+ const parts = [car.brand, car.model].filter(Boolean);
+ if (!car.model?.includes(String(car.year))) {
+   parts.push(String(car.year));
+ }
+ return parts.join(" ");
 }

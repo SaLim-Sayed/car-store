@@ -1,24 +1,47 @@
 import { notFound } from "next/navigation";
 import connectDB from "@/lib/mongoose";
 import Showroom from "@/lib/models/Showroom";
-import Car from "@/lib/models/Car";
-import Equipment from "@/lib/models/Equipment";
+import CarModel from "@/lib/models/Car";
+import EquipmentModel from "@/lib/models/Equipment";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MapEmbed } from "@/components/map-embed";
-import { CarCard } from "@/components/car-card";
-import { EquipmentCard } from "@/components/equipment-card";
-import { ChevronLeft, Mail, MapPin, Phone, Store } from "lucide-react";
+import {
+  ShowroomInventoryTabs,
+  ShowroomStickyActions,
+  ShowroomWhatsappButton,
+} from "@/components/showroom-detail-client";
+import { listingPageBottomPadding } from "@/components/listing-contact-bar";
+import { Clock3, ChevronLeft, Mail, MapPin, Phone, Store } from "lucide-react";
 import Link from "next/link";
-import { formatPhoneDisplay } from "@/lib/phone";
+import { formatPhoneDisplay, getContactPhone, getTelHref } from "@/lib/phone";
 import { buildPageMetadata } from "@/lib/seo";
 import { ShareButton } from "@/components/share-button";
 import { ContactShowroomButton } from "@/components/contact-showroom-button";
+import { getWhatsAppUrl } from "@/lib/whatsapp";
+import { absoluteUrl } from "@/lib/app-url";
+import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
+import type { Car } from "@/hooks/useCars";
+import type { Equipment } from "@/hooks/useEquipment";
 
 export const dynamic = "force-dynamic";
+
+const BIKE_CATEGORIES = [
+  "موتوسيكل",
+  "توك توك",
+  "تروسيكل",
+  "سكوتر",
+  "دراجة نارية",
+] as const;
+
+type BikeCategory = (typeof BIKE_CATEGORIES)[number];
+
+function isBikeCategory(category?: string | null): category is BikeCategory {
+  return !!category && (BIKE_CATEGORIES as readonly string[]).includes(category);
+}
 
 type ShowroomDoc = {
   _id: string;
@@ -31,13 +54,41 @@ type ShowroomDoc = {
   featured?: boolean;
   workingHours?: string;
   locationLink?: string;
+  coordinates?: { lat: number; lng: number } | null;
+};
+
+type RelatedShowroom = {
+  _id: string;
+  name: string;
+  address: string;
+  logo?: string;
+  featured?: boolean;
 };
 
 async function getShowroom(id: string): Promise<ShowroomDoc | null> {
   try {
     await connectDB();
-    const showroom = (await Showroom.findById(id).lean()) as any;
+    const showroom = (await Showroom.findById(id).lean()) as {
+      _id: unknown;
+      name: string;
+      address: string;
+      phone: string;
+      email?: string;
+      logo?: string;
+      description?: string;
+      featured?: boolean;
+      workingHours?: string;
+      locationLink?: string;
+      location?: { coordinates?: [number, number] };
+    } | null;
     if (!showroom) return null;
+
+    const coords = showroom.location?.coordinates;
+    const coordinates =
+      Array.isArray(coords) && coords.length >= 2
+        ? { lng: coords[0], lat: coords[1] }
+        : null;
+
     return {
       _id: String(showroom._id),
       name: showroom.name,
@@ -49,28 +100,28 @@ async function getShowroom(id: string): Promise<ShowroomDoc | null> {
       featured: !!showroom.featured,
       workingHours: showroom.workingHours ?? "",
       locationLink: showroom.locationLink ?? "",
+      coordinates,
     };
   } catch {
     return null;
   }
 }
 
-async function getShowroomCars(showroomId: string) {
+async function getRelatedShowrooms(currentId: string): Promise<RelatedShowroom[]> {
   await connectDB();
-  const cars = await Car.find({ showroom: showroomId })
-    .sort({ createdAt: -1 })
-    .limit(24)
+  const rows = await Showroom.find({ _id: { $ne: currentId } })
+    .select("name address logo featured")
+    .sort({ featured: -1, updatedAt: -1 })
+    .limit(3)
     .lean();
-  return JSON.parse(JSON.stringify(cars)) as any[];
-}
 
-async function getShowroomEquipment(showroomId: string) {
-  await connectDB();
-  const equipment = await Equipment.find({ showroom: showroomId })
-    .sort({ createdAt: -1 })
-    .limit(24)
-    .lean();
-  return JSON.parse(JSON.stringify(equipment)) as any[];
+  return rows.map((row) => ({
+    _id: String(row._id),
+    name: row.name,
+    address: row.address,
+    logo: row.logo ?? "",
+    featured: !!row.featured,
+  }));
 }
 
 export async function generateMetadata({
@@ -90,7 +141,7 @@ export async function generateMetadata({
   }
   return buildPageMetadata({
     title: `${showroom.name} | معارض السيارات في المنيا`,
-    description: `${showroom.name} — ${showroom.address}. تواصل مباشرة واطّلع على السيارات المتاحة داخل المعرض.`,
+    description: `${showroom.name} — ${showroom.address}. تواصل مباشرة واطّلع على الإعلانات المتاحة داخل المعرض.`,
     path: `showrooms/${showroom._id}`,
     image: showroom.logo || "/logo.png",
     ogType: "article",
@@ -107,17 +158,122 @@ export default async function ShowroomDetailsPage({
   const showroom = await getShowroom(id);
   if (!showroom) notFound();
 
-  const cars = await getShowroomCars(showroom._id);
-  const equipmentList = await getShowroomEquipment(showroom._id);
+  await connectDB();
 
-  const BIKE_CATEGORIES = ["موتوسيكل", "توك توك", "تروسيكل", "سكوتر", "دراجة نارية"];
-  const bikes = equipmentList.filter(e => BIKE_CATEGORIES.includes(e.category));
-  const heavyEquipment = equipmentList.filter(e => !BIKE_CATEGORIES.includes(e.category));
+  const [
+    carsRaw,
+    equipmentRaw,
+    carCount,
+    bikeCount,
+    equipmentCount,
+    relatedShowrooms,
+  ] = await Promise.all([
+    CarModel.find({ showroom: showroom._id }).sort({ createdAt: -1 }).limit(9).lean(),
+    EquipmentModel.find({ showroom: showroom._id }).sort({ createdAt: -1 }).limit(18).lean(),
+    CarModel.countDocuments({ showroom: showroom._id }),
+    EquipmentModel.countDocuments({
+      showroom: showroom._id,
+      category: { $in: BIKE_CATEGORIES },
+    }),
+    EquipmentModel.countDocuments({
+      showroom: showroom._id,
+      category: { $nin: BIKE_CATEGORIES },
+    }),
+    getRelatedShowrooms(showroom._id),
+  ]);
+
+  const cars = JSON.parse(JSON.stringify(carsRaw)) as Car[];
+  const equipmentList = JSON.parse(JSON.stringify(equipmentRaw)) as Equipment[];
+
+  const bikes = equipmentList.filter((e) => isBikeCategory(e.category));
+  const heavyEquipment = equipmentList.filter((e) => !isBikeCategory(e.category));
+
+  const totalListings = carCount + bikeCount + equipmentCount;
+  const whatsappHref = getWhatsAppUrl(
+    `مرحباً، أريد الاستفسار عن معرض ${showroom.name}`,
+    getContactPhone(showroom.phone),
+  );
+
+  const inventoryTabs = [
+    carCount > 0
+      ? {
+          id: "cars",
+          label: `سيارات (${carCount})`,
+          count: carCount,
+          href: `/cars?showroom=${showroom._id}`,
+          kind: "cars" as const,
+          items: cars,
+        }
+      : null,
+    bikeCount > 0
+      ? {
+          id: "bikes",
+          label: `دراجات (${bikeCount})`,
+          count: bikeCount,
+          href: `/bikes?showroom=${showroom._id}`,
+          kind: "bikes" as const,
+          items: bikes,
+        }
+      : null,
+    equipmentCount > 0
+      ? {
+          id: "equipment",
+          label: `معدات (${equipmentCount})`,
+          count: equipmentCount,
+          href: `/equipment?showroom=${showroom._id}`,
+          kind: "equipment" as const,
+          items: heavyEquipment,
+        }
+      : null,
+  ].filter(Boolean) as {
+    id: string;
+    label: string;
+    count: number;
+    href: string;
+    kind: "cars" | "bikes" | "equipment";
+    items: Car[] | Equipment[];
+  }[];
+
+  const primaryLink = inventoryTabs[0] ?? {
+    href: `/cars?showroom=${showroom._id}`,
+    label: "إعلانات المعرض",
+  };
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "AutoDealer",
+    name: showroom.name,
+    description: showroom.description || undefined,
+    image: showroom.logo || undefined,
+    telephone: showroom.phone,
+    email: showroom.email || undefined,
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: showroom.address,
+      addressRegion: "المنيا",
+      addressCountry: "EG",
+    },
+    url: absoluteUrl(`showrooms/${showroom._id}`),
+    ...(showroom.coordinates
+      ? {
+          geo: {
+            "@type": "GeoCoordinates",
+            latitude: showroom.coordinates.lat,
+            longitude: showroom.coordinates.lng,
+          },
+        }
+      : {}),
+  };
 
   return (
-    <div className="min-h-screen bg-[#F9F6F1]">
-      <main className="container mx-auto px-4 py-10 md:py-16">
-        <div className="max-w-6xl mx-auto space-y-8">
+    <div className={cn("min-h-screen bg-slate-50/60", listingPageBottomPadding)}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
+      <main className="container mx-auto max-w-5xl px-4 py-6 sm:py-8">
+        <div className="space-y-5">
           <Breadcrumbs
             items={[
               { label: "المعارض والشركاء", href: "/showrooms" },
@@ -125,171 +281,216 @@ export default async function ShowroomDetailsPage({
             ]}
           />
 
-          <Card className="border-0 shadow-none rounded-2xl md:rounded-[2rem] bg-white overflow-hidden">
-            <CardContent className="p-6 md:p-10 grid grid-cols-1 lg:grid-cols-12 gap-8">
-              <div className="lg:col-span-7 space-y-5">
-                <div className="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-10">
-                  <div className="flex size-32 shrink-0 items-center justify-center overflow-hidden rounded-[2rem] border border-neutral-100 bg-white shadow-lg md:size-52">
-                    {showroom.logo ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={showroom.logo}
-                        alt={showroom.name}
-                        className="h-full w-full object-fill p-0"
-                      />
-                    ) : (
-                      <Store className="size-16 text-primary opacity-20 md:size-24" />
-                    )}
+          <Card className="overflow-hidden rounded-xl border-slate-200 bg-white shadow-none">
+            <div className="h-1 bg-primary" />
+            <CardContent className="grid gap-5 p-4 sm:p-6 lg:grid-cols-5 lg:gap-6">
+              <div className="space-y-4 lg:col-span-3">
+                <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
+                  <div className="relative">
+                    <div className="flex size-24 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-slate-100 bg-slate-50 ring-2 ring-white sm:size-28">
+                      {showroom.logo ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={showroom.logo}
+                          alt={showroom.name}
+                          className="size-full object-cover"
+                        />
+                      ) : (
+                        <Store className="size-10 text-slate-300" />
+                      )}
+                    </div>
+                    {totalListings > 0 ? (
+                      <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-primary px-2 py-0.5 text-[10px] font-medium text-white">
+                        {totalListings} إعلان
+                      </span>
+                    ) : null}
                   </div>
-                  <div className="min-w-0 flex-1 space-y-4 pt-2 md:pt-6 text-center md:text-start">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <h1 className="text-2xl font-[1000] leading-tight tracking-tighter text-slate-900 md:text-4xl">
+
+                  <div className="min-w-0 flex-1 space-y-2 text-center sm:text-right">
+                    <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-start">
+                      <h1 className="text-lg font-semibold leading-snug text-slate-900 sm:text-xl">
                         {showroom.name}
                       </h1>
                       {showroom.featured ? (
-                        <Badge className="rounded-full border-0 bg-amber-100 px-3 py-1 text-[11px] font-black text-amber-700">
+                        <Badge className="rounded-md border-0 bg-amber-50 px-2 py-0.5 text-[10px] font-medium text-amber-700">
                           شريك متميز
                         </Badge>
                       ) : null}
                     </div>
-                    <div className="flex items-start gap-2 font-bold text-muted-foreground">
-                      <MapPin className="mt-0.5 size-5 shrink-0 text-primary" />
-                      <span className="leading-relaxed">{showroom.address}</span>
-                    </div>
+
+                    <p className="flex items-center justify-center gap-1.5 text-sm text-slate-500 sm:justify-start">
+                      <MapPin className="size-3.5 shrink-0 text-primary" />
+                      {showroom.address}
+                    </p>
+
+                    {totalListings > 0 ? (
+                      <div className="flex flex-wrap justify-center gap-1.5 sm:justify-start">
+                        {carCount > 0 ? (
+                          <Link
+                            href={`/cars?showroom=${showroom._id}`}
+                            className="rounded-md bg-slate-100 px-2 py-0.5 text-[11px] text-slate-600 transition-colors hover:bg-slate-200"
+                          >
+                            {carCount} سيارة
+                          </Link>
+                        ) : null}
+                        {bikeCount > 0 ? (
+                          <Link
+                            href={`/bikes?showroom=${showroom._id}`}
+                            className="rounded-md bg-slate-100 px-2 py-0.5 text-[11px] text-slate-600 transition-colors hover:bg-slate-200"
+                          >
+                            {bikeCount} دراجة
+                          </Link>
+                        ) : null}
+                        {equipmentCount > 0 ? (
+                          <Link
+                            href={`/equipment?showroom=${showroom._id}`}
+                            className="rounded-md bg-slate-100 px-2 py-0.5 text-[11px] text-slate-600 transition-colors hover:bg-slate-200"
+                          >
+                            {equipmentCount} معدة
+                          </Link>
+                        ) : null}
+                      </div>
+                    ) : null}
                   </div>
                 </div>
 
                 {showroom.description ? (
-                  <p className="text-muted-foreground font-medium leading-relaxed">
-                    {showroom.description}
-                  </p>
+                  <p className="text-sm leading-relaxed text-slate-600">{showroom.description}</p>
                 ) : null}
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-                  <div className="flex items-center gap-3 rounded-xl border border-slate-100 bg-slate-50 px-4 py-3">
-                    <Phone className="h-5 w-5 text-primary shrink-0" />
-                    <span dir="ltr" className="font-black text-slate-800">
+                <div className="grid gap-2 sm:grid-cols-2">
+                  <a
+                    href={getTelHref(showroom.phone)}
+                    className="flex items-center gap-2 rounded-lg border border-slate-100 bg-slate-50 px-3 py-2.5 transition-colors hover:bg-slate-100"
+                  >
+                    <Phone className="size-4 shrink-0 text-primary" />
+                    <span dir="ltr" className="text-sm font-medium text-slate-800">
                       {formatPhoneDisplay(showroom.phone)}
                     </span>
-                  </div>
+                  </a>
                   {showroom.email ? (
-                    <div className="flex items-center gap-3 rounded-xl border border-slate-100 bg-slate-50 px-4 py-3">
-                      <Mail className="h-5 w-5 text-primary shrink-0" />
-                      <span className="font-black text-slate-800 line-clamp-1">
+                    <a
+                      href={`mailto:${showroom.email}`}
+                      className="flex items-center gap-2 rounded-lg border border-slate-100 bg-slate-50 px-3 py-2.5 transition-colors hover:bg-slate-100"
+                    >
+                      <Mail className="size-4 shrink-0 text-primary" />
+                      <span className="truncate text-sm font-medium text-slate-800">
                         {showroom.email}
                       </span>
+                    </a>
+                  ) : null}
+                  {showroom.workingHours ? (
+                    <div className="flex items-center gap-2 rounded-lg border border-slate-100 bg-slate-50 px-3 py-2.5 sm:col-span-2">
+                      <Clock3 className="size-4 shrink-0 text-primary" />
+                      <span className="text-sm text-slate-700">{showroom.workingHours}</span>
                     </div>
                   ) : null}
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-3 pt-2">
-                  <Button asChild className="h-12 rounded-xl font-black">
-                    <Link href={`/cars?showroom=${showroom._id}`}>
-                      عرض سيارات المعرض
-                      <ChevronLeft className="mr-2 h-5 w-5" />
-                    </Link>
+                <div className="hidden flex-wrap gap-2 md:flex">
+                  <Button asChild className="h-10 rounded-lg text-sm font-medium">
+                    <Link href={primaryLink.href}>{primaryLink.label}</Link>
                   </Button>
                   <ContactShowroomButton
                     showroomId={showroom._id}
                     phone={showroom.phone}
+                    className="h-10 rounded-lg text-sm font-medium"
+                  />
+                  <ShowroomWhatsappButton
+                    showroomId={showroom._id}
+                    href={whatsappHref}
+                    className="h-10 rounded-lg border-emerald-200 text-sm font-medium text-emerald-700 hover:bg-emerald-50"
                   />
                   <ShareButton
-                    className="h-12 w-12 rounded-xl bg-white border-neutral-200"
+                    className="h-10 w-10 rounded-lg border-slate-200"
                     title={showroom.name}
-                    text={`شاهد سيارات معرض ${showroom.name}`}
+                    text={`شاهد إعلانات معرض ${showroom.name}`}
                   />
                 </div>
               </div>
 
-              <div className="lg:col-span-5">
-                <MapEmbed url={showroom.locationLink} title="موقع المعرض" />
+              <div className="lg:col-span-2">
+                <MapEmbed
+                  url={showroom.locationLink}
+                  coordinates={showroom.coordinates}
+                  title="موقع المعرض"
+                />
               </div>
             </CardContent>
           </Card>
 
-          <div className="flex items-end justify-between gap-4">
-            <h2 className="text-xl md:text-3xl font-[1000] tracking-tighter">
-              سيارات المعرض
-            </h2>
-            <Button
-              asChild
-              variant="outline"
-              className="rounded-xl bg-white font-bold"
-            >
-              <Link href={`/cars?showroom=${showroom._id}`}>
-                عرض الكل <ChevronLeft className="h-4 w-4" />
-              </Link>
-            </Button>
-          </div>
-
-          {cars.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {cars.map((car) => (
-                <CarCard key={String(car._id)} car={car} />
-              ))}
-            </div>
+          {inventoryTabs.length > 0 ? (
+            <ShowroomInventoryTabs tabs={inventoryTabs} />
           ) : (
-            <Card className="border-0 shadow-none rounded-2xl bg-white">
-              <CardContent className="p-10 text-center space-y-3">
-                <Store className="h-12 w-12 mx-auto text-muted-foreground/30" />
-                <p className="text-lg font-black">لا توجد سيارات للعرض حالياً</p>
-                <p className="text-sm font-bold text-muted-foreground">
-                  سيتم إضافة سيارات المعرض قريباً.
+            <Card className="rounded-xl border-dashed border-slate-200 bg-white shadow-none">
+              <CardContent className="py-12 text-center">
+                <Store className="mx-auto mb-3 size-10 text-slate-300" />
+                <p className="text-sm font-medium text-slate-700">لا توجد إعلانات حالياً</p>
+                <p className="mt-1 text-xs text-slate-500">
+                  تواصل مع المعرض مباشرة للاستفسار عن المتوفر.
                 </p>
+                <div className="mt-4 flex justify-center gap-2">
+                  <ContactShowroomButton
+                    showroomId={showroom._id}
+                    phone={showroom.phone}
+                    className="h-10 rounded-lg text-sm"
+                  />
+                  <ShowroomWhatsappButton
+                    showroomId={showroom._id}
+                    href={whatsappHref}
+                    className="h-10 rounded-lg border-emerald-200 text-sm text-emerald-700"
+                  />
+                </div>
               </CardContent>
             </Card>
           )}
 
-          {bikes.length > 0 && (
-            <>
-              <div className="flex items-end justify-between gap-4 mt-8">
-                <h2 className="text-xl md:text-3xl font-[1000] tracking-tighter">
-                  دراجات المعرض
-                </h2>
-                <Button
-                  asChild
-                  variant="outline"
-                  className="rounded-xl bg-white font-bold"
-                >
-                  <Link href={`/bikes?showroom=${showroom._id}`}>
-                    عرض الكل <ChevronLeft className="h-4 w-4" />
-                  </Link>
-                </Button>
+          {relatedShowrooms.length > 0 ? (
+            <section className="space-y-3">
+              <div className="flex items-center justify-between">
+                <h2 className="text-base font-semibold text-slate-900">معارض أخرى</h2>
+                <Link href="/showrooms" className="text-xs font-medium text-primary hover:underline">
+                  عرض الكل
+                </Link>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {bikes.map((bike) => (
-                  <EquipmentCard key={String(bike._id)} equipment={bike} />
+              <div className="grid gap-3 sm:grid-cols-3">
+                {relatedShowrooms.map((related) => (
+                  <Link
+                    key={related._id}
+                    href={`/showrooms/${related._id}`}
+                    className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-3 transition-colors hover:border-primary/30 hover:bg-slate-50"
+                  >
+                    <div className="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-slate-100 bg-slate-50">
+                      {related.logo ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={related.logo}
+                          alt={related.name}
+                          className="size-full object-cover"
+                        />
+                      ) : (
+                        <Store className="size-5 text-slate-300" />
+                      )}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-medium text-slate-900">{related.name}</p>
+                      <p className="truncate text-[11px] text-slate-500">{related.address}</p>
+                    </div>
+                  </Link>
                 ))}
               </div>
-            </>
-          )}
-
-          {heavyEquipment.length > 0 && (
-            <>
-              <div className="flex items-end justify-between gap-4 mt-8">
-                <h2 className="text-xl md:text-3xl font-[1000] tracking-tighter">
-                  معدات المعرض
-                </h2>
-                <Button
-                  asChild
-                  variant="outline"
-                  className="rounded-xl bg-white font-bold"
-                >
-                  <Link href={`/equipment?showroom=${showroom._id}`}>
-                    عرض الكل <ChevronLeft className="h-4 w-4" />
-                  </Link>
-                </Button>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {heavyEquipment.map((equipment) => (
-                  <EquipmentCard key={String(equipment._id)} equipment={equipment} />
-                ))}
-              </div>
-            </>
-          )}
+            </section>
+          ) : null}
         </div>
       </main>
+
+      <ShowroomStickyActions
+        showroomId={showroom._id}
+        phone={showroom.phone}
+        whatsappHref={whatsappHref}
+        primaryHref={primaryLink.href}
+        primaryLabel={primaryLink.label}
+      />
     </div>
   );
 }
-
