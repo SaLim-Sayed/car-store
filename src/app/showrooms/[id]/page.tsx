@@ -10,19 +10,17 @@ import { Button } from "@/components/ui/button";
 import { MapEmbed } from "@/components/map-embed";
 import {
   ShowroomInventoryTabs,
-  ShowroomWhatsappButton,
+  ShowroomPageContact,
 } from "@/components/showroom-detail-client";
-import { listingDetailShell } from "@/components/listing-detail-ui";
-import { Clock3, ChevronLeft, Mail, MapPin, Phone, Store } from "lucide-react";
+import { listingDetailMain, listingDetailShell } from "@/components/listing-detail-ui";
+import { Clock3, Mail, MapPin, Store } from "lucide-react";
 import Link from "next/link";
-import { formatPhoneDisplay, getContactPhone, getTelHref } from "@/lib/phone";
 import { buildPageMetadata } from "@/lib/seo";
 import { ShareButton } from "@/components/share-button";
 import { ContactInfoTile } from "@/components/contact-actions";
-import { ContactShowroomButton } from "@/components/contact-showroom-button";
+import { getContactPhone } from "@/lib/phone";
 import { getWhatsAppUrl } from "@/lib/whatsapp";
 import { absoluteUrl } from "@/lib/app-url";
-import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import type { Car } from "@/hooks/useCars";
 import type { Equipment } from "@/hooks/useEquipment";
@@ -272,7 +270,7 @@ export default async function ShowroomDetailsPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <main className="container mx-auto max-w-5xl px-4 py-6 sm:py-8">
+      <main className={listingDetailMain}>
         <div className="space-y-5">
           <Breadcrumbs
             items={[
@@ -281,90 +279,89 @@ export default async function ShowroomDetailsPage({
             ]}
           />
 
-          <Card className="overflow-hidden rounded-xl border-slate-200 bg-white shadow-none">
-            <div className="h-1 bg-primary" />
-            <CardContent className="grid gap-5 p-4 sm:p-6 lg:grid-cols-5 lg:gap-6">
-              <div className="space-y-4 lg:col-span-3">
-                <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
-                  <div className="relative">
-                    <div className="flex size-24 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-slate-100 bg-slate-50 ring-2 ring-white sm:size-28">
-                      {showroom.logo ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={showroom.logo}
-                          alt={showroom.name}
-                          className="size-full object-cover"
-                        />
-                      ) : (
-                        <Store className="size-10 text-slate-300" />
-                      )}
-                    </div>
-                    {totalListings > 0 ? (
-                      <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-primary px-2 py-0.5 text-[10px] font-medium text-white">
-                        {totalListings} إعلان
-                      </span>
-                    ) : null}
+          <Card className="overflow-hidden rounded-xl border-slate-200 bg-white shadow-sm">
+            <CardContent className="space-y-5 p-4 sm:p-6">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
+                <div className="relative mx-auto shrink-0 sm:mx-0">
+                  <div className="flex size-24 items-center justify-center overflow-hidden rounded-xl border border-slate-100 bg-slate-50 ring-4 ring-slate-50 sm:size-28">
+                    {showroom.logo ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={showroom.logo}
+                        alt={showroom.name}
+                        className="size-full object-cover"
+                      />
+                    ) : (
+                      <Store className="size-10 text-slate-300" />
+                    )}
                   </div>
-
-                  <div className="min-w-0 flex-1 space-y-2 text-center sm:text-right">
-                    <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-start">
-                      <h1 className="text-lg font-semibold leading-snug text-slate-900 sm:text-xl">
-                        {showroom.name}
-                      </h1>
-                      {showroom.featured ? (
-                        <Badge className="rounded-md border-0 bg-amber-50 px-2 py-0.5 text-[10px] font-medium text-amber-700">
-                          شريك متميز
-                        </Badge>
-                      ) : null}
-                    </div>
-
-                    <p className="flex items-center justify-center gap-1.5 text-sm text-slate-500 sm:justify-start">
-                      <MapPin className="size-3.5 shrink-0 text-primary" />
-                      {showroom.address}
-                    </p>
-
-                    {totalListings > 0 ? (
-                      <div className="flex flex-wrap justify-center gap-1.5 sm:justify-start">
-                        {carCount > 0 ? (
-                          <Link
-                            href={`/cars?showroom=${showroom._id}`}
-                            className="rounded-md bg-slate-100 px-2 py-0.5 text-[11px] text-slate-600 transition-colors hover:bg-slate-200"
-                          >
-                            {carCount} سيارة
-                          </Link>
-                        ) : null}
-                        {bikeCount > 0 ? (
-                          <Link
-                            href={`/bikes?showroom=${showroom._id}`}
-                            className="rounded-md bg-slate-100 px-2 py-0.5 text-[11px] text-slate-600 transition-colors hover:bg-slate-200"
-                          >
-                            {bikeCount} دراجة
-                          </Link>
-                        ) : null}
-                        {equipmentCount > 0 ? (
-                          <Link
-                            href={`/equipment?showroom=${showroom._id}`}
-                            className="rounded-md bg-slate-100 px-2 py-0.5 text-[11px] text-slate-600 transition-colors hover:bg-slate-200"
-                          >
-                            {equipmentCount} معدة
-                          </Link>
-                        ) : null}
-                      </div>
-                    ) : null}
-                  </div>
+                  {totalListings > 0 ? (
+                    <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-primary px-2.5 py-0.5 text-[10px] font-semibold text-white">
+                      {totalListings} إعلان
+                    </span>
+                  ) : null}
                 </div>
 
-                {showroom.description ? (
-                  <p className="text-sm leading-relaxed text-slate-600">{showroom.description}</p>
-                ) : null}
+                <div className="min-w-0 flex-1 space-y-2 text-center sm:text-right">
+                  <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-start">
+                    <h1 className="text-pretty text-lg font-semibold leading-snug text-slate-900 break-words sm:text-xl">
+                      {showroom.name}
+                    </h1>
+                    {showroom.featured ? (
+                      <Badge className="rounded-md border-0 bg-amber-50 px-2 py-0.5 text-[10px] font-medium text-amber-700">
+                        شريك متميز
+                      </Badge>
+                    ) : null}
+                  </div>
 
+                  <p className="flex items-start justify-center gap-1.5 text-sm text-slate-500 sm:justify-start">
+                    <MapPin className="mt-0.5 size-3.5 shrink-0 text-primary" />
+                    <span>{showroom.address}</span>
+                  </p>
+
+                  {totalListings > 0 ? (
+                    <div className="flex flex-wrap justify-center gap-1.5 sm:justify-start">
+                      {carCount > 0 ? (
+                        <Link
+                          href={`/cars?showroom=${showroom._id}`}
+                          className="rounded-md bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-600 transition-colors hover:bg-slate-200"
+                        >
+                          {carCount} سيارة
+                        </Link>
+                      ) : null}
+                      {bikeCount > 0 ? (
+                        <Link
+                          href={`/bikes?showroom=${showroom._id}`}
+                          className="rounded-md bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-600 transition-colors hover:bg-slate-200"
+                        >
+                          {bikeCount} دراجة
+                        </Link>
+                      ) : null}
+                      {equipmentCount > 0 ? (
+                        <Link
+                          href={`/equipment?showroom=${showroom._id}`}
+                          className="rounded-md bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-600 transition-colors hover:bg-slate-200"
+                        >
+                          {equipmentCount} معدة
+                        </Link>
+                      ) : null}
+                    </div>
+                  ) : null}
+                </div>
+              </div>
+
+              {showroom.description ? (
+                <p className="text-sm leading-relaxed text-slate-600">{showroom.description}</p>
+              ) : null}
+
+              <ShowroomPageContact
+                showroomId={showroom._id}
+                phone={showroom.phone}
+                whatsappHref={whatsappHref}
+              />
+
+              {showroom.email || showroom.workingHours ? (
                 <div className="grid gap-2 sm:grid-cols-2">
-                  <ContactInfoTile
-                    icon={<Phone className="size-4" />}
-                    label="الهاتف"
-                    value={formatPhoneDisplay(showroom.phone)}
-                    href={getTelHref(showroom.phone)}
-                  />
                   {showroom.email ? (
                     <ContactInfoTile
                       icon={<Mail className="size-4" />}
@@ -378,70 +375,45 @@ export default async function ShowroomDetailsPage({
                       icon={<Clock3 className="size-4" />}
                       label="مواعيد العمل"
                       value={showroom.workingHours}
-                      className="sm:col-span-2"
+                      className={showroom.email ? undefined : "sm:col-span-2"}
                     />
                   ) : null}
                 </div>
+              ) : null}
 
-                <div className="flex flex-wrap gap-2">
-                  <Button
-                    asChild
-                    variant="outline"
-                    className="h-10 flex-none rounded-lg border-slate-200 bg-white text-sm font-semibold text-slate-800 shadow-sm hover:bg-slate-50"
-                  >
-                    <Link href={primaryLink.href}>{primaryLink.label}</Link>
-                  </Button>
-                  <ContactShowroomButton
-                    showroomId={showroom._id}
-                    phone={showroom.phone}
-                    showNumber
-                    className="h-10 flex-none rounded-lg px-4"
-                  />
-                  <ShowroomWhatsappButton
-                    showroomId={showroom._id}
-                    href={whatsappHref}
-                    className="h-10 flex-none rounded-lg px-4"
-                  />
-                  <ShareButton
-                    className="h-10 w-10 rounded-lg border-slate-200"
-                    title={showroom.name}
-                    text={`شاهد إعلانات معرض ${showroom.name}`}
-                  />
-                </div>
-              </div>
-
-              <div className="lg:col-span-2">
-                <MapEmbed
-                  url={showroom.locationLink}
-                  coordinates={showroom.coordinates}
-                  title="موقع المعرض"
+              <div className="flex items-center justify-between gap-3 border-t border-slate-100 pt-4">
+                <Button
+                  asChild
+                  variant="ghost"
+                  className="h-10 px-0 text-sm font-semibold text-primary hover:bg-transparent hover:underline"
+                >
+                  <Link href={primaryLink.href}>{primaryLink.label}</Link>
+                </Button>
+                <ShareButton
+                  className="size-10 rounded-lg border-slate-200"
+                  title={showroom.name}
+                  text={`شاهد إعلانات معرض ${showroom.name}`}
                 />
               </div>
+
+              <MapEmbed
+                url={showroom.locationLink}
+                coordinates={showroom.coordinates}
+                title="موقع المعرض"
+              />
             </CardContent>
           </Card>
 
           {inventoryTabs.length > 0 ? (
             <ShowroomInventoryTabs tabs={inventoryTabs} />
           ) : (
-            <Card className="rounded-xl border-dashed border-slate-200 bg-white shadow-none">
-              <CardContent className="py-12 text-center">
+            <Card className="rounded-xl border border-dashed border-slate-200 bg-slate-50/50 shadow-none">
+              <CardContent className="py-10 text-center">
                 <Store className="mx-auto mb-3 size-10 text-slate-300" />
-                <p className="text-sm font-medium text-slate-700">لا توجد إعلانات حالياً</p>
+                <p className="text-sm font-semibold text-slate-700">لا توجد إعلانات حالياً</p>
                 <p className="mt-1 text-xs text-slate-500">
-                  تواصل مع المعرض مباشرة للاستفسار عن المتوفر.
+                  استخدم أزرار الاتصال أو واتساب أعلاه للاستفسار عن المتوفر.
                 </p>
-                <div className="mt-4 flex justify-center gap-2">
-                  <ContactShowroomButton
-                    showroomId={showroom._id}
-                    phone={showroom.phone}
-                    className="h-10 flex-none rounded-lg px-5"
-                  />
-                  <ShowroomWhatsappButton
-                    showroomId={showroom._id}
-                    href={whatsappHref}
-                    className="h-10 flex-none rounded-lg px-5"
-                  />
-                </div>
               </CardContent>
             </Card>
           )}
@@ -454,12 +426,12 @@ export default async function ShowroomDetailsPage({
                   عرض الكل
                 </Link>
               </div>
-              <div className="grid gap-3 sm:grid-cols-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {relatedShowrooms.map((related) => (
                   <Link
                     key={related._id}
                     href={`/showrooms/${related._id}`}
-                    className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-3 transition-colors hover:border-primary/30 hover:bg-slate-50"
+                    className="flex min-w-0 items-center gap-3 rounded-xl border border-slate-200 bg-white p-3 transition-colors hover:border-primary/30 hover:bg-slate-50"
                   >
                     <div className="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-slate-100 bg-slate-50">
                       {related.logo ? (
@@ -473,9 +445,11 @@ export default async function ShowroomDetailsPage({
                         <Store className="size-5 text-slate-300" />
                       )}
                     </div>
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-medium text-slate-900">{related.name}</p>
-                      <p className="truncate text-[11px] text-slate-500">{related.address}</p>
+                    <div className="min-w-0 flex-1">
+                      <p className="line-clamp-2 text-sm font-medium leading-snug text-slate-900">
+                        {related.name}
+                      </p>
+                      <p className="mt-0.5 line-clamp-1 text-[11px] text-slate-500">{related.address}</p>
                     </div>
                   </Link>
                 ))}

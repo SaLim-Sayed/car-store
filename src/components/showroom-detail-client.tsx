@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { CarCard } from "@/components/car-card";
 import { EquipmentCard } from "@/components/equipment-card";
-import { ContactWhatsappLink } from "@/components/contact-actions";
+import { ContactActionsRow, ContactWhatsappLink } from "@/components/contact-actions";
 import { cn } from "@/lib/utils";
 import type { Car } from "@/hooks/useCars";
 import type { Equipment } from "@/hooks/useEquipment";
@@ -70,6 +70,60 @@ export function ShowroomInventoryTabs({ tabs }: { tabs: InventoryTab[] }) {
             ))}
       </div>
     </section>
+  );
+}
+
+export function ShowroomPageContact({
+  showroomId,
+  phone,
+  whatsappHref,
+  className,
+}: {
+  showroomId: string;
+  phone: string;
+  whatsappHref: string;
+  className?: string;
+}) {
+  const trackCall = async () => {
+    try {
+      await fetch("/api/track/click", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "showroom_contact",
+          targetId: showroomId,
+          metadata: { itemName: "المعرض نفسه", itemType: "showroom" },
+        }),
+      });
+    } catch {
+      // ignore
+    }
+  };
+
+  const trackWhatsapp = async () => {
+    try {
+      await fetch("/api/track/click", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "showroom_contact",
+          targetId: showroomId,
+          metadata: { itemName: "واتساب المعرض", itemType: "showroom" },
+        }),
+      });
+    } catch {
+      // ignore
+    }
+  };
+
+  return (
+    <ContactActionsRow
+      phone={phone}
+      whatsappHref={whatsappHref}
+      onCall={() => void trackCall()}
+      onWhatsapp={() => void trackWhatsapp()}
+      className={className}
+    />
   );
 }
 
