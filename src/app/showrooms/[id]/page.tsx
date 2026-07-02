@@ -10,15 +10,15 @@ import { Button } from "@/components/ui/button";
 import { MapEmbed } from "@/components/map-embed";
 import {
   ShowroomInventoryTabs,
-  ShowroomStickyActions,
   ShowroomWhatsappButton,
 } from "@/components/showroom-detail-client";
-import { listingPageBottomPadding } from "@/components/listing-contact-bar";
+import { listingDetailShell } from "@/components/listing-detail-ui";
 import { Clock3, ChevronLeft, Mail, MapPin, Phone, Store } from "lucide-react";
 import Link from "next/link";
 import { formatPhoneDisplay, getContactPhone, getTelHref } from "@/lib/phone";
 import { buildPageMetadata } from "@/lib/seo";
 import { ShareButton } from "@/components/share-button";
+import { ContactInfoTile } from "@/components/contact-actions";
 import { ContactShowroomButton } from "@/components/contact-showroom-button";
 import { getWhatsAppUrl } from "@/lib/whatsapp";
 import { absoluteUrl } from "@/lib/app-url";
@@ -266,7 +266,7 @@ export default async function ShowroomDetailsPage({
   };
 
   return (
-    <div className={cn("min-h-screen bg-slate-50/60", listingPageBottomPadding)}>
+    <div className={listingDetailShell}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -359,47 +359,48 @@ export default async function ShowroomDetailsPage({
                 ) : null}
 
                 <div className="grid gap-2 sm:grid-cols-2">
-                  <a
+                  <ContactInfoTile
+                    icon={<Phone className="size-4" />}
+                    label="الهاتف"
+                    value={formatPhoneDisplay(showroom.phone)}
                     href={getTelHref(showroom.phone)}
-                    className="flex items-center gap-2 rounded-lg border border-slate-100 bg-slate-50 px-3 py-2.5 transition-colors hover:bg-slate-100"
-                  >
-                    <Phone className="size-4 shrink-0 text-primary" />
-                    <span dir="ltr" className="text-sm font-medium text-slate-800">
-                      {formatPhoneDisplay(showroom.phone)}
-                    </span>
-                  </a>
+                  />
                   {showroom.email ? (
-                    <a
+                    <ContactInfoTile
+                      icon={<Mail className="size-4" />}
+                      label="البريد الإلكتروني"
+                      value={showroom.email}
                       href={`mailto:${showroom.email}`}
-                      className="flex items-center gap-2 rounded-lg border border-slate-100 bg-slate-50 px-3 py-2.5 transition-colors hover:bg-slate-100"
-                    >
-                      <Mail className="size-4 shrink-0 text-primary" />
-                      <span className="truncate text-sm font-medium text-slate-800">
-                        {showroom.email}
-                      </span>
-                    </a>
+                    />
                   ) : null}
                   {showroom.workingHours ? (
-                    <div className="flex items-center gap-2 rounded-lg border border-slate-100 bg-slate-50 px-3 py-2.5 sm:col-span-2">
-                      <Clock3 className="size-4 shrink-0 text-primary" />
-                      <span className="text-sm text-slate-700">{showroom.workingHours}</span>
-                    </div>
+                    <ContactInfoTile
+                      icon={<Clock3 className="size-4" />}
+                      label="مواعيد العمل"
+                      value={showroom.workingHours}
+                      className="sm:col-span-2"
+                    />
                   ) : null}
                 </div>
 
-                <div className="hidden flex-wrap gap-2 md:flex">
-                  <Button asChild className="h-10 rounded-lg text-sm font-medium">
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    asChild
+                    variant="outline"
+                    className="h-10 flex-none rounded-lg border-slate-200 bg-white text-sm font-semibold text-slate-800 shadow-sm hover:bg-slate-50"
+                  >
                     <Link href={primaryLink.href}>{primaryLink.label}</Link>
                   </Button>
                   <ContactShowroomButton
                     showroomId={showroom._id}
                     phone={showroom.phone}
-                    className="h-10 rounded-lg text-sm font-medium"
+                    showNumber
+                    className="h-10 flex-none rounded-lg px-4"
                   />
                   <ShowroomWhatsappButton
                     showroomId={showroom._id}
                     href={whatsappHref}
-                    className="h-10 rounded-lg border-emerald-200 text-sm font-medium text-emerald-700 hover:bg-emerald-50"
+                    className="h-10 flex-none rounded-lg px-4"
                   />
                   <ShareButton
                     className="h-10 w-10 rounded-lg border-slate-200"
@@ -433,12 +434,12 @@ export default async function ShowroomDetailsPage({
                   <ContactShowroomButton
                     showroomId={showroom._id}
                     phone={showroom.phone}
-                    className="h-10 rounded-lg text-sm"
+                    className="h-10 flex-none rounded-lg px-5"
                   />
                   <ShowroomWhatsappButton
                     showroomId={showroom._id}
                     href={whatsappHref}
-                    className="h-10 rounded-lg border-emerald-200 text-sm text-emerald-700"
+                    className="h-10 flex-none rounded-lg px-5"
                   />
                 </div>
               </CardContent>
@@ -483,14 +484,6 @@ export default async function ShowroomDetailsPage({
           ) : null}
         </div>
       </main>
-
-      <ShowroomStickyActions
-        showroomId={showroom._id}
-        phone={showroom.phone}
-        whatsappHref={whatsappHref}
-        primaryHref={primaryLink.href}
-        primaryLabel={primaryLink.label}
-      />
     </div>
   );
 }

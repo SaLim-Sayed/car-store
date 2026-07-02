@@ -11,9 +11,7 @@ import {
   MapPin,
   Bike,
   Gauge,
-  Share2,
   MessageSquare,
-  Check,
   ChevronRight,
   X,
   ChevronLeft as ChevronLeftIcon,
@@ -21,9 +19,20 @@ import {
   Calendar,
 } from "lucide-react"
 import { CallButton } from "@/components/call-button"
-import { ListingContactBar, listingPageBottomPadding } from "@/components/listing-contact-bar"
+import { ContactActionsCard } from "@/components/contact-actions"
+import {
+  ListingContentLayout,
+  ListingDetailHeader,
+  ListingDetailSection,
+  ListingFeatureList,
+  ListingSafetyTip,
+  ListingSellerCard,
+  ListingSpecTable,
+  listingDetailMain,
+  listingDetailShell,
+} from "@/components/listing-detail-ui"
+import { ShareButton } from "@/components/share-button"
 import { Breadcrumbs } from "@/components/breadcrumbs"
-import { toast } from "sonner"
 import { getAppUrl } from "@/lib/app-url"
 import { getWhatsAppUrl } from "@/lib/whatsapp"
 import type { Equipment } from "@/hooks/useEquipment"
@@ -193,126 +202,65 @@ export default function BikeDetailPage({
     `مرحباً، أريد الاستفسار عن هذا الإعلان:\n${label}\nالرابط: ${listingPageUrl}`
   )
 
-  const handleShare = async () => {
-    if (typeof navigator !== "undefined" && navigator.share) {
-      try {
-        await navigator.share({
-          title: `${label} — سوق سيارات المنيا`,
-          text: label,
-          url: listingPageUrl,
-        })
-        return
-      } catch (e) {
-        if ((e as Error).name === "AbortError") return
-      }
-    }
-    try {
-      await navigator.clipboard.writeText(listingPageUrl)
-      toast.success("تم نسخ الرابط")
-    } catch {
-      toast.error("تعذر نسخ الرابط — انسخه يدوياً من المتصفح")
-    }
-  }
-
-  // Specifications builder
-  const specsCol1 = [
-    { k: "الماركة", v: item.brand },
-    { k: "الموديل", v: item.model || "—" },
-    { k: "الحالة", v: item.condition },
-    { k: "تاريخ النشر", v: item.createdAt ? new Date(item.createdAt).toLocaleDateString("ar-EG") : "—" },
+  const specRows = [
+    { label: "الماركة", value: item.brand },
+    { label: "الموديل", value: item.model || "—" },
+    { label: "الحالة", value: item.condition },
+    {
+      label: "تاريخ النشر",
+      value: item.createdAt ? new Date(item.createdAt).toLocaleDateString("ar-EG") : "—",
+    },
+    { label: "سنة الصنع", value: String(item.year ?? "—") },
+    ...(item.hours > 0
+      ? [{ label: "ساعات العمل", value: `${item.hours.toLocaleString("ar-EG")} ساعة` }]
+      : []),
+    { label: "الموقع", value: item.location },
   ]
 
-  const specsCol2 = [
-    { k: "سنة الصنع", v: item.year ?? "—" },
-    ...(item.hours > 0 ? [{ k: "ساعات العمل", v: `${item.hours.toLocaleString("ar-EG")} ساعة` }] : []),
-    { k: "الموقع", v: item.location },
-  ]
+  const showroom =
+    typeof item.showroom === "object" && item.showroom !== null
+      ? (item.showroom as { _id?: string; name?: string; address?: string; logo?: string })
+      : null
 
   return (
-    <div className={cn("min-h-screen w-full overflow-x-hidden bg-gradient-to-b from-[#faf8f4] via-[#F9F6F1] to-[#f4f1eb]", listingPageBottomPadding)}>
-      <main className="container mx-auto w-full max-w-7xl min-w-0 px-4 pt-8 pb-24 lg:pt-11">
-        <article className="mb-12 w-full min-w-0 rounded-[1.75rem] border border-neutral-200/70 bg-card px-4 py-6 shadow-[0_4px_24px_-8px_rgb(26_26_26/0.12)] ring-1 ring-black/[0.03] sm:px-6 sm:py-8 lg:mb-14 lg:rounded-[2rem] lg:px-8 lg:py-10">
+    <div className={listingDetailShell}>
+      <main className={listingDetailMain}>
+        <div className="mb-4">
           <Breadcrumbs
             items={[
               { label: "الدراجات النارية والتوك توك", href: "/bikes" },
               { label: label },
             ]}
           />
+        </div>
 
-          <header className="mb-10 flex flex-col gap-6 lg:gap-8">
-            <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
-              <div className="min-w-0 flex-1 space-y-4 lg:space-y-5">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-primary/95">
-                  إعلان دراجات نارية
-                </p>
-                <h1 className="text-pretty font-serif text-2xl font-bold leading-snug tracking-tight text-[#141414] sm:text-4xl lg:text-[2.25rem]">
-                  {label}
-                  <span className="mr-2 block text-xl font-semibold leading-normal text-muted-foreground sm:mr-0 sm:mt-1 sm:inline sm:text-2xl lg:text-[1.35rem]">
-                    للبيع
-                  </span>
-                </h1>
-                
-                <div className="flex flex-wrap gap-2">
-                  <Badge
-                    variant="secondary"
-                    className="flex items-center gap-1.5 rounded-full border border-border/70 bg-muted/50 px-3 py-1 text-xs font-semibold shadow-none"
-                  >
-                    <Bike className="size-3.5 text-primary" />
-                    {item.category}
-                  </Badge>
-                  <Badge
-                    variant="secondary"
-                    className="flex items-center gap-1.5 rounded-full border border-border/70 bg-muted/50 px-3 py-1 text-xs font-semibold shadow-none"
-                  >
-                    <Calendar className="size-3.5 text-primary" />
-                    {item.year || "موديل حديث"}
-                  </Badge>
-                  <Badge
-                    variant="secondary"
-                    className="flex max-w-full items-center gap-1.5 rounded-full border border-border/70 bg-muted/50 px-3 py-1 text-xs font-semibold shadow-none"
-                  >
-                    <MapPin className="size-3.5 shrink-0 text-primary" aria-hidden />
-                    <span className="truncate">{item.location}</span>
-                  </Badge>
-                  <Badge
-                    variant="outline"
-                    className="rounded-full border-primary/35 bg-primary/[0.07] px-3 py-1 text-xs font-semibold text-primary shadow-none"
-                  >
-                    {item.status}
-                  </Badge>
-                </div>
-
-                <div className="mt-4 flex items-baseline gap-2 tabular-nums pt-2">
-                  <span className="font-serif text-3xl font-bold text-primary tabular-nums tracking-tight sm:text-4xl lg:text-5xl">
-                    {item.price ? item.price.toLocaleString("ar-EG") : "حسب الطلب"}
-                  </span>
-                  {item.price && (
-                    <span className="text-sm font-semibold text-muted-foreground lg:text-base">
-                      جنيه
-                    </span>
-                  )}
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2 lg:flex-col shrink-0">
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="icon"
-                  aria-label="مشاركة الإعلان"
-                  onClick={() => void handleShare()}
-                  className="size-11 rounded-xl border-neutral-200/90 bg-background shadow-none hover:bg-muted"
-                >
-                  <Share2 className="size-5" />
-                </Button>
-              </div>
-            </div>
-          </header>
+        <ListingDetailHeader
+          category="إعلان دراجات نارية"
+          title={label}
+          price={item.price}
+          chips={[
+            { icon: <Bike className="size-3.5" />, label: item.category },
+            { icon: <Calendar className="size-3.5" />, label: String(item.year || "موديل حديث") },
+            { icon: <MapPin className="size-3.5" />, label: item.location },
+          ]}
+          status={
+            <Badge className="rounded-md border-0 bg-primary/10 px-2 py-0.5 text-[11px] font-semibold text-primary">
+              {item.status}
+            </Badge>
+          }
+          actions={
+            <ShareButton
+              className="size-10 rounded-lg border-slate-200 bg-white shadow-sm hover:bg-slate-50"
+              title={label}
+              text={`شاهد ${label} المعروضة للبيع`}
+            />
+          }
+        />
 
           {/* Image gallery */}
           <div
             className={cn(
-              "mb-10 w-full min-w-0 overflow-hidden",
+              "mt-5 w-full min-w-0 overflow-hidden",
               images.length > 1
                 ? "grid grid-cols-1 items-start gap-4 sm:gap-5 lg:grid-cols-[minmax(0,1fr)_7rem] lg:gap-5 xl:grid-cols-[minmax(0,1fr)_8.5rem] xl:gap-6"
                 : "block",
@@ -456,155 +404,80 @@ export default function BikeDetailPage({
               </aside>
             ) : null}
           </div>
-        </article>
 
-        {/* Below-the-fold */}
-        <div className="grid w-full min-w-0 grid-cols-1 gap-11 lg:grid-cols-[minmax(0,1fr)_minmax(276px,22rem)] lg:gap-14 xl:gap-16">
-          {/* Details */}
-          <div className="min-w-0 w-full space-y-14">
+          <ContactActionsCard
+            className="mt-5 lg:hidden"
+            phone={item.phone}
+            whatsappHref={whatsappHref}
+            onCall={trackCall}
+            onWhatsapp={trackCall}
+            subtitle={showroom?.name ? `تواصل مع ${showroom.name}` : "اتصال أو واتساب مع المعلن"}
+          />
 
-            {/* Specs */}
-            <section aria-labelledby="bike-spec-heading" className="space-y-5">
-              <h2 id="bike-spec-heading" className="text-lg font-semibold tracking-tight text-foreground lg:text-xl">
-                تفاصيل الدراجة
-              </h2>
-              <div className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4">
-                <dl className="overflow-hidden rounded-2xl border border-border/70 bg-card shadow-[0_1px_2px_rgb(0_0_0/0.05)] divide-y divide-border/60">
-                  {specsCol1.map((row) => (
-                    <div key={row.k} className="grid grid-cols-[minmax(6.5rem,34%)_1fr] gap-2 px-4 py-3.5 sm:px-5">
-                      <dt className="text-sm font-medium text-muted-foreground">{row.k}</dt>
-                      <dd className="text-sm font-semibold text-foreground">{row.v}</dd>
-                    </div>
-                  ))}
-                </dl>
-                <dl className="overflow-hidden rounded-2xl border border-border/70 bg-card shadow-[0_1px_2px_rgb(0_0_0/0.05)] divide-y divide-border/60">
-                  {specsCol2.map((row) => (
-                    <div key={row.k} className="grid grid-cols-[minmax(6.5rem,34%)_1fr] gap-2 px-4 py-3.5 sm:px-5">
-                      <dt className="text-sm font-medium text-muted-foreground">{row.k}</dt>
-                      <dd className="text-sm font-semibold text-foreground">{row.v}</dd>
-                    </div>
-                  ))}
-                </dl>
-              </div>
-            </section>
+        <div className="mt-6">
+          <ListingContentLayout
+            main={
+              <>
+                <ListingDetailSection title="تفاصيل الدراجة">
+                  <ListingSpecTable rows={specRows} />
+                </ListingDetailSection>
 
-            {/* Description */}
-            <section
-              aria-labelledby="bike-desc-heading"
-              className="w-full min-w-0 space-y-5"
-            >
-              <h2 id="bike-desc-heading" className="text-lg font-semibold tracking-tight text-foreground lg:text-xl">
-                الوصف التفصيلي
-              </h2>
-              <div className="w-full min-w-0 max-w-full rounded-2xl border border-border/65 bg-card p-7 shadow-[0_2px_12px_-4px_rgb(26_26_26/0.08)] lg:p-8">
-                <BikeDescription description={item.description} />
-              </div>
-            </section>
-
-            {/* Features */}
-            {item.features && item.features.length > 0 && (
-              <section aria-labelledby="bike-features-heading" className="space-y-5">
-                <h2 id="bike-features-heading" className="text-lg font-semibold tracking-tight text-foreground lg:text-xl">
-                  المميزات الإضافية
-                </h2>
-                <div className="rounded-2xl border border-border/65 bg-card p-7 shadow-[0_2px_12px_-4px_rgb(26_26_26/0.08)] lg:p-8">
-                  <ul className="grid grid-cols-1 gap-y-3 gap-x-8 sm:grid-cols-2 md:grid-cols-3">
-                    {item.features.map((feature, i) => (
-                      <li key={i} className="flex gap-3 text-sm font-semibold text-foreground">
-                        <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-primary/12 text-primary">
-                          <Check className="size-3.5 stroke-3" />
-                        </span>
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </section>
-            )}
-
-            <button
-              type="button"
-              className="group flex items-center gap-2 text-sm font-semibold text-muted-foreground underline-offset-4 transition-colors hover:text-destructive hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/35 rounded-md"
-            >
-              <MessageSquare className="size-4 shrink-0 transition-transform group-hover:-translate-x-0.5" />
-              الإبلاغ عن هذا الإعلان
-            </button>
-          </div>
-
-          {/* Contact sidebar */}
-          <div className="min-w-0">
-            <div className="sticky top-[7.65rem] space-y-5">
-              <Card className="overflow-hidden rounded-2xl border border-border/65 bg-card shadow-[0_12px_40px_-24px_rgb(26_26_26/0.18)] ring-1 ring-black/[0.04]">
-                <CardContent className="space-y-7 p-7 sm:p-8">
-                  <div className="text-center space-y-4">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-                      جهة الإعلان
-                    </p>
-                    <div className="flex flex-col items-center gap-3">
-                      <div className="flex size-[4.5rem] items-center justify-center rounded-2xl border border-neutral-100 bg-gradient-to-b from-muted/80 to-muted/40 shadow-none ring-4 ring-neutral-50">
-                        <Bike className="size-11 text-primary/35" />
-                      </div>
-                      <div className="space-y-1">
-                        <h3 className="font-serif text-xl font-bold text-[#171717]">
-                          معلن الدراجة
-                        </h3>
-                        <div className="flex flex-wrap justify-center gap-1 text-sm font-medium text-muted-foreground">
-                          <MapPin className="size-4 shrink-0 text-primary" aria-hidden />
-                          {item.location || "مدينة المنيا. ميدان الحميات"}
-                        </div>
-                      </div>
-                    </div>
+                <ListingDetailSection title="الوصف">
+                  <div className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
+                    <BikeDescription description={item.description} />
                   </div>
+                </ListingDetailSection>
 
-                  <div className="flex flex-col gap-3 pt-1">
-                    <CallButton
-                      phone={item.phone}
-                      label="اتصال"
-                      onClick={trackCall}
-                      className="h-14 w-full min-h-14 shrink-0 rounded-xl border-0 bg-[#1d4ed8] text-base font-bold text-white shadow-none shadow-blue-950/15 hover:bg-[#1e40af]"
-                    />
-                    <Button
-                      variant="outline"
-                      size="xl"
-                      className="h-14 min-h-14 w-full rounded-xl border-2 border-[#15803d] bg-background text-[15px] font-bold text-[#15803d] hover:bg-[#15803d]/[0.06] shadow-none"
-                      asChild
-                    >
-                      <a href={whatsappHref} target="_blank" rel="noopener noreferrer">
-                        <MessageSquare className="size-5 ml-2" aria-hidden />
-                        واتساب
-                      </a>
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+                {item.features && item.features.length > 0 ? (
+                  <ListingDetailSection title="المميزات">
+                    <ListingFeatureList features={item.features} />
+                  </ListingDetailSection>
+                ) : null}
 
-              {item.locationLink ? (
-                <Card className="overflow-hidden rounded-2xl border border-border/65 bg-card shadow-[0_12px_40px_-24px_rgb(26_26_26/0.18)] ring-1 ring-black/[0.04]">
-                  <CardContent className="p-7 sm:p-8">
-                    <MapEmbed url={item.locationLink} title="الموقع على الخريطة" />
-                  </CardContent>
-                </Card>
-              ) : null}
+                <button
+                  type="button"
+                  className="flex items-center gap-2 text-sm font-medium text-slate-500 transition-colors hover:text-destructive"
+                >
+                  <MessageSquare className="size-4" />
+                  الإبلاغ عن هذا الإعلان
+                </button>
+              </>
+            }
+            sidebar={
+              <>
+                <ListingSellerCard
+                  name={showroom?.name || "معلن الدراجة"}
+                  location={showroom?.address || item.location || "مدينة المنيا"}
+                  logo={showroom?.logo}
+                  fallbackIcon={<Bike className="size-8 text-primary/30" />}
+                  showroomHref={showroom?._id ? `/showrooms/${showroom._id}` : null}
+                />
 
-              <div className="rounded-xl border border-amber-200/65 bg-gradient-to-br from-amber-50 via-amber-50/95 to-orange-50/30 p-5">
-                <p className="text-xs font-semibold uppercase tracking-wide text-amber-950">
-                  نصيحة فنية
-                </p>
-                <p className="mt-2 text-[13px] font-medium leading-relaxed text-amber-900/95">
+                <ContactActionsCard
+                  className="hidden lg:block"
+                  phone={item.phone}
+                  whatsappHref={whatsappHref}
+                  onCall={trackCall}
+                  onWhatsapp={trackCall}
+                  subtitle={showroom?.name ? `تواصل مع ${showroom.name}` : "اتصال أو واتساب مع المعلن"}
+                />
+
+                {item.locationLink ? (
+                  <Card className="overflow-hidden rounded-xl border-slate-200 bg-white shadow-sm">
+                    <CardContent className="p-4 sm:p-5">
+                      <MapEmbed url={item.locationLink} title="الموقع على الخريطة" />
+                    </CardContent>
+                  </Card>
+                ) : null}
+
+                <ListingSafetyTip title="نصيحة فنية">
                   ننصح بفحص الدراجة وتجربتها للتأكد من حالة المحرك وسلامة الشاسيه قبل إتمام الشراء.
-                </p>
-              </div>
-            </div>
-          </div>
+                </ListingSafetyTip>
+              </>
+            }
+          />
         </div>
       </main>
-
-      <ListingContactBar
-        phone={item.phone}
-        whatsappHref={whatsappHref}
-        onCall={trackCall}
-        onWhatsapp={trackCall}
-      />
 
       {/* Fullscreen Swiper Lightbox */}
       <Dialog open={isLightboxOpen} onOpenChange={setIsLightboxOpen}>

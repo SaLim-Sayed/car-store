@@ -11,9 +11,7 @@ import {
  MapPin,
  Tractor,
  Gauge,
- Share2,
  MessageSquare,
- Check,
  ChevronRight,
  X,
  ChevronLeft as ChevronLeftIcon,
@@ -21,10 +19,20 @@ import {
  Store,
 } from "lucide-react"
 import { CallButton } from "@/components/call-button"
-import { ListingContactBar, listingPageBottomPadding } from "@/components/listing-contact-bar"
+import { ContactActionsCard } from "@/components/contact-actions"
+import {
+  ListingContentLayout,
+  ListingDetailHeader,
+  ListingDetailSection,
+  ListingFeatureList,
+  ListingSafetyTip,
+  ListingSellerCard,
+  ListingSpecTable,
+  listingDetailMain,
+  listingDetailShell,
+} from "@/components/listing-detail-ui"
+import { ShareButton } from "@/components/share-button"
 import { Breadcrumbs } from "@/components/breadcrumbs"
-import Link from "next/link"
-import { toast } from "sonner"
 import { getAppUrl } from "@/lib/app-url"
 import { getWhatsAppUrl } from "@/lib/whatsapp"
 import type { Equipment } from "@/hooks/useEquipment"
@@ -197,112 +205,63 @@ export default function EquipmentDetailPage({
  `مرحباً، أريد الاستفسار عن هذا الإعلان:\n${label}\nالرابط: ${listingPageUrl}`
  )
 
- const handleShare = async () => {
- if (typeof navigator !== "undefined" && navigator.share) {
- try {
- await navigator.share({
- title: `${label} — معرض سيارات المنيا`,
- text: label,
- url: listingPageUrl,
- })
- return
- } catch (e) {
- if ((e as Error).name === "AbortError") return
- }
- }
- try {
- await navigator.clipboard.writeText(listingPageUrl)
- toast.success("تم نسخ الرابط")
- } catch {
- toast.error("تعذر نسخ الرابط — انسخه يدوياً من المتصفح")
- }
- }
+ const specRows = [
+   { label: "الماركة", value: item.brand },
+   { label: "الموديل", value: item.model || "—" },
+   { label: "الحالة", value: item.condition },
+   {
+     label: "تاريخ النشر",
+     value: item.createdAt ? new Date(item.createdAt).toLocaleDateString("ar-EG") : "—",
+   },
+   { label: "سنة الصنع", value: String(item.year ?? "—") },
+   { label: "ساعات العمل", value: `${item.hours.toLocaleString("ar-EG")} ساعة` },
+   { label: "الموقع", value: item.location },
+ ]
+
+ const showroom =
+   typeof item.showroom === "object" && item.showroom !== null
+     ? (item.showroom as { _id?: string; name?: string; address?: string; logo?: string })
+     : null
 
  return (
- <div className={cn("min-h-screen w-full overflow-x-hidden bg-gradient-to-b from-[#faf8f4] via-[#F9F6F1] to-[#f4f1eb]", listingPageBottomPadding)}>
- <main className="container mx-auto w-full max-w-7xl min-w-0 px-4 pt-8 pb-24 lg:pt-11">
-  <article className="mb-12 w-full min-w-0 rounded-[1.75rem] border border-neutral-200/70 bg-card px-4 py-6 shadow-[0_4px_24px_-8px_rgb(26_26_26/0.12)] ring-1 ring-black/[0.03] sm:px-6 sm:py-8 lg:mb-14 lg:rounded-[2rem] lg:px-8 lg:py-10">
+ <div className={listingDetailShell}>
+ <main className={listingDetailMain}>
+  <div className="mb-4">
    <Breadcrumbs
      items={[
        { label: "آلات ومعدات", href: "/equipment" },
        { label: label },
      ]}
    />
+  </div>
 
-  <header className="mb-10 flex flex-col gap-6 lg:gap-8">
-    <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
-      <div className="min-w-0 flex-1 space-y-4 lg:space-y-5">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-primary/95">
-          إعلان معدات
-        </p>
-        <h1 className="text-pretty font-serif text-2xl font-bold leading-snug tracking-tight text-[#141414] sm:text-4xl lg:text-[2.25rem]">
-          {label}
-          <span className="mr-2 block text-xl font-semibold leading-normal text-muted-foreground sm:mr-0 sm:mt-1 sm:inline sm:text-2xl lg:text-[1.35rem]">
-            للبيع
-          </span>
-        </h1>
-        
-        <div className="flex flex-wrap gap-2">
-          <Badge
-            variant="secondary"
-            className="flex items-center gap-1.5 rounded-full border border-border/70 bg-muted/50 px-3 py-1 text-xs font-semibold shadow-none"
-          >
-            <Tractor className="size-3.5 text-primary" />
-            {item.category}
-          </Badge>
-          <Badge
-            variant="secondary"
-            className="flex items-center gap-1.5 rounded-full border border-border/70 bg-muted/50 px-3 py-1 text-xs font-semibold shadow-none"
-          >
-            <Gauge className="size-3.5 text-primary" />
-            {item.hours.toLocaleString("ar-EG")} ساعة
-          </Badge>
-          <Badge
-            variant="secondary"
-            className="flex max-w-full items-center gap-1.5 rounded-full border border-border/70 bg-muted/50 px-3 py-1 text-xs font-semibold shadow-none"
-          >
-            <MapPin className="size-3.5 shrink-0 text-primary" />
-            <span className="truncate">{item.location}</span>
-          </Badge>
-          <Badge
-            variant="outline"
-            className="rounded-full border-primary/35 bg-primary/[0.07] px-3 py-1 text-xs font-semibold text-primary shadow-none"
-          >
-            {item.status}
-          </Badge>
-        </div>
-
-        <div className="mt-4 flex items-baseline gap-2 tabular-nums pt-2">
-          <span className="font-serif text-3xl font-bold text-primary tabular-nums tracking-tight sm:text-4xl lg:text-5xl">
-            {item.price ? item.price.toLocaleString("ar-EG") : "حسب الطلب"}
-          </span>
-          {item.price && (
-            <span className="text-sm font-semibold text-muted-foreground lg:text-base">
-              جنيه
-            </span>
-          )}
-        </div>
-      </div>
-
-      <div className="flex items-center gap-2 lg:flex-col shrink-0">
-        <Button
-          type="button"
-          variant="outline"
-          size="icon"
-          aria-label="مشاركة الإعلان"
-          onClick={() => void handleShare()}
-          className="size-11 rounded-xl border-neutral-200/90 bg-background shadow-none hover:bg-muted"
-        >
-          <Share2 className="size-5" />
-        </Button>
-      </div>
-    </div>
-  </header>
+  <ListingDetailHeader
+    category="إعلان معدات"
+    title={label}
+    price={item.price}
+    chips={[
+      { icon: <Tractor className="size-3.5" />, label: item.category },
+      { icon: <Gauge className="size-3.5" />, label: `${item.hours.toLocaleString("ar-EG")} ساعة` },
+      { icon: <MapPin className="size-3.5" />, label: item.location },
+    ]}
+    status={
+      <Badge className="rounded-md border-0 bg-primary/10 px-2 py-0.5 text-[11px] font-semibold text-primary">
+        {item.status}
+      </Badge>
+    }
+    actions={
+      <ShareButton
+        className="size-10 rounded-lg border-slate-200 bg-white shadow-sm hover:bg-slate-50"
+        title={label}
+        text={`شاهد ${label} المعروضة للبيع`}
+      />
+    }
+  />
 
  {/* Image gallery */}
  <div
    className={cn(
-     "mb-10 w-full min-w-0 overflow-hidden",
+     "mt-5 w-full min-w-0 overflow-hidden",
      images.length > 1
        ? "grid grid-cols-1 items-start gap-4 sm:gap-5 lg:grid-cols-[minmax(0,1fr)_7rem] lg:gap-5 xl:grid-cols-[minmax(0,1fr)_8.5rem] xl:gap-6"
        : "block",
@@ -446,184 +405,86 @@ export default function EquipmentDetailPage({
      </aside>
    ) : null}
  </div>
- </article>
 
- {/* Below-the-fold */}
- <div className="grid w-full min-w-0 grid-cols-1 gap-11 lg:grid-cols-[minmax(0,1fr)_minmax(276px,22rem)] lg:gap-14 xl:gap-16">
- {/* Details */}
- <div className="min-w-0 w-full space-y-14">
+ <ContactActionsCard
+   className="mt-5 lg:hidden"
+   phone={item.phone}
+   whatsappHref={whatsappHref}
+   onCall={trackCall}
+   onWhatsapp={trackWhatsapp}
+   subtitle={showroom?.name ? `تواصل مع ${showroom.name}` : "اتصال أو واتساب مع المعلن"}
+ />
 
- {/* Specs */}
- <section aria-labelledby="equipment-spec-heading" className="space-y-5">
- <h2 id="equipment-spec-heading" className="text-lg font-semibold tracking-tight text-foreground lg:text-xl">
- تفاصيل المعدة
- </h2>
- <div className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4">
- <dl className="overflow-hidden rounded-2xl border border-border/70 bg-card shadow-[0_1px_2px_rgb(0_0_0/0.05)] divide-y divide-border/60">
- {[
- { k: "الماركة", v: item.brand },
- { k: "الموديل", v: item.model || "—" },
- { k: "الحالة", v: item.condition },
- { k: "تاريخ النشر", v: item.createdAt ? new Date(item.createdAt).toLocaleDateString("ar-EG") : "—" },
- ].map((row) => (
- <div key={row.k} className="grid grid-cols-[minmax(6.5rem,34%)_1fr] gap-2 px-4 py-3.5 sm:px-5">
- <dt className="text-sm font-medium text-muted-foreground">{row.k}</dt>
- <dd className="text-sm font-semibold text-foreground">{row.v}</dd>
- </div>
- ))}
- </dl>
- <dl className="overflow-hidden rounded-2xl border border-border/70 bg-card shadow-[0_1px_2px_rgb(0_0_0/0.05)] divide-y divide-border/60">
- {[
- { k: "سنة الصنع", v: item.year ?? "—" },
- { k: "ساعات العمل", v: `${item.hours.toLocaleString("ar-EG")} ساعة` },
- { k: "الموقع", v: item.location },
- ].map((row) => (
- <div key={row.k} className="grid grid-cols-[minmax(6.5rem,34%)_1fr] gap-2 px-4 py-3.5 sm:px-5">
- <dt className="text-sm font-medium text-muted-foreground">{row.k}</dt>
- <dd className="text-sm font-semibold text-foreground">{row.v}</dd>
- </div>
- ))}
- </dl>
- </div>
- </section>
+ <div className="mt-6">
+ <ListingContentLayout
+   main={
+     <>
+ <ListingDetailSection title="تفاصيل المعدة">
+ <ListingSpecTable rows={specRows} />
+ </ListingDetailSection>
 
- {/* Description */}
- <section
-   aria-labelledby="equipment-desc-heading"
-   className="w-full min-w-0 space-y-5"
- >
- <h2 id="equipment-desc-heading" className="text-lg font-semibold tracking-tight text-foreground lg:text-xl">
- الوصف التفصيلي
- </h2>
- <div className="w-full min-w-0 max-w-full rounded-2xl border border-border/65 bg-card p-7 shadow-[0_2px_12px_-4px_rgb(26_26_26/0.08)] lg:p-8">
+ <ListingDetailSection title="الوصف">
+ <div className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
  <EquipmentDescription description={item.description} />
  </div>
- </section>
+ </ListingDetailSection>
 
- {/* Features */}
- {item.features && item.features.length > 0 && (
- <section aria-labelledby="equipment-features-heading" className="space-y-5">
- <h2 id="equipment-features-heading" className="text-lg font-semibold tracking-tight text-foreground lg:text-xl">
- المميزات الإضافية
- </h2>
- <div className="rounded-2xl border border-border/65 bg-card p-7 shadow-[0_2px_12px_-4px_rgb(26_26_26/0.08)] lg:p-8">
- <ul className="grid grid-cols-1 gap-y-3 gap-x-8 sm:grid-cols-2 md:grid-cols-3">
- {item.features.map((feature, i) => (
- <li key={i} className="flex gap-3 text-sm font-semibold text-foreground">
- <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-primary/12 text-primary">
- <Check className="size-3.5 stroke-3" />
- </span>
- <span>{feature}</span>
- </li>
- ))}
- </ul>
- </div>
- </section>
- )}
+ {item.features && item.features.length > 0 ? (
+ <ListingDetailSection title="المميزات">
+ <ListingFeatureList features={item.features} />
+ </ListingDetailSection>
+ ) : null}
 
  <button
  type="button"
- className="group flex items-center gap-2 text-sm font-semibold text-muted-foreground underline-offset-4 transition-colors hover:text-destructive hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/35 rounded-md"
+ className="flex items-center gap-2 text-sm font-medium text-slate-500 transition-colors hover:text-destructive"
  >
- <MessageSquare className="size-4 shrink-0 transition-transform group-hover:-translate-x-0.5" />
+ <MessageSquare className="size-4" />
  الإبلاغ عن هذا الإعلان
  </button>
- </div>
-
- {/* Contact sidebar */}
- <div className="min-w-0">
- <div className="sticky top-[7.65rem] space-y-5">
- <Card className="overflow-hidden rounded-2xl border border-border/65 bg-card shadow-[0_12px_40px_-24px_rgb(26_26_26/0.18)] ring-1 ring-black/[0.04]">
- <CardContent className="space-y-7 p-7 sm:p-8">
- <div className="text-center space-y-4">
- <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
- جهة الإعلان
- </p>
-  {(() => {
-    const s = typeof item.showroom === 'object' && item.showroom !== null ? item.showroom as any : null;
-    return (
-      <div className="flex flex-col items-center gap-3">
-        <div className="flex size-[4.5rem] overflow-hidden items-center justify-center rounded-2xl border border-neutral-100 bg-gradient-to-b from-muted/80 to-muted/40 shadow-none ring-4 ring-neutral-50">
-          {s && s.logo ? (
-            <Image src={s.logo} alt={s.name} width={72} height={72} className="object-contain w-full h-full p-2" />
-          ) : s ? (
-            <Store className="size-11 text-primary/35" />
-          ) : (
-            <Tractor className="size-11 text-primary/35" />
-          )}
-        </div>
-        <div className="space-y-1">
-          {s ? (
-            <Link href={`/showrooms/${s._id}`} className="hover:text-primary transition-colors block">
-              <h3 className="font-serif text-xl font-bold text-[#171717]">
-              {s.name}
-              </h3>
-            </Link>
-          ) : (
-            <h3 className="font-serif text-xl font-bold text-[#171717]">
-            صاحب الإعلان
-            </h3>
-          )}
-          <div className="flex flex-wrap justify-center gap-1 text-sm font-medium text-muted-foreground">
-            <MapPin className="size-4 shrink-0 text-primary" aria-hidden />
-            {s && s.address ? s.address : item.location || "مدينة المنيا"}
-          </div>
-        </div>
-      </div>
-    );
-  })()}
-  </div>
-
- <div className="flex flex-col gap-3 pt-1">
- <CallButton
- phone={item.phone}
- label="اتصال"
- onClick={trackCall}
- className="h-14 w-full min-h-14 shrink-0 rounded-xl border-0 bg-[#1d4ed8] text-base font-bold text-white shadow-none shadow-blue-950/15 hover:bg-[#1e40af]"
+     </>
+   }
+   sidebar={
+     <>
+ <ListingSellerCard
+   name={showroom?.name || "صاحب الإعلان"}
+   location={showroom?.address || item.location || "مدينة المنيا"}
+   logo={showroom?.logo}
+   fallbackIcon={
+     showroom ? (
+       <Store className="size-8 text-primary/30" />
+     ) : (
+       <Tractor className="size-8 text-primary/30" />
+     )
+   }
+   showroomHref={showroom?._id ? `/showrooms/${showroom._id}` : null}
  />
- <Button
- variant="outline"
- size="xl"
- onClick={trackWhatsapp}
- className="h-14 min-h-14 w-full rounded-xl border-2 border-[#15803d] bg-background text-[15px] font-bold text-[#15803d] hover:bg-[#15803d]/[0.06] shadow-none"
- asChild
- >
- <a href={whatsappHref} target="_blank" rel="noopener noreferrer">
- <MessageSquare className="size-5 ml-2" aria-hidden />
- واتساب
- </a>
- </Button>
- </div>
- </CardContent>
- </Card>
+
+ <ContactActionsCard
+   className="hidden lg:block"
+   phone={item.phone}
+   whatsappHref={whatsappHref}
+   onCall={trackCall}
+   onWhatsapp={trackWhatsapp}
+   subtitle={showroom?.name ? `تواصل مع ${showroom.name}` : "اتصال أو واتساب مع المعلن"}
+ />
 
  {item.locationLink ? (
-   <Card className="overflow-hidden rounded-2xl border border-border/65 bg-card shadow-[0_12px_40px_-24px_rgb(26_26_26/0.18)] ring-1 ring-black/[0.04]">
-     <CardContent className="p-7 sm:p-8">
+   <Card className="overflow-hidden rounded-xl border-slate-200 bg-white shadow-sm">
+     <CardContent className="p-4 sm:p-5">
        <MapEmbed url={item.locationLink} title="الموقع على الخريطة" />
      </CardContent>
    </Card>
  ) : null}
 
- <div className="rounded-xl border border-amber-200/65 bg-gradient-to-br from-amber-50 via-amber-50/95 to-orange-50/30 p-5">
- <p className="text-xs font-semibold uppercase tracking-wide text-amber-950">
- نصيحة فنية
- </p>
- <p className="mt-2 text-[13px] font-medium leading-relaxed text-amber-900/95">
+ <ListingSafetyTip title="نصيحة فنية">
  ننصح بفحص المحرك والهيدروليك مع فني قبل إتمام الشراء.
- </p>
- </div>
- </div>
- </div>
+ </ListingSafetyTip>
+     </>
+   }
+ />
  </div>
  </main>
-
- <ListingContactBar
-   phone={item.phone}
-   whatsappHref={whatsappHref}
-   onCall={trackCall}
-   onWhatsapp={trackWhatsapp}
- />
 
  {/* Fullscreen Swiper Lightbox */}
  <Dialog open={isLightboxOpen} onOpenChange={setIsLightboxOpen}>

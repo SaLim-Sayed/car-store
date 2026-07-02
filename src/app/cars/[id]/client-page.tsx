@@ -1,8 +1,19 @@
 "use client";
 
 import { Breadcrumbs } from "@/components/breadcrumbs";
-import { CallButton } from "@/components/call-button";
-import { ListingContactBar, listingPageBottomPadding } from "@/components/listing-contact-bar";
+import { ContactActionsCard } from "@/components/contact-actions";
+import {
+  ListingContentLayout,
+  ListingDescription,
+  ListingDetailHeader,
+  ListingDetailSection,
+  ListingFeatureList,
+  ListingSafetyTip,
+  ListingSellerCard,
+  ListingSpecTable,
+  listingDetailMain,
+  listingDetailShell,
+} from "@/components/listing-detail-ui";
 import { ShareButton } from "@/components/share-button";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -12,14 +23,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 import {
   Calendar,
   Car,
-  Check,
   ChevronLeft as ChevronLeftIcon,
   ChevronRight,
   ChevronRight as ChevronRightIcon,
   Fuel,
   Gauge,
-  Heart,
-  MapPin,
   MessageSquare,
   Phone,
   Settings,
@@ -219,83 +227,52 @@ export default function ClientPage({ initialCar }: { initialCar: CarDoc }) {
  ];
 
  return (
- <div className={cn("min-h-screen bg-slate-50/60", listingPageBottomPadding)}>
- <main className="container mx-auto px-4 pt-10 pb-24">
-  {/* Breadcrumbs */}
+ <div className={listingDetailShell}>
+ <main className={listingDetailMain}>
+  <div className="mb-4">
   <Breadcrumbs
     items={[
       { label: "سيارات للبيع", href: "/cars" },
       { label: listingTitle },
     ]}
   />
+  </div>
 
- {/* Top Header: Title and Price */}
- <header className="mb-10 flex flex-col gap-6 lg:gap-8">
-   <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
-     <div className="min-w-0 flex-1 space-y-4 lg:space-y-5">
-       <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-primary/95">
-         إعلان سيارات
-       </p>
-       <h1 className="text-pretty text-2xl font-semibold leading-snug text-slate-900 sm:text-3xl">
-         {listingTitle}
-         <span className="mr-2 text-lg font-medium text-slate-500 sm:text-xl">للبيع</span>
-       </h1>
-       <div className="flex flex-wrap gap-2">
-         <Badge
-           variant="secondary"
-           className="bg-white border-0 shadow-none px-4 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2"
-         >
-           <Calendar className="h-3.5 w-3.5 text-primary" />
-           {car.year}
-         </Badge>
-          {car.mileage !== undefined && car.mileage !== null && (
-            <Badge
-              variant="secondary"
-              className="bg-white border-0 shadow-none px-4 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2"
-            >
-              <Gauge className="h-3.5 w-3.5 text-primary" />
-              {`${car.mileage.toLocaleString()} كم`}
-            </Badge>
-          )}
-         <Badge
-           variant="secondary"
-           className="bg-white border-0 shadow-none px-4 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2"
-         >
-           <Settings className="h-3.5 w-3.5 text-primary" />
-           {car.transmission}
-         </Badge>
-         <Badge
-           variant="secondary"
-           className="bg-white border-0 shadow-none px-4 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2"
-         >
-           <Fuel className="h-3.5 w-3.5 text-primary" />
-           {car.fuelType}
-         </Badge>
-       </div>
-
-       <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1 pt-1">
-         <span className="text-sm font-medium text-slate-500">السعر</span>
-         <span className="text-2xl font-semibold text-primary tabular-nums sm:text-3xl">
-           {car.price ? car.price.toLocaleString("ar-EG") : "حسب الطلب"}
-         </span>
-         {car.price ? <span className="text-sm font-medium text-slate-500">جنيه</span> : null}
-       </div>
-     </div>
-
-     <div className="flex items-center gap-2 lg:flex-col shrink-0">
-       <ShareButton
-         className="size-11 rounded-xl border-neutral-200/90 bg-white shadow-none hover:bg-gray-50"
-         title={`${car.brand} ${car.model} ${car.year}`}
-         text={`شاهد سيارة ${car.brand} ${car.model} موديل ${car.year} المعروضة للبيع`}
-       />
-     </div>
-   </div>
- </header>
+ <ListingDetailHeader
+   category="إعلان سيارات"
+   title={listingTitle}
+   price={car.price}
+   chips={[
+     { icon: <Calendar className="size-3.5" />, label: String(car.year) },
+     ...(car.mileage !== undefined && car.mileage !== null
+       ? [{ icon: <Gauge className="size-3.5" />, label: `${car.mileage.toLocaleString("ar-EG")} كم` }]
+       : []),
+     { icon: <Settings className="size-3.5" />, label: car.transmission },
+     { icon: <Fuel className="size-3.5" />, label: car.fuelType },
+   ]}
+   status={
+     <Badge
+       className={cn(
+         "rounded-md border-0 px-2 py-0.5 text-[11px] font-semibold",
+         getStatusColor(car.status),
+       )}
+     >
+       {car.status}
+     </Badge>
+   }
+   actions={
+     <ShareButton
+       className="size-10 rounded-lg border-slate-200 bg-white shadow-sm hover:bg-slate-50"
+       title={`${car.brand} ${car.model} ${car.year}`}
+       text={`شاهد سيارة ${car.brand} ${car.model} موديل ${car.year} المعروضة للبيع`}
+     />
+   }
+ />
 
  {/* Image gallery */}
  <div
    className={cn(
-     "mb-10 w-full min-w-0 overflow-hidden",
+     "mt-5 w-full min-w-0 overflow-hidden",
      images.length > 1
        ? "grid grid-cols-1 items-start gap-4 sm:gap-5 lg:grid-cols-[minmax(0,1fr)_7rem] lg:gap-5 xl:grid-cols-[minmax(0,1fr)_8.5rem] xl:gap-6"
        : "block",
@@ -449,67 +426,33 @@ export default function ClientPage({ initialCar }: { initialCar: CarDoc }) {
    ) : null}
  </div>
 
- {/* Main Content: 2 Columns */}
- <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-10">
- {/* Details first */}
- <div className="space-y-8 lg:col-span-8">
- {/* Details Table */}
- <section className="space-y-3">
- <h2 className="flex items-center gap-2 text-lg font-semibold text-slate-900">
- <div className="h-6 w-1 rounded-full bg-primary" />
- تفاصيل السيارة
- </h2>
- <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
- {specRows.map((row, index) => (
- <div
- key={row.label}
- className={cn(
- "grid grid-cols-2 text-sm",
- index > 0 && "border-t border-slate-100",
- )}
- >
- <div className="bg-slate-50/80 px-3 py-2.5 font-medium text-slate-500">{row.label}</div>
- <div className="px-3 py-2.5 font-medium text-slate-900">{row.value}</div>
- </div>
- ))}
- </div>
- </section>
-
- {/* Description */}
- <section className="space-y-3">
- <h2 className="flex items-center gap-2 text-lg font-semibold text-slate-900">
- <div className="h-6 w-1 rounded-full bg-primary" />
- الوصف
- </h2>
- <div className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
- <div
- className="rich-text-content text-sm leading-relaxed text-slate-600"
- dangerouslySetInnerHTML={{ __html: car.description }}
+ <ContactActionsCard
+   className="mt-5 lg:hidden"
+   phone={car.phone}
+   whatsappHref={whatsappHref}
+   onCall={trackCall}
+   onWhatsapp={trackWhatsapp}
+   subtitle={car.showroom?.name ? `تواصل مع ${car.showroom.name}` : "اتصال أو واتساب مع المعلن"}
  />
- </div>
- </section>
 
- {/* Features (Checklist) */}
- {car.features && car.features.length > 0 && (
- <section className="space-y-3">
- <h2 className="flex items-center gap-2 text-lg font-semibold text-slate-900">
- <div className="h-6 w-1 rounded-full bg-primary" />
- المميزات
- </h2>
- <div className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
- <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
- {car.features.map((feature, i) => (
- <div key={i} className="flex items-center gap-2 text-sm font-medium text-slate-700">
- <div className="flex size-5 shrink-0 items-center justify-center rounded-full bg-primary/10">
- <Check className="size-3 text-primary" />
- </div>
- {feature}
- </div>
- ))}
- </div>
- </div>
- </section>
- )}
+ {/* Main Content */}
+ <div className="mt-6">
+ <ListingContentLayout
+   main={
+     <>
+ <ListingDetailSection title="تفاصيل السيارة">
+ <ListingSpecTable rows={specRows} />
+ </ListingDetailSection>
+
+ <ListingDetailSection title="الوصف">
+ <ListingDescription html={car.description} />
+ </ListingDetailSection>
+
+ {car.features && car.features.length > 0 ? (
+ <ListingDetailSection title="المميزات">
+ <ListingFeatureList features={car.features} />
+ </ListingDetailSection>
+ ) : null}
 
  <button
  type="button"
@@ -518,48 +461,29 @@ export default function ClientPage({ initialCar }: { initialCar: CarDoc }) {
  <MessageSquare className="size-4" />
  الإبلاغ عن هذا الإعلان
  </button>
- </div>
+     </>
+   }
+   sidebar={
+     <>
+ <ListingSellerCard
+   name={car.showroom?.name || "معرض المنيا للسيارات"}
+   location={car.location || car.showroom?.address || "مدينة المنيا"}
+   logo={car.showroom?.logo}
+   fallbackIcon={<Car className="size-8 text-primary/30" />}
+   showroomHref={car.showroom?._id ? `/showrooms/${car.showroom._id}` : null}
+ />
 
- {/* Contact — always at the end */}
- <div className="space-y-4 lg:col-span-4 lg:sticky lg:top-28 lg:self-start">
- <Card className="overflow-hidden rounded-xl border-slate-200 bg-white shadow-none">
- <CardContent className="space-y-4 p-5 sm:p-6">
- <div className="text-center space-y-3">
- <p className="text-xs font-medium text-slate-500">تواصل مع المعلن</p>
- <div className="flex flex-col items-center gap-3">
- <div className="flex size-20 items-center justify-center overflow-hidden rounded-xl border border-slate-100 bg-slate-50">
- {car.showroom?.logo ? (
-   // eslint-disable-next-line @next/next/no-img-element
-   <img src={car.showroom.logo} alt={car.showroom.name} className="size-full object-cover" />
- ) : (
-   <Car className="size-9 text-primary/30" />
- )}
- </div>
- <div className="space-y-1">
- <h3 className="text-base font-semibold text-slate-900">
- {car.showroom?.name || "معرض المنيا للسيارات"}
- </h3>
- <div className="flex items-center justify-center gap-1.5 text-sm text-slate-500">
- <MapPin className="size-3.5 shrink-0 text-primary" />
- {car.location || car.showroom?.address || "مدينة المنيا"}
- </div>
- {car.showroom?._id ? (
- <Button
- variant="link"
- className="h-auto p-0 text-sm text-primary"
- onClick={() => router.push(`/showrooms/${car.showroom?._id}`)}
- >
- عرض تفاصيل المعرض
- </Button>
- ) : null}
- </div>
- </div>
- </div>
- </CardContent>
- </Card>
+ <ContactActionsCard
+   className="hidden lg:block"
+   phone={car.phone}
+   whatsappHref={whatsappHref}
+   onCall={trackCall}
+   onWhatsapp={trackWhatsapp}
+   subtitle={car.showroom?.name ? `تواصل مع ${car.showroom.name}` : "اتصال أو واتساب مع المعلن"}
+ />
 
  {(car.locationLink || car.showroom?.locationLink || mapCoordinates) ? (
- <Card className="overflow-hidden rounded-xl border-slate-200 bg-white shadow-none">
+ <Card className="overflow-hidden rounded-xl border-slate-200 bg-white shadow-sm">
  <CardContent className="p-4 sm:p-5">
  <MapEmbed
    url={car.locationLink || car.showroom?.locationLink}
@@ -570,12 +494,9 @@ export default function ClientPage({ initialCar }: { initialCar: CarDoc }) {
  </Card>
  ) : null}
 
- <div className="rounded-xl border border-amber-200/70 bg-amber-50/80 p-4">
- <p className="text-xs font-semibold text-amber-900">نصيحة أمان</p>
- <p className="mt-1.5 text-xs leading-relaxed text-amber-800/90">
+ <ListingSafetyTip>
  لا تقم بتحويل أي مبالغ مالية قبل فحص السيارة والتأكد من كافة الأوراق القانونية.
- </p>
- </div>
+ </ListingSafetyTip>
 
  <Button
  variant="ghost"
@@ -591,16 +512,11 @@ export default function ClientPage({ initialCar }: { initialCar: CarDoc }) {
  عرض جميع الإعلانات
  <ChevronRight className="mr-2 size-4 rotate-180" />
  </Button>
- </div>
+     </>
+   }
+ />
  </div>
  </main>
-
- <ListingContactBar
-   phone={car.phone}
-   whatsappHref={whatsappHref}
-   onCall={trackCall}
-   onWhatsapp={trackWhatsapp}
- />
 
  {/* Fullscreen Swiper Lightbox */}
  <Dialog open={isLightboxOpen} onOpenChange={setIsLightboxOpen}>

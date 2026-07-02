@@ -2,12 +2,9 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { MessageSquare } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { CarCard } from "@/components/car-card";
 import { EquipmentCard } from "@/components/equipment-card";
-import { ContactShowroomButton } from "@/components/contact-showroom-button";
-import { listingContactBarPosition } from "@/components/listing-contact-bar";
+import { ContactWhatsappLink } from "@/components/contact-actions";
 import { cn } from "@/lib/utils";
 import type { Car } from "@/hooks/useCars";
 import type { Equipment } from "@/hooks/useEquipment";
@@ -76,72 +73,6 @@ export function ShowroomInventoryTabs({ tabs }: { tabs: InventoryTab[] }) {
   );
 }
 
-export function ShowroomStickyActions({
-  showroomId,
-  phone,
-  whatsappHref,
-  primaryHref,
-  primaryLabel,
-}: {
-  showroomId: string;
-  phone: string;
-  whatsappHref: string;
-  primaryHref: string;
-  primaryLabel: string;
-}) {
-  const trackWhatsapp = async () => {
-    try {
-      await fetch("/api/track/click", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          type: "showroom_contact",
-          targetId: showroomId,
-          metadata: { itemName: "واتساب المعرض", itemType: "showroom" },
-        }),
-      });
-    } catch {
-      // ignore
-    }
-  };
-
-  return (
-    <div
-      className={cn(
-        "fixed inset-x-0 z-[60] border-t border-slate-200 bg-white/95 p-3 shadow-[0_-6px_28px_rgb(15_23_42/0.12)] backdrop-blur-md",
-        listingContactBarPosition,
-        "md:pb-[max(0.75rem,env(safe-area-inset-bottom))]",
-      )}
-    >
-      <div className="mx-auto flex max-w-5xl gap-2">
-        <Button asChild className="h-11 flex-1 rounded-lg text-sm font-medium">
-          <Link href={primaryHref}>{primaryLabel}</Link>
-        </Button>
-        <ContactShowroomButton
-          showroomId={showroomId}
-          phone={phone}
-          className="h-11 min-w-[5.5rem] rounded-lg px-4 text-sm font-medium"
-        />
-        <Button
-          asChild
-          variant="outline"
-          className="h-11 min-w-11 rounded-lg border-emerald-200 px-0 text-emerald-700"
-        >
-          <a
-            href={whatsappHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="واتساب"
-            onClick={() => void trackWhatsapp()}
-          >
-            <MessageSquare className="size-4" />
-          </a>
-        </Button>
-      </div>
-    </div>
-  );
-}
-
 export function ShowroomWhatsappButton({
   showroomId,
   href,
@@ -168,16 +99,11 @@ export function ShowroomWhatsappButton({
   };
 
   return (
-    <Button asChild variant="outline" className={className}>
-      <a
-        href={href}
-        target="_blank"
-        rel="noopener noreferrer"
-        onClick={() => void trackWhatsapp()}
-      >
-        <MessageSquare className="ml-1.5 size-4" />
-        واتساب
-      </a>
-    </Button>
+    <ContactWhatsappLink
+      href={href}
+      label="واتساب"
+      onClick={() => void trackWhatsapp()}
+      className={className}
+    />
   );
 }

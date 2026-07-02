@@ -1,6 +1,7 @@
 import type { ComponentProps } from 'react';
 import { Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { contactCallClass } from '@/components/contact-actions';
 import { cn } from '@/lib/utils';
 import { formatPhoneDisplay, getTelHref } from '@/lib/phone';
 
@@ -27,17 +28,17 @@ export function CallButton({
  asChild
  size={size}
  variant={variant}
- className={cn('font-black', className)}
+ className={cn(contactCallClass, 'font-semibold', className)}
  {...props}
  >
  <a href={href}>
- <Phone className="h-6 w-6 ml-3 shrink-0" />
+ <Phone className="size-4 shrink-0" aria-hidden />
  <span>{label}</span>
- {showNumber && (
- <span className="mr-2 text-sm opacity-90 font-bold" dir="ltr">
+ {showNumber && display ? (
+ <span className="text-xs font-medium text-white/85" dir="ltr">
  {display}
  </span>
- )}
+ ) : null}
  </a>
  </Button>
  );
