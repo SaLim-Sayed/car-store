@@ -10,6 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Bike, Search } from "lucide-react"
 import { Breadcrumbs } from "@/components/breadcrumbs"
 import { useEquipment, type Equipment } from "@/hooks/useEquipment"
+import { Pagination } from "@/components/pagination"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 const CATEGORIES = ["الكل", "موتوسيكل", "توك توك", "تروسيكل"] as const
@@ -148,29 +149,15 @@ export default function BikesPage() {
               })}
             </div>
 
-            {pagination && pagination.pages > 1 && (
-              <div className="flex justify-center gap-4 mt-12">
-                <Button
-                  variant="outline"
-                  disabled={page <= 1}
-                  onClick={() => setPage((p) => p - 1)}
-                  className="rounded-2xl font-black"
-                >
-                  السابق
-                </Button>
-                <span className="flex items-center font-black text-lg">
-                  {page} / {pagination.pages}
-                </span>
-                <Button
-                  variant="outline"
-                  disabled={page >= pagination.pages}
-                  onClick={() => setPage((p) => p + 1)}
-                  className="rounded-2xl font-black"
-                >
-                  التالي
-                </Button>
-              </div>
-            )}
+            <Pagination
+              page={page}
+              totalPages={pagination?.pages ?? 1}
+              onPageChange={setPage}
+              totalItems={pagination?.total}
+              pageSize={pagination?.limit}
+              itemLabel="دراجة"
+              scrollToTop
+            />
           </>
         )}
       </main>

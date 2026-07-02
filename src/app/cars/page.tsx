@@ -15,6 +15,7 @@ import { useCarStore } from "@/lib/store/carStore"
 import { useInfiniteCars, CarsFilters, Car } from "@/hooks/useCars"
 import { useInView } from "react-intersection-observer"
 import { useShowroomById } from "@/hooks/useContent"
+import { LoadMorePagination } from "@/components/pagination"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 function CarsPageContent() {
@@ -148,15 +149,15 @@ function CarsPageContent() {
           ))}
         </div>
 
-        {/* Infinite Scroll Sentinel */}
-        {hasNextPage && (
-          <div ref={ref} className="flex justify-center pt-12 pb-8">
-            <div className="flex flex-col items-center gap-4">
-              <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-              <span className="text-muted-foreground font-bold">جاري تحميل المزيد...</span>
-            </div>
-          </div>
-        )}
+        <LoadMorePagination
+          loadedCount={cars.length}
+          totalCount={pagination?.total}
+          itemLabel="سيارة"
+          hasMore={!!hasNextPage}
+          isLoading={isFetchingNextPage}
+          onLoadMore={() => void fetchNextPage()}
+          sentinelRef={ref}
+        />
  </div>
  )}
  </main>

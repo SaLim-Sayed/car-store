@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
+import { Pagination } from "@/components/pagination"
 import { Car, Edit, Plus, Search, Trash2 } from "lucide-react"
 import Link from "next/link"
 import { useCallback, useEffect, useState } from "react"
@@ -273,47 +274,15 @@ export default function AdminCarsPage() {
               )}
             </CardContent>
             
-            {/* Pagination Controls */}
-            {totalPages > 1 && (
-              <div className="flex items-center justify-between border-t border-slate-100 p-4 bg-white">
-                <span className="text-sm text-slate-500 font-medium">
-                  عرض {(currentPage - 1) * itemsPerPage + 1} إلى {Math.min(currentPage * itemsPerPage, filteredCars.length)} من أصل {filteredCars.length} سيارة
-                </span>
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                    disabled={currentPage === 1}
-                    className="text-slate-600"
-                  >
-                    السابق
-                  </Button>
-                  <div className="flex items-center gap-1">
-                    {Array.from({ length: totalPages }).map((_, i) => (
-                      <Button
-                        key={i}
-                        variant={currentPage === i + 1 ? "default" : "ghost"}
-                        size="sm"
-                        onClick={() => setCurrentPage(i + 1)}
-                        className={cn("w-8 h-8 p-0", currentPage === i + 1 ? "bg-primary text-white" : "text-slate-600")}
-                      >
-                        {i + 1}
-                      </Button>
-                    ))}
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                    disabled={currentPage === totalPages}
-                    className="text-slate-600"
-                  >
-                    التالي
-                  </Button>
-                </div>
-              </div>
-            )}
+            <Pagination
+              variant="admin"
+              page={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+              totalItems={filteredCars.length}
+              pageSize={itemsPerPage}
+              itemLabel="سيارة"
+            />
           </Card>
         </div>
       </main>
