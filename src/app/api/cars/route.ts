@@ -79,9 +79,10 @@ export async function POST(request: NextRequest) {
    if (body.bodyType === 'توك توك') category = 'توك توك';
    if (body.bodyType === 'معدة') category = 'معدة زراعية';
 
+   const title = `${body.brand || ''} ${body.model || ''}`.trim() || body.bodyType || 'إعلان';
    const newEquipment = new Equipment({
-     title: `${body.brand} ${body.model}`,
-     brand: body.brand,
+     title,
+     brand: body.brand || '',
      model: body.model,
      year: body.year,
      price: body.price,
@@ -90,8 +91,8 @@ export async function POST(request: NextRequest) {
      hours: body.mileage || 0,
      location: body.location,
      phone: body.phone,
-     description: body.description,
-     images: body.images,
+     description: body.description || '',
+     images: body.images || [],
      features: body.features,
      status: body.status,
      locationLink: body.locationLink,

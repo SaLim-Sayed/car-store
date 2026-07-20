@@ -36,6 +36,7 @@ import {
 } from "lucide-react";
 import { MapEmbed } from "@/components/map-embed";
 import { getAppUrl } from "@/lib/app-url";
+import { getContactPhone } from "@/lib/phone";
 import { getWhatsAppUrl } from "@/lib/whatsapp";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
@@ -204,6 +205,7 @@ export default function ClientPage({ initialCar }: { initialCar: CarDoc }) {
  const listingPageUrl = `${getAppUrl().replace(/\/$/, "")}${pathname || ""}`;
  const whatsappHref = getWhatsAppUrl(
    `مرحباً، أريد الاستفسار عن سيارة ${listingTitle} المعروضة للبيع\nالرابط: ${listingPageUrl}`,
+   getContactPhone(car.phone),
  );
  const mapCoordinates =
    car.showroom?.location?.coordinates && car.showroom.location.coordinates.length >= 2

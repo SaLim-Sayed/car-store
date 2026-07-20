@@ -3,17 +3,19 @@ import mongoose from 'mongoose';
 const CarSchema = new mongoose.Schema({
  brand: {
  type: String,
- required: true,
+ required: false,
  trim: true,
+ default: '',
  },
  model: {
  type: String,
- required: true,
+ required: false,
  trim: true,
+ default: '',
  },
  year: {
  type: Number,
- required: true,
+ required: false,
  min: 1900,
  max: new Date().getFullYear() + 1,
  },
@@ -25,12 +27,14 @@ const CarSchema = new mongoose.Schema({
  fuelType: {
  type: String,
  enum: ['بنزين', 'كهرباء', 'غاز طبيعي', 'غاز', 'سولار'],
- required: true,
+ required: false,
+ default: 'بنزين',
  },
  transmission: {
  type: String,
  enum: ['يدوي', 'أوتوماتيك'],
- required: true,
+ required: false,
+ default: 'أوتوماتيك',
  },
  mileage: {
  type: Number,
@@ -39,8 +43,9 @@ const CarSchema = new mongoose.Schema({
  },
  color: {
  type: String,
- required: true,
+ required: false,
  trim: true,
+ default: '',
  },
  phone: {
  type: String,
@@ -49,12 +54,12 @@ const CarSchema = new mongoose.Schema({
  },
  description: {
  type: String,
- required: true,
+ required: false,
  trim: true,
+ default: '',
  },
  images: [{
  type: String,
- required: true,
  }],
  features: [{
  type: String,

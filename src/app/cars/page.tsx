@@ -74,7 +74,7 @@ function CarsPageContent() {
  <p className="text-muted-foreground text-lg md:text-xl font-medium max-w-3xl">
  {showroomInfo 
  ? `تصفح السيارات المتاحة لدى ${showroomInfo.name}`
- : "إعلانات سيارات مستعملة وجديدة في المنيا وسمالوط ومراكز المحافظة. قارن الأسعار وتواصل مع البائع مباشرة بدون وسيط."}
+ : "إعلانات سيارات مستعملة وجديدة في المنيا وسمالوط وبني مزار ومغاغة — تقسيط وكاش، قارن الأسعار وتواصل مع البائع مباشرة بدون وسيط."}
  </p>
   <div className="h-1.5 w-24 md:w-32 bg-primary rounded-full mt-4" />
   </div>

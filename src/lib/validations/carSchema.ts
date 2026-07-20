@@ -1,25 +1,28 @@
 import { z } from 'zod';
 
 export const carSchema = z.object({
- brand: z.string().min(1, 'العلامة التجارية مطلوبة'),
- model: z.string().min(1, 'الموديل مطلوب'),
- year: z.number().min(1900, 'السنة يجب أن تكون 1900 أو أكبر').max(new Date().getFullYear() + 1, 'السنة غير صالحة'),
+ brand: z.string().optional().default(''),
+ model: z.string().optional().default(''),
+ year: z
+  .number()
+  .min(1900, 'السنة يجب أن تكون 1900 أو أكبر')
+  .max(new Date().getFullYear() + 1, 'السنة غير صالحة')
+  .optional(),
  price: z.number().min(0, 'السعر يجب أن يكون رقمًا موجبًا').optional(),
- fuelType: z.enum(['بنزين', 'كهرباء', 'غاز طبيعي', 'غاز', 'سولار'], {
- message: 'نوع الوقود مطلوب',
- }),
- transmission: z.enum(['يدوي', 'أوتوماتيك'], {
- message: 'نوع ناقل الحركة مطلوب',
- }),
+ fuelType: z
+  .enum(['بنزين', 'كهرباء', 'غاز طبيعي', 'غاز', 'سولار'])
+  .optional()
+  .default('بنزين'),
+ transmission: z.enum(['يدوي', 'أوتوماتيك']).optional().default('أوتوماتيك'),
  mileage: z.number().min(0, 'المسافة المقطوعة يجب أن تكون رقمًا موجبًا').optional(),
- color: z.string().min(1, 'اللون مطلوب'),
-  location: z.string().trim().min(1, 'الموقع مطلوب').default('المنيا'),
+ color: z.string().optional().default(''),
+ location: z.string().trim().optional().default('المنيا'),
  phone: z.string().trim().optional(),
- description: z.string().min(10, 'الوصف يجب أن يكون 10 أحرف على الأقل'),
- images: z.array(z.string().url('رابط الصورة غير صالح')).min(1, 'صورة واحدة على الأقل مطلوبة'),
+ description: z.string().optional().default(''),
+ images: z.array(z.string()).optional().default([]),
  features: z.array(z.string()).optional(),
  status: z.enum(['متاح', 'مباع', 'محجوز']).default('متاح'),
-  locationLink: z.string().trim().optional(),
+ locationLink: z.string().trim().optional(),
 });
 
 export const carFilterSchema = z.object({

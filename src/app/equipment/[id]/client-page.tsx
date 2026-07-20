@@ -34,6 +34,7 @@ import {
 import { ShareButton } from "@/components/share-button"
 import { Breadcrumbs } from "@/components/breadcrumbs"
 import { getAppUrl } from "@/lib/app-url"
+import { getContactPhone } from "@/lib/phone"
 import { getWhatsAppUrl } from "@/lib/whatsapp"
 import type { Equipment } from "@/hooks/useEquipment"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
@@ -202,7 +203,8 @@ export default function EquipmentDetailPage({
 
  const listingPageUrl = `${getAppUrl().replace(/\/$/, "")}${pathname || ""}`
  const whatsappHref = getWhatsAppUrl(
- `مرحباً، أريد الاستفسار عن هذا الإعلان:\n${label}\nالرابط: ${listingPageUrl}`
+ `مرحباً، أريد الاستفسار عن هذا الإعلان:\n${label}\nالرابط: ${listingPageUrl}`,
+ getContactPhone(item.phone),
  )
 
  const specRows = [

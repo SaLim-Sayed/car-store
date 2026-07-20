@@ -162,16 +162,9 @@ export default function EditCarPage() {
 
   const validate = () => {
     const newErrors: Partial<Record<keyof CarForm, string>> = {}
-    if (!form.brand) newErrors.brand = "مطلوب"
-    if (!form.model) newErrors.model = "مطلوب"
-    if (!form.year || isNaN(Number(toEnglishDigits(form.year)))) newErrors.year = "مطلوب"
+    if (form.year && isNaN(Number(toEnglishDigits(form.year)))) newErrors.year = "يجب أن يكون رقماً"
     if (form.price && isNaN(Number(toEnglishDigits(form.price)))) newErrors.price = "يجب أن يكون رقماً"
     if (form.mileage && isNaN(Number(toEnglishDigits(form.mileage)))) newErrors.mileage = "يجب أن يكون رقماً"
-    if (!form.color) newErrors.color = "مطلوب"
-    if (!form.location?.trim()) newErrors.location = "مطلوب"
-    if (!form.description || form.description.length < 10)
-      newErrors.description = "يجب أن يكون 10 أحرف على الأقل"
-    if (form.images.length === 0) newErrors.images = "صورة واحدة على الأقل مطلوبة"
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
@@ -179,15 +172,18 @@ export default function EditCarPage() {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!validate()) {
-      toast.error("يرجى مراجعة الحقول المطلوبة")
+      toast.error("يرجى مراجعة الحقول الرقمية")
       return
     }
 
     setIsLoading(true)
     try {
+      const yearValue = form.year ? Number(toEnglishDigits(form.year)) : undefined
       const payload = {
         ...form,
-        year: Number(toEnglishDigits(form.year)),
+        brand: form.brand.trim(),
+        model: form.model.trim(),
+        year: yearValue && !isNaN(yearValue) ? yearValue : undefined,
         price: form.price ? Number(toEnglishDigits(form.price)) : null,
         mileage: form.mileage ? Number(toEnglishDigits(form.mileage)) : null,
         phone: form.phone.trim(),
@@ -246,7 +242,7 @@ export default function EditCarPage() {
             </div>
             <h1 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">تحديث البيانات</h1>
             <p className="text-sm md:text-base text-slate-500 font-bold max-w-2xl">
-              تعديل تفاصيل السيارة. الحقول المطلوبة مميزة بعلامة <span className="text-rose-500">*</span>
+              تعديل تفاصيل السيارة. جميع الحقول اختيارية.
             </p>
           </div>
           <div className="flex items-center gap-3 shrink-0">
@@ -277,7 +273,7 @@ export default function EditCarPage() {
                 </CardHeader>
                 <CardContent className="p-6 space-y-6">
                   <div className="space-y-2.5">
-                    <Label htmlFor="bodyType" className="text-sm font-black text-slate-700">نوع المركبة <span className="text-rose-500">*</span></Label>
+                    <Label htmlFor="bodyType" className="text-sm font-black text-slate-700">نوع المركبة</Label>
                     <select
                       id="bodyType"
                       value={form.bodyType}
@@ -292,7 +288,7 @@ export default function EditCarPage() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2.5">
-                      <Label htmlFor="brand" className="text-sm font-black text-slate-700">العلامة التجارية <span className="text-rose-500">*</span></Label>
+                      <Label htmlFor="brand" className="text-sm font-black text-slate-700">العلامة التجارية</Label>
                       <Input
                         id="brand"
                         value={form.brand}
@@ -303,7 +299,7 @@ export default function EditCarPage() {
                       {errors.brand && <p className="text-xs text-rose-500 font-bold">{errors.brand}</p>}
                     </div>
                     <div className="space-y-2.5">
-                      <Label htmlFor="model" className="text-sm font-black text-slate-700">الموديل <span className="text-rose-500">*</span></Label>
+                      <Label htmlFor="model" className="text-sm font-black text-slate-700">الموديل</Label>
                       <Input
                         id="model"
                         value={form.model}
@@ -317,14 +313,13 @@ export default function EditCarPage() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2.5">
-                      <Label htmlFor="year" className="text-sm font-black text-slate-700">سنة الصنع <span className="text-rose-500">*</span></Label>
+                      <Label htmlFor="year" className="text-sm font-black text-slate-700">سنة الصنع</Label>
                       <YearPicker
                         id="year"
                         label=""
                         value={form.year}
                         onChange={(year) => set("year", year)}
                         error={errors.year}
-                        required
                         endYear={currentYear() + 1}
                         selectClassName="rounded-xl h-12 bg-slate-50 border-slate-200"
                       />
@@ -359,7 +354,7 @@ export default function EditCarPage() {
                       {errors.mileage && <p className="text-xs text-rose-500 font-bold">{errors.mileage}</p>}
                     </div>
                     <div className="space-y-2.5">
-                      <Label htmlFor="color" className="text-sm font-black text-slate-700">اللون <span className="text-rose-500">*</span></Label>
+                      <Label htmlFor="color" className="text-sm font-black text-slate-700">اللون</Label>
                       <Input
                         id="color"
                         value={form.color}
@@ -373,7 +368,7 @@ export default function EditCarPage() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2.5">
-                      <Label htmlFor="fuelType" className="text-sm font-black text-slate-700">نوع الوقود <span className="text-rose-500">*</span></Label>
+                      <Label htmlFor="fuelType" className="text-sm font-black text-slate-700">نوع الوقود</Label>
                       <select
                         id="fuelType"
                         value={form.fuelType}
@@ -386,7 +381,7 @@ export default function EditCarPage() {
                       </select>
                     </div>
                     <div className="space-y-2.5">
-                      <Label htmlFor="transmission" className="text-sm font-black text-slate-700">ناقل الحركة <span className="text-rose-500">*</span></Label>
+                      <Label htmlFor="transmission" className="text-sm font-black text-slate-700">ناقل الحركة</Label>
                       <select
                         id="transmission"
                         value={form.transmission}
@@ -414,7 +409,7 @@ export default function EditCarPage() {
                 </CardHeader>
                 <CardContent className="p-6 space-y-6">
                   <div className="space-y-2.5">
-                    <Label htmlFor="description" className="text-sm font-black text-slate-700">الوصف التفصيلي <span className="text-rose-500">*</span></Label>
+                    <Label htmlFor="description" className="text-sm font-black text-slate-700">الوصف التفصيلي</Label>
                     <div className="rounded-xl border border-slate-200 overflow-hidden bg-slate-50">
                       <RichTextEditor
                         value={form.description}
@@ -477,7 +472,7 @@ export default function EditCarPage() {
                     <div className="p-2 bg-primary/10 rounded-lg text-primary">
                       <ImagePlus className="h-4 w-4" />
                     </div>
-                    الصور <span className="text-rose-500">*</span>
+                    الصور
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="py-2.5 px-4">
@@ -567,7 +562,7 @@ export default function EditCarPage() {
 
                   <div className="space-y-2.5">
                     <Label htmlFor="location" className="text-sm font-black text-slate-700">
-                      العنوان / المنطقة <span className="text-rose-500">*</span>
+                      العنوان / المنطقة
                     </Label>
                     <div className="relative">
                       <MapPin className="absolute right-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
