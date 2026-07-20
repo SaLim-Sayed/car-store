@@ -139,15 +139,11 @@ export function ShowroomAutocomplete({
       setQuery(selectedName);
       setBrowseAll(false);
     }
-  }, [selectedName, open, normalizedValue]);
+  }, [selectedName, open]);
 
   useEffect(() => {
     if (!open) return;
-    if (browseAll) {
-      setActiveIndex(selectedOptionIndex);
-      return;
-    }
-    setActiveIndex(0);
+    setActiveIndex(browseAll ? selectedOptionIndex : 0);
   }, [query, options.length, browseAll, open, selectedOptionIndex]);
 
   useLayoutEffect(() => {
@@ -390,17 +386,20 @@ export function ShowroomAutocomplete({
         />
 
         <div className="relative min-w-0 flex-1 overflow-hidden">
-          {!open && !isEmpty && selectedName ? (
-            <span
-              className="block w-full truncate text-sm font-bold text-slate-900"
-              title={selectedName}
-            >
-              {selectedName}
-            </span>
-          ) : null}
+          {/* Always render label slot so SSR/client DOM structure stays identical */}
+          <span
+            aria-hidden={open || isEmpty || !selectedName}
+            className={cn(
+              "block w-full truncate text-sm font-bold text-slate-900",
+              (open || isEmpty || !selectedName) && "invisible absolute",
+            )}
+            title={selectedName || undefined}
+          >
+            {selectedName || "\u00a0"}
+          </span>
           <Input
             ref={inputRef}
-            value={open ? query : ""}
+            value={open ? query : isEmpty ? "" : selectedName}
             onChange={(e) => {
               setBrowseAll(false);
               setQuery(e.target.value);
@@ -424,9 +423,7 @@ export function ShowroomAutocomplete({
               }, 150);
             }}
             onKeyDown={handleKeyDown}
-            placeholder={
-              !open && selectedName ? selectedName : searchPlaceholder
-            }
+            placeholder={searchPlaceholder}
             autoComplete="off"
             role="combobox"
             aria-expanded={open}
@@ -437,7 +434,7 @@ export function ShowroomAutocomplete({
               "h-auto min-h-0 w-full min-w-0 border-0 bg-transparent p-0 text-sm font-bold shadow-none",
               "placeholder:font-bold placeholder:text-slate-400",
               "focus-visible:border-0 focus-visible:ring-0",
-              // When closed with a selection, keep input clickable but hide its text
+              // When closed with a selection, show the truncated label instead
               !open &&
                 !isEmpty &&
                 selectedName &&
@@ -448,17 +445,20 @@ export function ShowroomAutocomplete({
         </div>
 
         <div className="flex shrink-0 items-center gap-0.5">
-          {!isEmpty || (open && query) ? (
-            <button
-              type="button"
-              onPointerDown={(e) => e.preventDefault()}
-              onClick={clearSelection}
-              className="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-white hover:text-rose-600"
-              aria-label="مسح الاختيار"
-            >
-              <X className="size-4" />
-            </button>
-          ) : null}
+          <button
+            type="button"
+            onPointerDown={(e) => e.preventDefault()}
+            onClick={clearSelection}
+            disabled={isEmpty && !(open && query)}
+            className={cn(
+              "rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-white hover:text-rose-600",
+              isEmpty && !(open && query) && "invisible pointer-events-none",
+            )}
+            aria-label="مسح الاختيار"
+            tabIndex={isEmpty && !(open && query) ? -1 : 0}
+          >
+            <X className="size-4" />
+          </button>
           <button
             type="button"
             tabIndex={-1}

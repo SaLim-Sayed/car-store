@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -20,7 +21,9 @@ import {
   ArrowUpRight,
   Calendar,
   Sparkles,
-  Trash2
+  Trash2,
+  Eye,
+  UserRound,
 } from "lucide-react";
 import Link from "next/link";
 import { useAdminStats, useSeedDatabase, useClearDatabase } from "@/hooks/useAdmin";
@@ -28,6 +31,13 @@ import { useCars } from "@/hooks/useCars";
 import { cn } from "@/lib/utils";
 
 export default function AdminDashboard() {
+  // Keep SSR and first client paint identical (skeletons) to avoid hydration mismatch
+  // when React Query already has cached data on the client.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const { data: statsData, isLoading, error } = useAdminStats();
   const { mutate: seedDatabase, isPending: seeding } = useSeedDatabase();
   const { mutate: clearDatabase, isPending: clearing } = useClearDatabase();
@@ -35,6 +45,8 @@ export default function AdminDashboard() {
   // Fetch recently added cars (Page 1, limit 5)
   const { data: carsData, isLoading: carsLoading } = useCars(1, 5);
   const recentCars = carsData?.data || [];
+  const showStatsSkeleton = !mounted || isLoading;
+  const showCarsSkeleton = !mounted || carsLoading;
 
   const stats = statsData?.data || statsData;
 
@@ -50,6 +62,30 @@ export default function AdminDashboard() {
 
   const statCards = stats
     ? [
+        {
+          title: "زيارات اليوم",
+          value: (stats.visitsToday || 0).toLocaleString("ar-EG"),
+          icon: Eye,
+          gradient: "from-sky-500/15 to-sky-500/5",
+          iconColor: "text-sky-600",
+          desc: `${(stats.uniqueVisitorsToday || 0).toLocaleString("ar-EG")} زائر فريد`,
+        },
+        {
+          title: "زيارات الأسبوع",
+          value: (stats.visitsThisWeek || 0).toLocaleString("ar-EG"),
+          icon: Activity,
+          gradient: "from-violet-500/15 to-violet-500/5",
+          iconColor: "text-violet-600",
+          desc: `أمس: ${(stats.visitsYesterday || 0).toLocaleString("ar-EG")}`,
+        },
+        {
+          title: "إجمالي الزيارات",
+          value: (stats.visitsTotal || 0).toLocaleString("ar-EG"),
+          icon: UserRound,
+          gradient: "from-emerald-500/15 to-emerald-500/5",
+          iconColor: "text-emerald-600",
+          desc: "كل زيارات صفحات الموقع",
+        },
         {
           title: "إجمالي السيارات",
           value: (stats.totalCars || 0).toLocaleString(),
@@ -141,9 +177,9 @@ export default function AdminDashboard() {
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
-          {isLoading
-            ? Array.from({ length: 6 }).map((_, i) => (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {showStatsSkeleton
+            ? Array.from({ length: 9 }).map((_, i) => (
                 <div key={i} className="h-[140px] rounded-lg bg-slate-200 animate-pulse" />
               ))
             : statCards.map((stat, index) => (
@@ -231,7 +267,7 @@ export default function AdminDashboard() {
               </CardTitle>
             </CardHeader>
             <CardContent className="p-6">
-              {isLoading ? (
+              {showStatsSkeleton ? (
                 <div className="space-y-6 w-full">
                   {Array.from({ length: 3 }).map((_, i) => (
                     <Skeleton key={i} className="h-14 w-full rounded-xl" />
@@ -349,7 +385,7 @@ export default function AdminDashboard() {
             </Button>
           </CardHeader>
           <CardContent className="p-0 overflow-x-auto">
-            {carsLoading ? (
+            {showCarsSkeleton ? (
               <div className="p-6 space-y-4">
                 {Array.from({ length: 4 }).map((_, i) => (
                   <Skeleton key={i} className="h-14 w-full rounded-xl" />

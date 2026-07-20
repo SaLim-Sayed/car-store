@@ -65,7 +65,7 @@ export function AdminSidebar() {
             alt="لوحة التحكم"
             width={160}
             height={50}
-            className="object-contain drop-shadow-md brightness-0 invert opacity-90"
+            className="h-auto w-auto max-h-[50px] object-contain drop-shadow-md brightness-0 invert opacity-90"
             priority
           />
         </Link>
@@ -146,7 +146,7 @@ export function AdminSidebar() {
             alt="لوحة التحكم"
             width={120}
             height={40}
-            className="object-contain brightness-0 invert opacity-90"
+            className="h-auto w-auto max-h-10 object-contain brightness-0 invert opacity-90"
           />
         </Link>
         <Button

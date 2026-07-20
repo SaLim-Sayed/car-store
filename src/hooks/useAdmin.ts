@@ -13,6 +13,11 @@ export interface AdminStats {
  totalNews: number;
  totalShowrooms: number;
  totalEquipment: number;
+ visitsToday: number;
+ visitsYesterday: number;
+ visitsThisWeek: number;
+ visitsTotal: number;
+ uniqueVisitorsToday: number;
 }
 
 export interface SeedResult {
