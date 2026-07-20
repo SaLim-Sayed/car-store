@@ -331,7 +331,7 @@ export default function AdminDashboard() {
                   </div>
                 </div>
               </div>
-              <div className="flex flex-col gap-3">
+              <div className="  flex-col gap-3 hidden">
                 <Button
                   className="w-full h-12 bg-white hover:bg-slate-100 text-primary font-black text-sm rounded-xl shadow-lg shadow-black/10 transition-all hover:scale-[1.02]"
                   onClick={handleSeed}
@@ -350,7 +350,7 @@ export default function AdminDashboard() {
                   )}
                 </Button>
                 <Button
-                  className="w-full h-12 bg-red-600 hover:bg-red-700 text-white font-black text-sm rounded-xl shadow-lg shadow-black/10 transition-all hover:scale-[1.02] border-0"
+                  className="w-full hidden h-12 bg-red-600 hover:bg-red-700 text-white font-black text-sm rounded-xl shadow-lg shadow-black/10 transition-all hover:scale-[1.02] border-0"
                   onClick={handleClear}
                   disabled={seeding || clearing}
                 >
