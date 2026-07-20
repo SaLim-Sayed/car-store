@@ -8,10 +8,10 @@ import { cn } from "@/lib/utils";
 import { formatPhoneDisplay, getTelHref } from "@/lib/phone";
 
 export const contactCallClass =
-  "h-11 min-h-11 flex-1 gap-2 rounded-lg border-0 bg-slate-900 text-sm font-semibold text-white shadow-sm hover:bg-slate-800";
+  "h-10 min-h-10 flex-1 gap-1.5 rounded-lg border-0 bg-slate-900 text-sm font-bold text-white shadow-sm transition-transform hover:bg-slate-800 active:scale-[0.98]";
 
 export const contactWhatsappClass =
-  "h-11 min-h-11 flex-1 gap-2 rounded-lg border border-emerald-200 bg-emerald-50 text-sm font-semibold text-emerald-800 shadow-sm hover:bg-emerald-100";
+  "h-10 min-h-10 flex-1 gap-1.5 rounded-lg border border-emerald-200 bg-emerald-50 text-sm font-bold text-emerald-800 shadow-sm transition-transform hover:bg-emerald-100 active:scale-[0.98]";
 
 type ContactCallLinkProps = {
   phone?: string | null;
@@ -149,11 +149,11 @@ export function ContactActionsCard({
         className,
       )}
     >
-      <div className="border-b border-slate-100 bg-slate-50/80 px-4 py-3">
-        <p className="text-sm font-semibold text-slate-900">{title}</p>
-        <p className="mt-0.5 text-xs text-slate-500">{subtitle}</p>
+      <div className="border-b border-slate-100 bg-linear-to-l from-primary/6 to-transparent px-3 py-2">
+        <p className="text-sm font-black text-slate-900">{title}</p>
+        <p className="mt-0.5 text-xs font-medium text-slate-500">{subtitle}</p>
       </div>
-      <div className="space-y-3 p-4">
+      <div className="space-y-2 p-3">
         {children}
         <ContactActionsRow
           phone={phone}

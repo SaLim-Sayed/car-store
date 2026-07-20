@@ -231,7 +231,7 @@ export default function ClientPage({ initialCar }: { initialCar: CarDoc }) {
  return (
  <div className={listingDetailShell}>
  <main className={listingDetailMain}>
-  <div className="mb-4">
+  <div className="mb-2">
   <Breadcrumbs
     items={[
       { label: "سيارات للبيع", href: "/cars" },
@@ -274,9 +274,9 @@ export default function ClientPage({ initialCar }: { initialCar: CarDoc }) {
  {/* Image gallery */}
  <div
    className={cn(
-     "mt-5 w-full min-w-0 overflow-hidden",
+     "mt-2.5 w-full min-w-0 overflow-hidden",
      images.length > 1
-       ? "grid grid-cols-1 items-start gap-4 sm:gap-5 lg:grid-cols-[minmax(0,1fr)_7rem] lg:gap-5 xl:grid-cols-[minmax(0,1fr)_8.5rem] xl:gap-6"
+       ? "grid grid-cols-1 items-start gap-2.5 sm:gap-3 lg:grid-cols-[minmax(0,1fr)_6.5rem] lg:gap-3 xl:grid-cols-[minmax(0,1fr)_7.5rem] xl:gap-3"
        : "block",
    )}
  >
@@ -298,7 +298,7 @@ export default function ClientPage({ initialCar }: { initialCar: CarDoc }) {
        {images.map((img, idx) => (
          <SwiperSlide key={idx} className="h-full w-full">
            <div
-             className="group relative flex aspect-[16/10] max-h-[min(58vh,500px)] w-full min-h-[230px] cursor-zoom-in items-center justify-center bg-[#f8f9fb] p-3 sm:min-h-[280px] sm:p-5 md:p-6"
+             className="group relative flex aspect-[16/10] max-h-[min(58vh,500px)] w-full min-h-[230px] cursor-zoom-in items-center justify-center bg-[#f8f9fb] p-1.5 sm:min-h-[260px] sm:p-2 md:p-2.5"
              onClick={() => setIsLightboxOpen(true)}
            >
              <Image
@@ -310,8 +310,8 @@ export default function ClientPage({ initialCar }: { initialCar: CarDoc }) {
                className="object-contain p-1 transition duration-500 ease-out"
              />
              <span className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-black/[0.05]" />
-             <span className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/35 to-transparent" />
-             <span className="pointer-events-none absolute bottom-3 inset-x-0 text-center text-[11px] font-bold text-white/95">
+             <span className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-linear-to-t from-black/35 to-transparent sm:opacity-0 sm:transition-opacity sm:duration-300 sm:group-hover:opacity-100" />
+             <span className="pointer-events-none absolute bottom-3 inset-x-0 text-center text-[11px] font-bold text-white/95 sm:opacity-0 sm:transition-opacity sm:duration-300 sm:group-hover:opacity-100">
                اضغط للتكبير
              </span>
            </div>
@@ -355,7 +355,7 @@ export default function ClientPage({ initialCar }: { initialCar: CarDoc }) {
 
    {images.length > 1 ? (
      <aside className="min-w-0 w-full lg:sticky lg:top-28 xl:top-32">
-       <div className="mb-2.5 flex items-center justify-between gap-2 px-0.5 text-[11px] font-bold text-slate-500 sm:text-xs">
+       <div className="mb-1.5 flex items-center justify-between gap-2 px-0.5 text-[11px] font-bold text-slate-500 sm:text-xs">
          <span>معرض الصور</span>
          <span className="tabular-nums">{images.length} صورة</span>
        </div>
@@ -393,7 +393,7 @@ export default function ClientPage({ initialCar }: { initialCar: CarDoc }) {
              nextEl: ".car-thumb-next",
            }}
            onSwiper={setGalleryStripSwiper}
-           className="w-full px-9 [--swiper-scrollbar-size:0] lg:h-[min(58vh,500px)] lg:px-2 lg:py-9"
+           className="w-full px-9 [--swiper-scrollbar-size:0] lg:h-[min(58vh,500px)] lg:px-1.5 lg:py-7"
          >
            {images.map((image, index) => (
              <SwiperSlide
@@ -429,7 +429,7 @@ export default function ClientPage({ initialCar }: { initialCar: CarDoc }) {
  </div>
 
  <ContactActionsCard
-   className="mt-5 lg:hidden"
+   className="mt-2.5 lg:hidden"
    phone={car.phone}
    whatsappHref={whatsappHref}
    onCall={trackCall}
@@ -438,7 +438,7 @@ export default function ClientPage({ initialCar }: { initialCar: CarDoc }) {
  />
 
  {/* Main Content */}
- <div className="mt-6">
+ <div className="mt-3">
  <ListingContentLayout
    main={
      <>
@@ -458,7 +458,7 @@ export default function ClientPage({ initialCar }: { initialCar: CarDoc }) {
 
  <button
  type="button"
- className="flex items-center gap-2 text-sm font-medium text-slate-500 transition-colors hover:text-destructive"
+ className="flex items-center gap-2 text-sm font-bold text-slate-500 transition-colors hover:text-destructive"
  >
  <MessageSquare className="size-4" />
  الإبلاغ عن هذا الإعلان
@@ -486,7 +486,7 @@ export default function ClientPage({ initialCar }: { initialCar: CarDoc }) {
 
  {(car.locationLink || car.showroom?.locationLink || mapCoordinates) ? (
  <Card className="overflow-hidden rounded-xl border-slate-200 bg-white shadow-sm">
- <CardContent className="p-4 sm:p-5">
+ <CardContent className="p-2.5 sm:p-3">
  <MapEmbed
    url={car.locationLink || car.showroom?.locationLink}
    coordinates={mapCoordinates}

@@ -227,7 +227,7 @@ export default function BikeDetailPage({
   return (
     <div className={listingDetailShell}>
       <main className={listingDetailMain}>
-        <div className="mb-4">
+        <div className="mb-2">
           <Breadcrumbs
             items={[
               { label: "الدراجات النارية والتوك توك", href: "/bikes" },
@@ -262,9 +262,9 @@ export default function BikeDetailPage({
           {/* Image gallery */}
           <div
             className={cn(
-              "mt-5 w-full min-w-0 overflow-hidden",
+              "mt-2.5 w-full min-w-0 overflow-hidden",
               images.length > 1
-                ? "grid grid-cols-1 items-start gap-4 sm:gap-5 lg:grid-cols-[minmax(0,1fr)_7rem] lg:gap-5 xl:grid-cols-[minmax(0,1fr)_8.5rem] xl:gap-6"
+                ? "grid grid-cols-1 items-start gap-2.5 sm:gap-3 lg:grid-cols-[minmax(0,1fr)_6.5rem] lg:gap-3 xl:grid-cols-[minmax(0,1fr)_7.5rem] xl:gap-3"
                 : "block",
             )}
           >
@@ -286,7 +286,7 @@ export default function BikeDetailPage({
                 {images.map((img, idx) => (
                   <SwiperSlide key={idx} className="h-full w-full">
                     <div
-                      className="group relative flex aspect-[16/10] max-h-[min(58vh,500px)] w-full min-h-[230px] cursor-zoom-in items-center justify-center bg-[#f8f9fb] p-3 sm:min-h-[280px] sm:p-5 md:p-6"
+                      className="group relative flex aspect-[16/10] max-h-[min(58vh,500px)] w-full min-h-[230px] cursor-zoom-in items-center justify-center bg-[#f8f9fb] p-1.5 sm:min-h-[260px] sm:p-2 md:p-2.5"
                       onClick={() => setIsLightboxOpen(true)}
                     >
                       <Image
@@ -334,7 +334,7 @@ export default function BikeDetailPage({
 
             {images.length > 1 ? (
               <aside className="min-w-0 w-full lg:sticky lg:top-28 xl:top-32">
-                <div className="mb-2.5 flex items-center justify-between gap-2 px-0.5 text-[11px] font-bold text-slate-500 sm:text-xs">
+                <div className="mb-1.5 flex items-center justify-between gap-2 px-0.5 text-[11px] font-bold text-slate-500 sm:text-xs">
                   <span>معرض الصور</span>
                   <span className="tabular-nums">{images.length} صورة</span>
                 </div>
@@ -372,7 +372,7 @@ export default function BikeDetailPage({
                       nextEl: ".bike-thumb-next",
                     }}
                     onSwiper={setGalleryStripSwiper}
-                    className="w-full px-9 [--swiper-scrollbar-size:0] lg:h-[min(58vh,500px)] lg:px-2 lg:py-9"
+                    className="w-full px-9 [--swiper-scrollbar-size:0] lg:h-[min(58vh,500px)] lg:px-1.5 lg:py-7"
                   >
                     {images.map((image, index) => (
                       <SwiperSlide
@@ -408,7 +408,7 @@ export default function BikeDetailPage({
           </div>
 
           <ContactActionsCard
-            className="mt-5 lg:hidden"
+            className="mt-2.5 lg:hidden"
             phone={item.phone}
             whatsappHref={whatsappHref}
             onCall={trackCall}
@@ -416,7 +416,7 @@ export default function BikeDetailPage({
             subtitle={showroom?.name ? `تواصل مع ${showroom.name}` : "اتصال أو واتساب مع المعلن"}
           />
 
-        <div className="mt-6">
+        <div className="mt-3">
           <ListingContentLayout
             main={
               <>
@@ -425,7 +425,7 @@ export default function BikeDetailPage({
                 </ListingDetailSection>
 
                 <ListingDetailSection title="الوصف">
-                  <div className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
+                  <div className="rounded-xl border border-slate-200 bg-white p-2.5 sm:p-3">
                     <BikeDescription description={item.description} />
                   </div>
                 </ListingDetailSection>
@@ -438,7 +438,7 @@ export default function BikeDetailPage({
 
                 <button
                   type="button"
-                  className="flex items-center gap-2 text-sm font-medium text-slate-500 transition-colors hover:text-destructive"
+                  className="flex items-center gap-2 text-sm font-bold text-slate-500 transition-colors hover:text-destructive"
                 >
                   <MessageSquare className="size-4" />
                   الإبلاغ عن هذا الإعلان
@@ -466,7 +466,7 @@ export default function BikeDetailPage({
 
                 {item.locationLink ? (
                   <Card className="overflow-hidden rounded-xl border-slate-200 bg-white shadow-sm">
-                    <CardContent className="p-4 sm:p-5">
+                    <CardContent className="p-2.5 sm:p-3">
                       <MapEmbed url={item.locationLink} title="الموقع على الخريطة" />
                     </CardContent>
                   </Card>
