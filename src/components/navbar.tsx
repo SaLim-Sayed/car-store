@@ -100,6 +100,7 @@ export function Navbar() {
                   width={320}
                   height={256}
                   priority
+                  unoptimized
                   className="w-full h-auto object-contain"
                 />
               </div>
@@ -110,6 +111,7 @@ export function Navbar() {
                   width={200}
                   height={160}
                   priority
+                  unoptimized
                   className="w-full h-auto object-contain"
                 />
               </div>

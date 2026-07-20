@@ -39,6 +39,7 @@ export function AuthLayout({
                   alt="سيارات المنيا"
                   width={200}
                   height={100}
+                  unoptimized
                   className="object-contain"
                 />
               </div>
@@ -89,6 +90,7 @@ export function AuthLayout({
                   alt="سيارات المنيا"
                   width={200}
                   height={50}
+                  unoptimized
                   className="object-contain"
                 />
               </div>

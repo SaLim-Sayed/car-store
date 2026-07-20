@@ -68,6 +68,7 @@ export function Footer() {
                 width={200}
                 height={50}
                 priority
+                unoptimized
               />
             </div>
 

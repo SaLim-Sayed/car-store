@@ -2,6 +2,9 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
+    // Skip Vercel Image Optimization (quota / payment required on Hobby).
+    // Cloudinary already serves optimized assets via res.cloudinary.com.
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',
