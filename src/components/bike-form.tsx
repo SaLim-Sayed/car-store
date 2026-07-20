@@ -9,10 +9,11 @@ import { MultiImageUpload } from "@/components/multi-image-upload"
 import { YearPicker } from "@/components/year-picker"
 import { currentYear } from "@/lib/date-utils"
 import { toast } from "sonner"
-import { Plus, X, Phone, Bike, ImagePlus, Info, Settings, MapPin, CheckCircle, Tag, Store } from "lucide-react"
+import { Plus, X, Phone, Bike, ImagePlus, Info, Settings, MapPin, CheckCircle, Tag } from "lucide-react"
 import { SITE_PHONE_DISPLAY } from "@/lib/phone"
 import { RichTextEditor } from "@/components/rich-text-editor"
 import { useShowrooms } from "@/hooks/useContent"
+import { ShowroomAutocomplete } from "@/components/showroom-autocomplete"
 import { cn, toEnglishDigits } from "@/lib/utils"
 
 const CATEGORIES = ["سيارة", "موتوسيكل", "توك توك", "تروسيكل", "سكوتر", "دراجة نارية", "جرار", "حفار", "شاحنة", "معدة زراعية", "معدة بناء", "أخرى"] as const
@@ -370,19 +371,14 @@ export function BikeForm({
             {showrooms.length > 0 && (
               <div className="space-y-2.5">
                 <Label className="text-sm font-black text-slate-700">ربط بمعرض <span className="text-slate-500 font-medium">(اختياري)</span></Label>
-                <div className="relative">
-                  <Store className="absolute right-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
-                  <select
-                    value={form.showroom || ""}
-                    onChange={(e) => handleShowroomChange(e.target.value)}
-                    className="flex h-12 w-full rounded-xl border border-slate-200 bg-slate-50 pl-4 pr-10 py-2 text-sm font-bold focus:border-rose-500 focus:outline-none focus:ring-1 focus:ring-rose-500 transition-colors"
-                  >
-                    <option value="">لا يوجد (إعلان فردي)</option>
-                    {showrooms.map((s: any) => (
-                      <option key={s._id} value={s._id}>{s.name}</option>
-                    ))}
-                  </select>
-                </div>
+                <ShowroomAutocomplete
+                  listId="bike-form-showrooms"
+                  showrooms={showrooms}
+                  value={form.showroom || ""}
+                  onChange={handleShowroomChange}
+                  emptyOptionId=""
+                  emptyOptionLabel="لا يوجد (إعلان فردي)"
+                />
                 <p className="text-[10px] text-slate-500 font-bold leading-relaxed">
                   عند اختيار معرض، سيتم ملء بيانات الموقع ورقم الهاتف تلقائياً.
                 </p>

@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { toast } from "sonner"
-import { ArrowRight, Plus, X, Phone, MapPin, Store, Car, ImagePlus, Info, CheckCircle, Tag } from "lucide-react"
+import { ArrowRight, Plus, X, Phone, MapPin, Car, ImagePlus, Info, CheckCircle, Tag } from "lucide-react"
 import { useShowrooms } from "@/hooks/useContent"
 import { SITE_PHONE_DISPLAY } from "@/lib/phone"
 import Link from "next/link"
@@ -16,6 +16,7 @@ import { YearPicker } from "@/components/year-picker"
 import { currentYear } from "@/lib/date-utils"
 import { cn, toEnglishDigits } from "@/lib/utils"
 import { MultiImageUpload } from "@/components/multi-image-upload"
+import { ShowroomAutocomplete } from "@/components/showroom-autocomplete"
 
 const FUEL_TYPES = ["بنزين", "كهرباء", "غاز طبيعي", "غاز", "سولار"] as const
 const TRANSMISSIONS = ["يدوي", "أوتوماتيك"] as const
@@ -470,20 +471,14 @@ export default function NewCarPage() {
                 <CardContent className="py-2.5 px-4 space-y-5">
                   <div className="space-y-2.5">
                     <Label htmlFor="showroom" className="text-sm font-black text-slate-700">المعرض المنتمي إليه</Label>
-                    <div className="relative">
-                      <Store className="absolute right-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
-                      <select
-                        id="showroom"
-                        value={form.showroom}
-                        onChange={(e) => handleShowroomChange(e.target.value)}
-                        className="flex h-12 w-full rounded-xl border border-slate-200 bg-slate-50 pr-10 pl-4 py-2 text-sm font-bold focus:border-rose-500 focus:outline-none focus:ring-1 focus:ring-rose-500 transition-colors appearance-none"
-                      >
-                        <option value="">لا ينتمي لمعرض</option>
-                        {showrooms.map((s: any) => (
-                          <option key={s._id} value={s._id}>{s.name}</option>
-                        ))}
-                      </select>
-                    </div>
+                    <ShowroomAutocomplete
+                      listId="admin-car-new-showrooms"
+                      showrooms={showrooms}
+                      value={form.showroom}
+                      onChange={handleShowroomChange}
+                      emptyOptionId=""
+                      emptyOptionLabel="لا ينتمي لمعرض"
+                    />
                   </div>
 
                   <div className="space-y-2.5">
